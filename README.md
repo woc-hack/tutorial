@@ -1,5 +1,11 @@
 # Tutorial basics for Hackathon
 -------
+TODO: Create a google form for Hackathon participants: ghid, bbid,
+preferred login name, public ssh key,  short paragraph describing
+preferred problem to be solved during hackathon, food restrictions,
+how to contact 
+Put a link to the form here
+
 ## Getting started
 ### Set up accounts for GitHub and Bitbucket
 If you dont have these already, go ahead and setup an account on both GitHub and Bitbucket and give your GH and BB ids and email to Dr. Mockus, who will then invite you to the oscar.py and swsc repositories via email.  
