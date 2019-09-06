@@ -1,11 +1,4 @@
 # Tutorial basics for Hackathon
--------
-TODO: Create a google form for Hackathon participants: ghid, bbid,
-preferred login name, public ssh key,  short paragraph describing
-preferred problem to be solved during hackathon, food restrictions,
-how to contact 
-Put a link to the form here
-
 ## Getting started
 ### Set up accounts for GitHub and Bitbucket
 If you dont have these already, go ahead and setup an account on both GitHub and Bitbucket and give your GH and BB ids and email to Dr. Mockus, who will then invite you to the oscar.py and swsc repositories via email.  
@@ -14,8 +7,16 @@ BitBucket: https://bitbucket.org/account/signup/
 --------
 
 ### Gain permissions and access to da server(s)
-In order to gain access to one of the da servers, you will need to generate a public key via the `ssh-keygen` command, and put the `id_rsa.pub` and `id_rsa` files inside your .ssh/ folder on your home terminal. Once finished, send the contents of `id_rsa.pub` (your public key) over to Dr. Mockus who will then grant you access to one or more of the da servers.  
-Optionally, you can also set up your `.ssh/config` file so that you can login to one of the da servers without having to fully specify the server name each time:  
+In order to gain access to one of the da servers, you will need to
+generate a public key via the `ssh-keygen` command, and put the
+`id_rsa.pub` and `id_rsa` files inside your .ssh/ folder on your
+home terminal.
+Once finished, fill the woc hackatont registration form at
+bit.ly/woc-signup
+
+The form wil lask you for the contents of `id_rsa.pub`
+
+Set up your `.ssh/config` file so that you can login to one of the da servers without having to fully specify the server name each time:  
 ```
 Host da0
 	Hostname da0.eecs.utk.edu
