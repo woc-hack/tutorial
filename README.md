@@ -11,17 +11,20 @@ In order to gain access to one of the da servers, you will need to
 generate a public key via the `ssh-keygen` command, and put the
 `id_rsa.pub` and `id_rsa` files inside your .ssh/ folder on your
 home terminal.
-Once finished, fill the woc hackatont registration form at
-bit.ly/WoC-Signup
+Once finished, fill the woc hackatont registration [form](http://bit.ly/WoC-Signup)
 
 The form wil lask you for the contents of `id_rsa.pub`
 
 Set up your `.ssh/config` file so that you can login to one of the da servers without having to fully specify the server name each time:  
 ```
+Host *
+  ForwardAgent yes
+
 Host da0
 	Hostname da0.eecs.utk.edu
 	Port 443
-	User {username}
+	User YourUsername
+	
 ```
 
 Logging in then becomes as simple as `ssh da0`.  
@@ -72,15 +75,10 @@ The folder structure on any server follows the following convention:
      read directly from /data/All.blobs/blob_Num.bin
 
 
-Not all files are stored on all servers due to limited disk sizes.
+Not all files are stored on all servers due to limited disk sizes
+and different speed of disks. For example, blobs are stored only on
+da4. 
 The description below goes over what is stored on each server. 
-
-In order for SSDs to be fast they need to be mounted in parallel,
-for example id 7ssds is a volume group that has seven SSDs as
-physical volumes, LV 7ssds can be created via
-```
-lvcreate --extents 100%FREE --name 7ssds --stripes 7 --stripesize 256 7ssds
-```
 
 ### da0 Server
 #### <relationship>.{0-31}.tch files in `/data/basemaps/`:  
@@ -101,7 +99,7 @@ Keys for identifying letters:
 
 List of relationships:
 ```
-* a2c (.s)		* a2f			* a2ft				* a2L (.s only)		* a2p (.s)			* a2trp0 (.s)
+* a2c (.s)		* a2f			* a2ft				* a2p (.s)			* a2trp0 (.s)
 * b2c (.s)		* b2f (.s)
 * c2b (.s)		* c2cc			* c2f (.s)		
 * c2h			* c2pc			* c2p (.s)			* c2ta (.s)
