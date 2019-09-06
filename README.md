@@ -12,7 +12,7 @@ generate a public key via the `ssh-keygen` command, and put the
 `id_rsa.pub` and `id_rsa` files inside your .ssh/ folder on your
 home terminal.
 Once finished, fill the woc hackatont registration form at
-bit.ly/woc-signup
+bit.ly/WoC-Signup
 
 The form wil lask you for the contents of `id_rsa.pub`
 
@@ -33,12 +33,23 @@ Once you are in a da server, you will have an empty directory under `/home/usern
 ```
 ---------
 ### Clone the oscar.py and swsc/lookup repos
-oscar.py link: https://github.com/ssc-oscar/oscar.py  
+oscar.py link: https://github.com/ssc-oscar/oscar.py
 swsc/lookup link: https://bitbucket.org/swsc/lookup/src/master/
 
 Run `git clone <link>` (no brackets) on a da server to get a copy of the given repository link.  
 
 -------
+## Servers and folders
+
+The home folders are on da2, so it is preferred not to do very large
+file operations to/from these folfers from other servers than da2,
+since these operations will load NFS and may slow access to home
+folders of other users.
+
+Each server has /data/play folder where you can create your
+subfolders to store/process large files
+
+
 ## List of relevant directories
 
 The folder structure on any server follows the following convention:
