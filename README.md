@@ -59,6 +59,24 @@ You can also login to other da servers:
 [username@da4]~% 
 ```
 
+This might be useful to accsess conent of the vobs, to calculate the
+diff produced by a commit, etc. E.g, to see diff for commit
+009d7b6da9c4419fe96ffd1fffb2ee61fa61532a
+```
+[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da4 ~/lookup/cmputeDiff2.perl 
+009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_isa.c;9d5818e25865797b96e4783b00b45f800423e527;594dc8cb2ce725658377bf09aa0f127183b89f77
+009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_pci.c;b3c1363c90de7823ec87004fe084f41d0f224c9b;4155935a98ba3b5d3786fa1b6d3d5aa52c6de90a
+```
+E.g., to inspect a blob created by this commit:
+```
+[username@da0]~% echo 9d5818e25865797b96e4783b00b45f800423e527 | ssh da4 ~/lookup/showBlob.perl
+blob;29;3528;1430262688;1430262688;3528;9d5818e25865797b96e4783b00b45f800423e527
+/*
+ * Copyright (c) 2002-2004 M. Warner Losh.
+ * All rights reserved.
+ ...
+``` 
+
 ---------
 ### Clone the oscar.py and swsc/lookup repos
 oscar.py link: https://github.com/ssc-oscar/oscar.py
@@ -224,7 +242,8 @@ UNIX> python
 ```
 -------	
 ## Examples of implementing applications -- Simple vs. Complex
-### Finding 1st-time imports for AI modules (Simple) 
+### Finding 1st-time imports for AI modules (Simple)
+
 Given the data available, this is a fairly simple task. Making an application to detect the first time that a repo adopted an AI module would give you a better idea as to when it was first used, and also when it started to gain popularity.  
 
 A good example of this lies in [popmods.py](https://github.com/ssc-oscar/aiframeworks/blob/master/popmods.py). In this application, we can read all 32 c2bPtaPkgO$LANG.{0-31}.gz files of a given language and look for a given module with the earliest import times. The program then creates a <module_name>.first file, with each line formatted as `repo_name;UNIX_timestamp`.  
