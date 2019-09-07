@@ -1,20 +1,21 @@
 # Tutorial basics for Hackathon
 ## Related
 
-   [About WoC](https://bitbucket.org/swsc/overview/raw/master/pubs/WoC.pdf)
-   [Overview of the Software Supply Chains](https://bitbucket.org/swsc/overview/src/master/README.md)
-   [Details on WoC storage/APIs]](https://bitbucket.org/swsc/lookup/src/master/README.md)
-   [Fun Facts](https://bitbucket.org/swsc/overview/src/master/fun/README.md)
+    [About WoC](https://bitbucket.org/swsc/overview/raw/master/pubs/WoC.pdf)
+    [Overview of the Software Supply Chains](https://bitbucket.org/swsc/overview/src/master/README.md)
+    [Details on WoC storage/APIs](https://bitbucket.org/swsc/lookup/src/master/README.md)
+    [Fun Facts](https://bitbucket.org/swsc/overview/src/master/fun/README.md)
 
 ## Getting started
 
 ### Set up accounts for GitHub and Bitbucket
+
 If you dont have these already, please setup an account on both
 GitHub and Bitbucket (they will be needed to invite you to the
 relevant repositories on GitHub&BitBucket).
 GitHub: https://github.com/pricing  
 BitBucket: https://bitbucket.org/account/signup/  
---------
+
 
 ### Gain permissions and access to da server(s)
 In order to gain access to the da servers, you will need to
