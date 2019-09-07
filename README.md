@@ -1,21 +1,38 @@
 # Tutorial basics for Hackathon
+## Related
+
+    - [About WoC](https://bitbucket.org/swsc/overview/raw/master/pubs/WoC.pdf)
+	- [Overview of the Software Supply Chains](https://bitbucket.org/swsc/overview/src/master/README.md)
+	- [Details on WoC storage/APIs]](https://bitbucket.org/swsc/lookup/src/master/README.md)
+	- [Fun Facts](https://bitbucket.org/swsc/overview/src/master/fun/README.md)
+
 ## Getting started
+
 ### Set up accounts for GitHub and Bitbucket
-If you dont have these already, go ahead and setup an account on both GitHub and Bitbucket and give your GH and BB ids and email to Dr. Mockus, who will then invite you to the oscar.py and swsc repositories via email.  
+If you dont have these already, please setup an account on both
+GitHub and Bitbucket (they will be needed to invite you to the
+relevant repositories on GitHub&BitBucket).
 GitHub: https://github.com/pricing  
 BitBucket: https://bitbucket.org/account/signup/  
 --------
 
 ### Gain permissions and access to da server(s)
-In order to gain access to one of the da servers, you will need to
+In order to gain access to the da servers, you will need to
 generate a public key via the `ssh-keygen` command, and put the
 `id_rsa.pub` and `id_rsa` files inside your .ssh/ folder on your
-home terminal.
-Once finished, fill the woc hackatont registration [form](http://bit.ly/WoC-Signup)
+home terminal. Windows users should consider
+[linux subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10), or
+[OpenSSH module for PowerShell](https://www.techrepublic.com/blog/10-things/how-to-generate-ssh-keys-in-openssh-for-windows-10/), or
+[Git-Bash](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-windows#Git-Bash)
+or other tools.
 
-The form wil lask you for the contents of `id_rsa.pub`
+Once finished, please fill the woc hackatont registration [form](http://bit.ly/WoC-Signup)
 
-Set up your `.ssh/config` file so that you can login to one of the da servers without having to fully specify the server name each time:  
+The form will ask you for the contents of `id_rsa.pub` and the
+GitHub and BitBucket handles. You will receive a response to the
+email provided in the form once your account is set up.
+
+Set up your `.ssh/config` file so that you can login to one of the da servers without having to fully specify the server name each time:
 ```
 Host *
   ForwardAgent yes
@@ -27,13 +44,20 @@ Host da0
 	
 ```
 
-Logging in then becomes as simple as `ssh da0`.  
+Logging in then becomes as simple as `ssh da0`.
 Once you are in a da server, you will have an empty directory under `/home/username` where you can store your programs and files:  
 ```
 [username@da0]~% pwd
 /home/username
 [username@da0]~% 
 ```
+
+You can also login to other da servers:
+```
+[username@da0]~% ssh da4
+[username@da4]~% 
+```
+
 ---------
 ### Clone the oscar.py and swsc/lookup repos
 oscar.py link: https://github.com/ssc-oscar/oscar.py
@@ -44,13 +68,14 @@ Run `git clone <link>` (no brackets) on a da server to get a copy of the given r
 -------
 ## Servers and folders
 
-The home folders are on da2, so it is preferred not to do very large
-file operations to/from these folfers from other servers than da2,
+All home folders are on da2, so it is preferred not to do very large
+file operations to/from these folders  when running tasks on servers
+other than da2,
 since these operations will load NFS and may slow access to home
 folders of other users.
 
 Each server has /data/play folder where you can create your
-subfolders to store/process large files
+subfolders to store/process large files.
 
 
 ## List of relevant directories
