@@ -208,6 +208,7 @@ for commit in Author(author_name).commit_shas:
 ```
 ------
 ## Examples of doing certain tasks
+
 * Get a list of commits and repositories that imported Tensorflow for .py files:  
 	On da0: `UNIX> zcat /data/play/PYthruMaps/c2bPtaPkgOPY.0.gz | grep tensorflow`  
 	Output: 
@@ -275,6 +276,7 @@ if repo not in dict.keys() or time < dict[repo]:
 ...
 ```
 #### Implementing the application
+
 Now that we have the .first files put together, we can take this one step further and graph a modules first-time usage over time on a line graph, or even compare multiple modules to see how they stack up against each other. [modtrends.py](https://github.com/ssc-oscar/aiframeworks/blob/master/modtrends.py) accomplishes this by:  
 
 * reading 1 or more .first files 
@@ -283,11 +285,18 @@ Now that we have the .first files put together, we can take this one step furthe
 * putting those dates in a dictionary with `dict["year-month"] += 1`
 * graphing the dates and frequencies using matplotlib.
 
-If you want to compare first-time usage over time for Tensorflow and Keras for the .ipynb language .first files you created, run: `UNIX> python3.6 modtrends.py tensorflow.first keras.first`  
+If you want to compare first-time usage over time for Tensorflow and
+Keras for the .ipynb language .first files you created, run:
+```
+UNIX> python3.6 modtrends.py tensorflow.first keras.first
+```
 The final graph looks something like this:  
 [![Tensorflow vs Keras](../ipynb_first/Tensorflow-vs-Keras.png "Tensorflow vs Keras")](https://github.com/ssc-oscar/aiframeworks/blob/master/charts/ipynb_charts/Tensorflow-vs-Keras.png)
+
 -------
+
 ### Detecting percentage language use and changes over time (Complex) 
+
 An application to calculate this would be useful for seeing how different authors changed languages over a range of years, based on the commits they have made to different files.  
 In order to accomplish this task, we will modify an existing program from the swsc/lookup repo ([a2fBinSorted.perl](https://bitbucket.org/swsc/lookup/src/master/a2fBinSorted.perl)) and create a new program ([a2L.py](https://bitbucket.org/swsc/lookup/src/master/a2L.py)) that will get language counts per year per author.  
 
