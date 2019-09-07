@@ -60,7 +60,7 @@ You can also login to other da servers:
 ```
 
 This might be useful to accsess conent of the vobs, to calculate the
-diff produced by a commit, etc. E.g, to see diff for commit
+diff produced by a commit, etc. For more examples [see full API](https://bitbucket.org/swsc/lookup/src/master/README.md). E.g, to see diff for commit
 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a
 ```
 [username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da4 ~/lookup/cmputeDiff2.perl 
