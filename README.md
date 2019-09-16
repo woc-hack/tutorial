@@ -1,6 +1,7 @@
 # Tutorial basics for Hackathon
 ## Related
 
+- [Hackathon Schedule](https://github.com/woc-hack/schedule)
 - [About WoC](https://bitbucket.org/swsc/overview/raw/master/pubs/WoC.pdf)
 - [Overview of the Software Supply Chains](https://bitbucket.org/swsc/overview/src/master/README.md)
 - [Details on WoC storage/APIs](https://bitbucket.org/swsc/lookup/src/master/README.md)
