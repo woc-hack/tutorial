@@ -27,6 +27,7 @@ Do the hard work to enable research on global properties of FLOSS:
 
 ## Related background reading
 
+- [Estimate impact of the code you have created](https://da2.eecs.utk.edu)
 - [About WoC](https://bitbucket.org/swsc/overview/raw/master/pubs/WoC.pdf)
 - [Overview of the Software Supply Chains](https://bitbucket.org/swsc/overview/src/master/README.md)
 - [Details on WoC storage/APIs](https://bitbucket.org/swsc/lookup/src/master/README.md)
