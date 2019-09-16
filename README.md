@@ -1,13 +1,36 @@
 # Tutorial basics for Hackathon
-## Related
 
-- [Hackathon Schedule](https://github.com/woc-hack/schedule)
+## WoC Objectives
+
+Do the hard work to enable research on global properties of FLOSS: 
+
+* Census of all FLOSS
+   - What is out there, of what kind, how much
+   - Ability to select projects/developers for natural experiments/other empirical studies 
+* Provide FLOSS-wide relationships
+   - Technical dependencies (to run applications)
+   - Tool dependencies (to build/test applications)
+   - Code migration
+   - Knowledge (and people) migration
+* Data Cleaned/Augmented/Contextualized
+   - Correction: Authors/Forks/Outliers
+   - Augmentation: Dependencies/Linking to other data sources
+   - Context: project types/expertise
+* Big Data Analytics: Map entities to all related entities efficiently
+* Timely: Targeting < 1 week old analyzable snapshot of the entire FLOSS
+* Community run
+   - Hackathon will help determine community needs
+   - [Hackathon Schedule](https://github.com/woc-hack/schedule)
+* How to participate?
+   - Hackathon registration [form](http://bit.ly/WoC-Signup)
+   - If you can not attend the hackathon but just want to try out WoC, please fill the hackathon form but indicate in the topic section is that you do not plan to attend the hackathon.
+
+## Related background reading
+
 - [About WoC](https://bitbucket.org/swsc/overview/raw/master/pubs/WoC.pdf)
 - [Overview of the Software Supply Chains](https://bitbucket.org/swsc/overview/src/master/README.md)
 - [Details on WoC storage/APIs](https://bitbucket.org/swsc/lookup/src/master/README.md)
 - [Fun Facts](https://bitbucket.org/swsc/overview/src/master/fun/README.md)
-
-## Getting started
 
 ### Set up accounts for GitHub and Bitbucket
 
@@ -28,7 +51,7 @@ home terminal. Windows users should consider
 [Git-Bash](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-windows#Git-Bash)
 or other tools.
 
-Once finished, please fill the woc hackatont registration [form](http://bit.ly/WoC-Signup)
+Once finished, please fill the woc hackathon registration [form](http://bit.ly/WoC-Signup)
 
 The form will ask you for the contents of `id_rsa.pub` and the
 GitHub and BitBucket handles. You will receive a response to the
