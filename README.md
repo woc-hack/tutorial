@@ -1,5 +1,39 @@
 # Tutorial basics for Hackathon
 
+### Before the Tutorial: Access to da server(s)
+
+To register for the hackathon/tutorial, please
+generate a public key.
+For Mac and unix users the instructions below would work, but for windows users 
+the best option is to enable [ubuntu shell]](https://winaero.com/blog/how-to-enable-ubuntu-bash-in-windows-10) [other instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10) first, then follow instructions for unix/mac. Alternatively, 
+[OpenSSH module for PowerShell](https://www.techrepublic.com/blog/10-things/how-to-generate-ssh-keys-in-openssh-for-windows-10/), or
+[Git-Bash](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-windows#Git-Bash) are other options.
+
+To generated ssh key open a terminal window and run `ssh-keygen` command. Once
+it completes it produces the `id_rsa.pub` and `id_rsa` files inside your $HOME/.ssh/ folder. 
+Type
+```
+cat ~/.ssh/id_rsa.pub
+```
+That is your public ssh key you include in the woc hackathon registration [form](http://bit.ly/WoC-Signup). The form will ask you for the contents of `id_rsa.pub` and the
+GitHub and BitBucket handles. You will receive a response to the
+email provided in the form once your account is set up.
+
+Set up your `~/.ssh/config` file so that you can login to one of the da servers without having to fully specify the server name each time:
+```
+Host *
+  ForwardAgent yes
+
+Host da0
+	Hostname da0.eecs.utk.edu
+	Port 443
+	User YourUsername
+	
+```
+YourUsername is the login name you provided on the signup form. 
+Logging in then becomes as simple as typing `ssh da0` in your terminal.
+
+
 ## WoC Objectives
 
 Do the hard work to enable research on global properties of FLOSS: 
@@ -46,35 +80,10 @@ GitHub: https://github.com/pricing
 BitBucket: https://bitbucket.org/account/signup/  
 
 
-### Gain permissions and access to da server(s)
-In order to gain access to the da servers, you will need to
-generate a public key via the `ssh-keygen` command, and put the
-`id_rsa.pub` and `id_rsa` files inside your .ssh/ folder on your
-home terminal. Windows users should consider
-[linux subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10), or
-[OpenSSH module for PowerShell](https://www.techrepublic.com/blog/10-things/how-to-generate-ssh-keys-in-openssh-for-windows-10/), or
-[Git-Bash](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-windows#Git-Bash)
-or other tools.
+### Access to da server(s)
 
-Once finished, please fill the woc hackathon registration [form](http://bit.ly/WoC-Signup)
+Log in: `ssh da0`.
 
-The form will ask you for the contents of `id_rsa.pub` and the
-GitHub and BitBucket handles. You will receive a response to the
-email provided in the form once your account is set up.
-
-Set up your `.ssh/config` file so that you can login to one of the da servers without having to fully specify the server name each time:
-```
-Host *
-  ForwardAgent yes
-
-Host da0
-	Hostname da0.eecs.utk.edu
-	Port 443
-	User YourUsername
-	
-```
-
-Logging in then becomes as simple as `ssh da0`.
 Once you are in a da server, you will have an empty directory under `/home/username` where you can store your programs and files:  
 ```
 [username@da0]~% pwd
