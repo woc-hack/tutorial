@@ -275,7 +275,7 @@ List of relationships:
 * p2a (.s)		* p2c (.s)
 ```
 
-### Exercise 5
+### Exercise 4
 
 Find all blobs associated with README file (that resides at the root of the repository)
 
@@ -284,7 +284,7 @@ Hint 1: What is the name of the map?
 Hint 1: What is the type of the key and of the value?
 
 
-## Activity 6: Investigating Technical dependencies
+## Activity 5: Investigating Technical dependencies
 
 The technical dependenciew have been extracted by parsing the content of all blobs related to 
 several different languages: and are located in `/da0_data/play/${LANG}thruMaps/`.
@@ -312,7 +312,7 @@ Lets get a list of commits and repositories that imported Tensorflow for .py fil
 
 
 
-## Activity 7: Using Python APIs from oscar.py
+## Activity 6: Using Python APIs from oscar.py
 
 Note: "/<function_name>" after a function name denotes the version of that function that returns a Generator object  
 
@@ -368,9 +368,15 @@ UNIX> python
 >>> Project('notcake_gcad').toURL()
 'https://github.com/notcake/gcad'
 ```
--------	
-## Examples of implementing applications -- Simple vs. Complex
-### Finding 1st-time imports for AI modules (Simple)
+
+### Exercise 6
+
+Get list of files modified by commit 17abdbdc90195016442a6a8dd8e38dea825292ae
+
+Hint 1: What class to use?
+
+
+## Activity 7: Finding 1st-time imports for AI modules (Simple)
 
 Given the data available, this is a fairly simple task. Making an application to detect the first time that a repo adopted an AI module would give you a better idea as to when it was first used, and also when it started to gain popularity.  
 
@@ -420,9 +426,9 @@ UNIX> python3.6 modtrends.py tensorflow.first keras.first
 The final graph looks something like this:  
 [![Tensorflow vs Keras](../ipynb_first/Tensorflow-vs-Keras.png "Tensorflow vs Keras")](https://github.com/ssc-oscar/aiframeworks/blob/master/charts/ipynb_charts/Tensorflow-vs-Keras.png)
 
--------
 
-### Detecting percentage language use and changes over time (Complex) 
+
+## Activity 8: Detecting percentage language use and changes over time (Complex) 
 
 An application to calculate this would be useful for seeing how different authors changed languages over a range of years, based on the commits they have made to different files.  
 In order to accomplish this task, we will modify an existing program from the swsc/lookup repo ([a2fBinSorted.perl](https://bitbucket.org/swsc/lookup/src/master/a2fBinSorted.perl)) and create a new program ([a2L.py](https://bitbucket.org/swsc/lookup/src/master/a2L.py)) that will get language counts per year per author.  
@@ -616,8 +622,7 @@ Ben Niemann <pink@odahoda.de>
 
 Although it is currently not implemented, one could take this one step further and visually represent an authors language changes on a graph, which would be simpler to interpret as opposed to viewing a long list of p values such as the one shown above.  
 
---------
-## Useful Python imports for applications
+## Activity 9: Useful Python imports for applications
 ### subprocess
 Simlar to the C version, system(), this module allows you to run UNIX processes, and also allows you to gather any input, output, or error from those processes, all from within a Python script. This module becomes especially useful when you are looking for specific lines out of a .s/.gz file, as opposed to reading the entire file which takes more time.  
 A good example usage for subprocess is when we read the c2bPtaPkgO$LANG.{0-31}.gz files for first-time AI module imports in popmods.py. Rather than reading one of these files in its entirety, we look for lines of the file that have a specific module we are looking for.  
@@ -647,14 +652,15 @@ Addtional re documentation can be found [here](https://docs.python.org/2/library
 ### matplotlib
 Useful graphing module for creating visual representations.  
 Extensive documentation can be found [here](https://matplotlib.org/).  
-----------
-## oscar.py vs. Perl scripts
+
+## Activity 9: a comparison of oscar.py vs. Perl scripts
+
 When it comes to creating new relationship files (.tch/.s files), using Perl over Python for large data-reading is more time-saving overall. This situation occurred in the complex application we covered where we modified an existing Perl file to get the initial commit times of each file for each author, rather than using Python to accomplish this task.  
 Before making this decision, one of our team members decided to run a test between 2 programs, [a2ft.py](https://bitbucket.org/swsc/lookup/src/master/a2ft.py) and [a2ft.perl](https://bitbucket.org/swsc/lookup/src/master/a2ft.perl). These programs were run at the same time for a period of 10 minutes. Both programs had the same task of retrieving the earliest commit times for each file under each author from a2cFullP{0-31}.s files. The Python version calls the `Commit_info().time_author` and `Commit().changed_file_names` functions from oscar.py. The Perl version ties each of the 32 c2fFullO.{0-31}.tch (Commit().changed_file_names) and c2taFullP.{0-31}.tch (Commit_info().time_author) files into 2 different Perl hashes (Python dictionary equivalent), %c2f and %c2ta. The speed difference between Perl and Python was quite surprising:  
 ```
-[dkennard@da3]/data/play/dkennard% ll a2ftFullP0TEST1.s
+[username@da3]/data/play/dkennard% ll a2ftFullP0TEST1.s
 -rw-rw-r--. 1 dkennard dkennard 980606 Jul 22 11:56 a2ftFullP0TEST1.s
-[dkennard@da3]/data/play/dkennard% ll a2ftFullPTEST2.0.tch
+[username@da3]/data/play/dkennard% ll a2ftFullPTEST2.0.tch
 -rw-r--r--. 1 dkennard dkennard 663563424 Jul 22 11:56 a2ftFullPTEST2.0.tch
 ```  
 Within this 10 minute period, the Python version only wrote 980,606 bytes of data into the TEST1 file shown above, whereas the Perl version wrote 663,563,424 bytes into the TEST2 file.  
