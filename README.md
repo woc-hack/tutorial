@@ -41,6 +41,10 @@ relevant repositories on GitHub&BitBucket).
 GitHub: https://github.com/pricing  
 BitBucket: https://bitbucket.org/account/signup/  
 
+## Tutorial Objectives
+
+Demonstrate basic functionality and potential of WoC to investigate global relationships
+in open source.  
 
 ## WoC Objectives
 
@@ -326,7 +330,7 @@ Hint 1: What is the type of the key and of the value?
 The technical dependenciew have been extracted by parsing the content of all blobs related to 
 several different languages: and are located in `/da0_data/play/${LANG}thruMaps/`.
 
-These thruMaps directories contain mappings of repositories with modules that were utilized at a given UNIX timestamp under a specific commit. The mappings are in c2bPtaPkgO{$LANG}.{0-31}.gz files.   
+These thruMaps directories contain mappings of repositories with modules that were utilized at a given UNIX timestamp under a specific commit. The mappings are in c2bPtaPkgP{$LANG}.{0-31}.gz files.   
 
 The format of each file is: 
 ```
@@ -338,7 +342,7 @@ Each thruMaps directory has a different language ($LANG) that contains modules r
 
 Lets get a list of commits and repositories that imported Tensorflow for .py files:  
 ```
-[username@da0]~% zcat /data/play/PYthruMaps/c2bPtaPkgOPY.0.gz | grep tensorflow`
+[username@da0]~% zcat /data/play/PYthruMaps/c2bPtaPkgPPY.0.gz | grep tensorflow`
 
 0000331084e1a567dbbaae4cc12935b610cd341a;abdella-mohamed_BreastCancer;1553266304;abdella <abdella.mohamed-idris-mohamed@de.sii.group>;0dd695391117e784d968c111f010cff802c0e6d1;sns;keras.models;np;random;tensorflow;os;pd;sklearn.metrics;plt;keras.layers;yaml
 00034db68f89d3d2061b763deb7f9e5f81fef27;lucaskjaero_chinese-character-recognizer;1497547797;Lucas Kjaero <lucas@lucaskjaero.com>;0629a6caa45ded5f4a2774ff7a72738460b399d4;tensorflow;preprocessing;sklearn
