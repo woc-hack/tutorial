@@ -92,7 +92,36 @@ Once you are in a da server, you will have an empty directory under `/home/usern
 [username@da0]~% 
 ```
 
-You can also login to other da servers:
+You can also login to other da servers, but first need to set up an ssh key on these systems:
+```
+[username@da0]~% ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/niravajmeri/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/niravajmeri/.ssh/id_rsa.
+Your public key has been saved in /home/niravajmeri/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:/UoJkpnx5mn8jx4BhcnQRUFfPq4qmC1MVLRJSjpYnpo niravajmeri@da0.eecs.utk.edu
+The key's randomart image is:
++---[RSA 2048]----+
+|    . o=o**.  .  |
+|   + + o*+ . o   |
+|  . = o.+   . o  |
+|   o ..* o   . . |
+|  E  .= S o   .  |
+|      .= o + .   |
+|     o += + o    |
+|      =.oo =     |
+|       . o*..    |
++----[SHA256]-----+
+```
+Once the key is generated add it to your .ssh/auhorized_keys
+```
+[username@da0]~% cat .ssh/id_rsa.pub >> .ssh/authorized_keys 
+```
+
+Now you can login to da4:
 ```
 [username@da0]~% ssh da4
 [username@da4]~% 
@@ -267,12 +296,12 @@ Keys for identifying letters:
 
 List of relationships:
 ```
-* a2c (.s)		* a2f		* a2ft		* a2p (.s)	* a2trp0 (.s)
-* b2c (.s)		* b2f (.s)
-* c2b (.s)		* c2cc		* c2f (.s)		
-* c2h			* c2pc		* c2p (.s)	* c2ta (.s)
-* f2b (.s)		* f2c (.s)		
-* p2a (.s)		* p2c (.s)
+* a2c (.s)	* a2f		* a2ft		* a2p (.s)	* a2trp0 (.s)
+* b2c (.s)	* b2f (.s)
+* c2b (.s)	* c2cc		* c2f (.s)		
+* c2h		* c2pc		* c2p (.s)	* c2ta (.s)
+* f2b (.s)	* f2c (.s)		
+* p2a (.s)	* p2c (.s)
 ```
 
 ### Exercise 4
@@ -311,7 +340,6 @@ Lets get a list of commits and repositories that imported Tensorflow for .py fil
 ```
 
 
-
 ## Activity 6: Using Python APIs from oscar.py
 
 Note: "/<function_name>" after a function name denotes the version of that function that returns a Generator object  
@@ -345,36 +373,44 @@ The non-Generator version of these functions will return a tuple of items which 
 for commit in Author(author_name).commit_shas:
 	print(commit)
 ```
-------
-* Get a list of commits made by a specific author:  
-	On da0: `UNIX> zcat /data/basemaps/gz/a2cFullP0.s | grep "Albert Krawczyk" <pro-logic@optusnet.com.au>`  
-	Output:  
+
+### Exercise 6:  Get a list of commits made by a specific author:  
+
+Install the latest oscar.py
 ```
+[username@da0]~% cd ~/oscar.py
+[username@da0]~% easy_install --user --upgrade oscar
+```
+
+As we learned before, we can do that in shell
+```
+[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP0.s | grep "Albert Krawczyk" <pro-logic@optusnet.com.au>
 "Albert Krawczyk" <pro-logic@optusnet.com.au>;17abdbdc90195016442a6a8dd8e38dea825292ae
 "Albert Krawczyk" <pro-logic@optusnet.com.au>;9cdc918bfba1010de15d0c968af8ee37c9c300ff
 "Albert Krawczyk" <pro-logic@optusnet.com.au>;d9fc680a69198300d34bc7e31bbafe36e7185c76
 ```
-* Do the same thing above using oscar.py:  
+
+Now the same thing above using oscar.py:  
 ```
-UNIX> python
+[username@da0]~% python
 >>> from oscar import Author
 >>> Author('"Albert Krawczyk" <pro-logic@optusnet.com.au>').commit_shas
 ('17abdbdc90195016442a6a8dd8e38dea825292ae', '9cdc918bfba1010de15d0c968af8ee37c9c300ff', 'd9fc680a69198300d34bc7e31bbafe36e7185c76')
 ```
-* Get the URL of a projects repository using the oscar.py `Project(...).toURL()` function:  
+
+### Exercise 7: Get the URL of a projects repository using the oscar.py `Project(...).toURL()` function:  
 ```
-UNIX> python
+[username@da0]~%  python
 >>> from oscar import Project
 >>> Project('notcake_gcad').toURL()
 'https://github.com/notcake/gcad'
 ```
 
-### Exercise 6
+### Exercise 8
 
 Get list of files modified by commit 17abdbdc90195016442a6a8dd8e38dea825292ae
 
 Hint 1: What class to use?
-
 
 ## Activity 7: Finding 1st-time imports for AI modules (Simple)
 
@@ -382,7 +418,7 @@ Given the data available, this is a fairly simple task. Making an application to
 
 A good example of this lies in [popmods.py](https://github.com/ssc-oscar/aiframeworks/blob/master/popmods.py). In this application, we can read all 32 c2bPtaPkgO$LANG.{0-31}.gz files of a given language and look for a given module with the earliest import times. The program then creates a <module_name>.first file, with each line formatted as `repo_name;UNIX_timestamp`.  
 
-Usage: `UNIX> python popmods.py language_file_extension module_name`  
+Usage: `[username@da0]~%  python popmods.py language_file_extension module_name`  
 
 Before anything else (and this can be applied to many other programs), you want to know what your input looks like ahead of time and know how you are going to parse it. Since each line of the file has this format:  
 `commit;repo_name;timestamp;author;blob;module1;module2;...`  
