@@ -87,9 +87,17 @@ Log in: `ssh da0`.
 
 Once you are in a da server, you will have an empty directory under `/home/username` where you can store your programs and files:  
 ```
-[username@da0]~% pwd
+-bash-4.2$ pwd
 /home/username
-[username@da0]~% 
+-bash-4.2$ 
+```
+
+Set up your shell:
+```
+-bash-4.2$ echo 'exec bash' >> .profile
+-bash-4.2$ echo 'export PS1="\u@\h:\w>"' >> ~/.bashrc
+-bash-4.2$ . .bashrc
+[username@da0]~%
 ```
 
 You can also login to other da servers, but first need to set up an ssh key on these systems:
