@@ -98,7 +98,7 @@ You can also login to other da servers:
 [username@da4]~% 
 ```
 
-#### Exercise
+#### Exercise 1
 
 Log in to da0 and clone two repositories that contain APIs to access WoC data
 ```
@@ -108,8 +108,11 @@ git clone https://github.com/ssc-oscar/oscar.py
 
 Log in to da4 from da0:
 ```
-ssh da4
-ls
+[username@da0]~% ssh da4
+[username@da4]~% ls
+...
+[username@da4]~% exit
+[username@da0]~%
 ```
 
 
@@ -124,7 +127,7 @@ For more examples [see full API](https://bitbucket.org/swsc/lookup/src/master/RE
 Lets look at the commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a:
 
 ```
-echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da4 ~/lookup/showCmt.perl 3
+[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da4 ~/lookup/showCmt.perl 3
 tree 464ac950171f673d1e45e2134ac9a52eca422132
 parent dddff9a89ddd7098a1625cafd3c9d1aa87474cc7
 author Warner Losh <imp@FreeBSD.org> 1092638038 +0000
@@ -137,23 +140,22 @@ duplicate messages..
 It has a tree and a parent commit and is created by Warner Losh. 
 Lets inspect the tree:
 ```
-echo 464ac950171f673d1e45e2134ac9a52eca422132 | ssh da4 ~/lookup/showTree.perl
+[username@da0]~% echo 464ac950171f673d1e45e2134ac9a52eca422132 | ssh da4 ~/lookup/showTree.perl
 100644;a8fe822f075fa3d159a203adfa40c3f59d6dd999;COPYRIGHT
 ...
 040000;6618176f9f37fa3e62f2efd953c07096f8ecf6db;usr.sbin
 ```
 
-
-
 E.g, to see diff for commit
-009d7b6da9c4419fe96ffd1fffb2ee61fa61532a
+009d7b6da9c4419fe96ffd1fffb2ee61fa61532a. It requires comparing trees fo it and its parent:
 
 ```
 [username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da4 ~/lookup/cmputeDiff2.perl 
 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_isa.c;9d5818e25865797b96e4783b00b45f800423e527;594dc8cb2ce725658377bf09aa0f127183b89f77
 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_pci.c;b3c1363c90de7823ec87004fe084f41d0f224c9b;4155935a98ba3b5d3786fa1b6d3d5aa52c6de90a
 ```
-E.g., to inspect a blob created by this commit:
+We can see it modifying two files.
+Lets inspect a blob for /sys/dev/pccbb/pccbb_isa.c created by this commit:
 ```
 [username@da0]~% echo 9d5818e25865797b96e4783b00b45f800423e527 | ssh da4 ~/lookup/showBlob.perl
 blob;29;3528;1430262688;1430262688;3528;9d5818e25865797b96e4783b00b45f800423e527
@@ -163,15 +165,72 @@ blob;29;3528;1430262688;1430262688;3528;9d5818e25865797b96e4783b00b45f800423e527
  ...
 ``` 
 
----------
-### Clone the oscar.py and swsc/lookup repos
-oscar.py link: https://github.com/ssc-oscar/oscar.py
-swsc/lookup link: https://bitbucket.org/swsc/lookup/src/master/
+### Exercise 2
 
-Run `git clone <link>` (no brackets) on a da server to get a copy of the given repository link.  
+Calculate the change made to /sys/dev/pccbb/pccbb_isa.c by commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a.
 
--------
-## Servers and folders
+Hint1: Get the old and new blob for  /sys/dev/pccbb/pccbb_isa.c
+Old blob as shown in diff is 594dc8cb2ce725658377bf09aa0f127183b89f77
+
+Hint2: Use shell redirect output '>' to save the content of each blob
+```
+[username@da0]~% echo 9d5818e25865797b96e4783b00b45f800423e527 | ssh da4 ~/lookup/showBlob.perl > new
+```
+Hint3: Use unix diff to calculate the difference
+```
+[username@da0]~% diff old new
+```
+
+## Activity 3 - investigate the maps
+
+We have author 'Warner Losh <imp@FreeBSD.org>' for the commit we have investigated. 
+Can we find what other commits Warner has made?
+```
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues.perl /da0_data/basemaps/a2cFullP s h
+Warner Losh <imp@FreeBSD.org>;0000ce4417bd8d9a2d66a7a61393558d503f2805;000109ae96e7132d90440c8fa12cb7df95a806c6;00014b72bf10ad43ca437daf388d33c4fea73df9;000171c80d0d0ab6ff22b58b922e559e51485936;000282fc6c091e1c0abdadf1f58c088fc3ed9bc9;0002d1cab0d367c074a601e28183c60657254820;000373a8c48347c3e0e30486ccf4d9b043438826;...
+
+```
+
+What are parameters s and h: 
+
+define the types of the key and values, in this case 
+s - string for author ID, h - sha1 for commit
+
+What a2cFullP means:
+* a = Author
+* b = Blob
+* c = Commit
+* f = File
+* h = Head Commit
+* p = Project
+
+FullP - means a complete extract for data version P 
+
+In addition to random lookup, the maps are also stored in flat sorted files and this format is preffered (faster) when investigating more than one million items. 
+For example, find commits by any author named Warner: 
+```
+[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP0.s | grep 'Warner'
+```
+As described below, the maps are split into 32 parts to enable parallel search. 
+
+### Exercise 3 
+
+a) Find all files modified by 'Warner Losh <imp@FreeBSD.org>'
+
+Hint 1: What is the map name?
+
+Hint 2: What is the type of the value for that map?
+
+Count all commits made by developers who share your last name
+
+Hint 1: use wc (word count), e.g., 
+```
+[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP0.s | grep 'Warner' | wc -l
+```
+Hint 2: multiply the number you got by 32
+
+
+## Activity 4: Understanding Servers and folders
 
 All home folders are on da2, so it is preferred not to do very large
 file operations to/from these folders  when running tasks on servers
@@ -182,36 +241,15 @@ folders of other users.
 Each server has /data/play folder where you can create your
 subfolders to store/process large files.
 
-
-## List of relevant directories
-
-The folder structure on any server follows the following convention:
-    - Raw blobs are located in files that are appended as new
-      objects are discovered and extracted
-      /data/All.blobs/{commit,tree,tag,blob}_Num.{idx,bin}  where
-      Num is in {0..127}
-   - Folder /fast is preferably mounted on an array of SSDs that
-     so that the data can be read in parallel, but for servers that
-     do not have SSDs, a regular disk is used. The maps (e.g.,
-     c2fFull$Ver.Num.tch are typically stored there and, as a
-     backup, on /da0_data/basemaps
-	 /fast has subfolders: All.sha1, All.sha1c, and
-     All.sha1o. All.sha1/sha1.{commit,tree,tag,blob}_Num.tch holds
-     object content offsets in the raw files stored /data/All.blobs
-     and are used to check if the object is in the database and, if
-     so, which record. All.sha1c/{commit,tree}_Num.tch maps commit
-     and tree sha1s to the object content. All.sha1o/blob_Num.tch
-     maps blob sha1 to the file ofset (and object size) that can be
-     read directly from /data/All.blobs/blob_Num.bin
-
+### List of relevant directories
 
 Not all files are stored on all servers due to limited disk sizes
 and different speed of disks. For example, blobs are stored only on
-da4. 
+da4 and da5. 
 The description below goes over what is stored on each server. 
 
-### da0 Server
-#### <relationship>.{0-31}.tch files in `/data/basemaps/`:  
+### da0/da5 Servers
+#### <relationship>.{0-31}.tch files in `/data/basemaps/` on da0 and /fast on da5:  
 (.s) signifies that there are either .s or .gz versions of these files in gz/ subfolder, which can be opened with Python gzip module or Unix zcat.  
 da0 is the only server with these .s/.gz files  
 Keys for identifying letters:   
@@ -225,41 +263,56 @@ Keys for identifying letters:
 * p = Project
 * pc = Parent Commit
 * ta = Time Author
-* trp = Torvald Path
+* trp = Torvalds Path
 
 List of relationships:
 ```
-* a2c (.s)		* a2f			* a2ft				* a2p (.s)			* a2trp0 (.s)
+* a2c (.s)		* a2f		* a2ft		* a2p (.s)	* a2trp0 (.s)
 * b2c (.s)		* b2f (.s)
-* c2b (.s)		* c2cc			* c2f (.s)		
-* c2h			* c2pc			* c2p (.s)			* c2ta (.s)
+* c2b (.s)		* c2cc		* c2f (.s)		
+* c2h			* c2pc		* c2p (.s)	* c2ta (.s)
 * f2b (.s)		* f2c (.s)		
 * p2a (.s)		* p2c (.s)
-```	
-------
-#### `/data/play/$LANGthruMaps/` on da0:
+```
 
+### Exercise 5
+
+Find all blobs associated with README file (that resides at the root of the repository)
+
+Hint 1: What is the name of the map?
+
+Hint 1: What is the type of the key and of the value?
+
+
+## Activity 6: Investigating Technical dependencies
+
+The technical dependenciew have been extracted by parsing the content of all blobs related to 
+several different languages: and are located in `/da0_data/play/${LANG}thruMaps/`.
 
 These thruMaps directories contain mappings of repositories with modules that were utilized at a given UNIX timestamp under a specific commit. The mappings are in c2bPtaPkgO{$LANG}.{0-31}.gz files.   
 
-Format: `commit;repo_name;timestamp;author;blob;module1;module2;...`  
+The format of each file is: 
+```
+commit;repo_name;timestamp;author;blob;module1;module2;...`  
+```
 
 
 Each thruMaps directory has a different language ($LANG) that contains modules relevant to that language.
 
-------
-### da3 Server
-#### .tch files in `/fast/`:  
+Lets get a list of commits and repositories that imported Tensorflow for .py files:  
+```
+[username@da0]~% zcat /data/play/PYthruMaps/c2bPtaPkgOPY.0.gz | grep tensorflow`
+
+0000331084e1a567dbbaae4cc12935b610cd341a;abdella-mohamed_BreastCancer;1553266304;abdella <abdella.mohamed-idris-mohamed@de.sii.group>;0dd695391117e784d968c111f010cff802c0e6d1;sns;keras.models;np;random;tensorflow;os;pd;sklearn.metrics;plt;keras.layers;yaml
+00034db68f89d3d2061b763deb7f9e5f81fef27;lucaskjaero_chinese-character-recognizer;1497547797;Lucas Kjaero <lucas@lucaskjaero.com>;0629a6caa45ded5f4a2774ff7a72738460b399d4;tensorflow;preprocessing;sklearn
+000045f6a3601be885b0b028011440dd5a5b89f2;yjernite_DeepCRF;1451682395;yacine <yacine.jernite@nyu.edu>;4aac89ae85b261dba185d5ee35d12f6939fc2e44;nn_defs;utils;tensorflow
+000069240776f2b94acb9420e042f5043ec869d0;tickleliu_tf_learn;1530460653;tickleliu <tickleliu@163.com>;493f0fc310765d62b03390ddd4a7a8be96c7d48c;np;tf;tensorflow
+.....
+```
 
 
-da3 contains the same files located on da0, except for b2f, c2cc, f2b, and f2c.
 
-This folder can be used for faster reading, hence the directory name.  
-
-In the context of oscar.py, the dictionary values listed in the PATHS dictionary can be changed from `/da0_data/basemaps/...` to `/fast/...` when referencing oscar.py in another program.  
-
-------
-## OSCAR functions from oscar.py
+## Activity 7: Using Python APIs from oscar.py
 
 Note: "/<function_name>" after a function name denotes the version of that function that returns a Generator object  
 
@@ -293,18 +346,6 @@ for commit in Author(author_name).commit_shas:
 	print(commit)
 ```
 ------
-## Examples of doing certain tasks
-
-* Get a list of commits and repositories that imported Tensorflow for .py files:  
-	On da0: `UNIX> zcat /data/play/PYthruMaps/c2bPtaPkgOPY.0.gz | grep tensorflow`  
-	Output: 
-```
-0000331084e1a567dbbaae4cc12935b610cd341a;abdella-mohamed_BreastCancer;1553266304;abdella <abdella.mohamed-idris-mohamed@de.sii.group>;0dd695391117e784d968c111f010cff802c0e6d1;sns;keras.models;np;random;tensorflow;os;pd;sklearn.metrics;plt;keras.layers;yaml
-00034db68f89d3d2061b763deb7f9e5f81fef27;lucaskjaero_chinese-character-recognizer;1497547797;Lucas Kjaero <lucas@lucaskjaero.com>;0629a6caa45ded5f4a2774ff7a72738460b399d4;tensorflow;preprocessing;sklearn
-000045f6a3601be885b0b028011440dd5a5b89f2;yjernite_DeepCRF;1451682395;yacine <yacine.jernite@nyu.edu>;4aac89ae85b261dba185d5ee35d12f6939fc2e44;nn_defs;utils;tensorflow
-000069240776f2b94acb9420e042f5043ec869d0;tickleliu_tf_learn;1530460653;tickleliu <tickleliu@163.com>;493f0fc310765d62b03390ddd4a7a8be96c7d48c;np;tf;tensorflow
-.....
-```
 * Get a list of commits made by a specific author:  
 	On da0: `UNIX> zcat /data/basemaps/gz/a2cFullP0.s | grep "Albert Krawczyk" <pro-logic@optusnet.com.au>`  
 	Output:  
