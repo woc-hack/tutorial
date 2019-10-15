@@ -187,33 +187,6 @@ Lets inspect the tree:
 040000;6618176f9f37fa3e62f2efd953c07096f8ecf6db;usr.sbin
 ```
 
-E.g, to see diff for commit
-009d7b6da9c4419fe96ffd1fffb2ee61fa61532a. It requires comparing trees fo it and its parent:
-
-```
-[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da4 ~/lookup/cmputeDiff2.perl 
-009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_isa.c;9d5818e25865797b96e4783b00b45f800423e527;594dc8cb2ce725658377bf09aa0f127183b89f77
-009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_pci.c;b3c1363c90de7823ec87004fe084f41d0f224c9b;4155935a98ba3b5d3786fa1b6d3d5aa52c6de90a
-```
-We can see it modifying two files.
-Lets inspect a blob for /sys/dev/pccbb/pccbb_isa.c created by this commit:
-```
-[username@da0]~% echo 9d5818e25865797b96e4783b00b45f800423e527 | ssh da4 ~/lookup/showBlob.perl
-blob;29;3528;1430262688;1430262688;3528;9d5818e25865797b96e4783b00b45f800423e527
-/*
- * Copyright (c) 2002-2004 M. Warner Losh.
- * All rights reserved.
- ...
-``` 
-
-### Exercise 2
-
-Calculate the change made to /sys/dev/pccbb/pccbb_isa.c by commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a.
-
-Hint1: Get the old and new blob for  /sys/dev/pccbb/pccbb_isa.c
-Old blob as shown in diff is 594dc8cb2ce725658377bf09aa0f127183b89f77
-
-Hint2: Use shell redirect output '>' to save the content of each blob
 ```
 [username@da0]~% echo 9d5818e25865797b96e4783b00b45f800423e527 | ssh da4 ~/lookup/showBlob.perl > new
 ```
@@ -265,9 +238,11 @@ Hint 2: What is the type of the value for that map?
 Count all commits made by developers who share your last name
 
 Hint 1: use wc (word count), e.g., 
+
 ```
 [username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP0.s | grep 'Warner' | wc -l
 ```
+
 Hint 2: multiply the number you got by 32
 
 
@@ -705,22 +680,27 @@ Extensive documentation can be found [here](https://matplotlib.org/).
 
 When it comes to creating new relationship files (.tch/.s files), using Perl over Python for large data-reading is more time-saving overall. This situation occurred in the complex application we covered where we modified an existing Perl file to get the initial commit times of each file for each author, rather than using Python to accomplish this task.  
 Before making this decision, one of our team members decided to run a test between 2 programs, [a2ft.py](https://bitbucket.org/swsc/lookup/src/master/a2ft.py) and [a2ft.perl](https://bitbucket.org/swsc/lookup/src/master/a2ft.perl). These programs were run at the same time for a period of 10 minutes. Both programs had the same task of retrieving the earliest commit times for each file under each author from a2cFullP{0-31}.s files. The Python version calls the `Commit_info().time_author` and `Commit().changed_file_names` functions from oscar.py. The Perl version ties each of the 32 c2fFullO.{0-31}.tch (Commit().changed_file_names) and c2taFullP.{0-31}.tch (Commit_info().time_author) files into 2 different Perl hashes (Python dictionary equivalent), %c2f and %c2ta. The speed difference between Perl and Python was quite surprising:  
+
 ```
 [username@da3]/data/play/dkennard% ll a2ftFullP0TEST1.s
 -rw-rw-r--. 1 dkennard dkennard 980606 Jul 22 11:56 a2ftFullP0TEST1.s
 [username@da3]/data/play/dkennard% ll a2ftFullPTEST2.0.tch
 -rw-r--r--. 1 dkennard dkennard 663563424 Jul 22 11:56 a2ftFullPTEST2.0.tch
 ```  
+
 Within this 10 minute period, the Python version only wrote 980,606 bytes of data into the TEST1 file shown above, whereas the Perl version wrote 663,563,424 bytes into the TEST2 file.  
 The main reason oscar.py is slower, in theory, is because oscar.py has more private function calls that it has to perform in order to calculate the key (0-31) and locate where the requested information is stored. Upon further inspection of the [oscar.py](https://github.com/ssc-oscar/oscar.py/blob/master/oscar.py) functions that are called, we can see that there are between 6-7 function calls for each lookup. All of these function calls cause function overhead and thus increase the amount of time to retrieve data for multiple entities.  
 In the Perl version of a2ft, the program simply calls `segB()`, which calculates the key of where the information is stored. The function takes a string and the number 32 as arguments (ex. segB(commit_sha, 32)):   
+
 ```
 sub segB {
 	my ($s, $n) = @_;
 	return (unpack "C", substr ($s, 0, 1))%$n;
 }
 ```  
+
 Because the %c2f and %c2ta Perl hashes are tied to their respective .tch files, we can then check if a specific commit in a specific number section is defined:  
+
 ```
 for my $c (@cs){	#where cs is a list of commits for an author and c is one of those commits
 	my $sec =  segB ($c, $sections);
@@ -730,4 +710,37 @@ for my $c (@cs){	#where cs is a list of commits for an author and c is one of th
 	...
 }
 ```
+
 This is not to say that oscar.py is inefficient and should not be utilized, but it is not the optimal solution for creating new .tch or .s relationship files. oscar.py solely provides a Python interface for gathering requested data out of the respective .tch files and not for mass-reading all 32 files. It also provides simple function calls that were mentioned earlier in the tutorial for retrieving bits of information at a time in a more convenient way.
+
+
+## Plumbing of WoC
+
+We can seee a diff for commit
+009d7b6da9c4419fe96ffd1fffb2ee61fa61532a. It requires comparing trees fo it and its parent:
+
+```
+[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da4 ~/lookup/cmputeDiff2.perl 
+009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_isa.c;9d5818e25865797b96e4783b00b45f800423e527;594dc8cb2ce725658377bf09aa0f127183b89f77
+009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_pci.c;b3c1363c90de7823ec87004fe084f41d0f224c9b;4155935a98ba3b5d3786fa1b6d3d5aa52c6de90a
+```
+We can see it modifying two files.
+Lets inspect a blob for /sys/dev/pccbb/pccbb_isa.c created by this commit:
+```
+[username@da0]~% echo 9d5818e25865797b96e4783b00b45f800423e527 | ssh da4 ~/lookup/showBlob.perl
+blob;29;3528;1430262688;1430262688;3528;9d5818e25865797b96e4783b00b45f800423e527
+/*
+ * Copyright (c) 2002-2004 M. Warner Losh.
+ * All rights reserved.
+ ...
+``` 
+
+### Exercise 2
+
+Calculate the change made to /sys/dev/pccbb/pccbb_isa.c by commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a.
+
+Hint1: Get the old and new blob for  /sys/dev/pccbb/pccbb_isa.c
+Old blob as shown in diff is 594dc8cb2ce725658377bf09aa0f127183b89f77
+
+Hint2: Use shell redirect output '>' to save the content of each blob
+```
