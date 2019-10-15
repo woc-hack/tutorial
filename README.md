@@ -33,6 +33,14 @@ Host da0
 YourUsername is the login name you provided on the signup form. 
 Logging in then becomes as simple as typing `ssh da0` in your terminal.
 
+### Set up accounts for GitHub and Bitbucket
+
+If you dont have these already, please setup an account on both
+GitHub and Bitbucket (they will be needed to invite you to the
+relevant repositories on GitHub&BitBucket).
+GitHub: https://github.com/pricing  
+BitBucket: https://bitbucket.org/account/signup/  
+
 
 ## WoC Objectives
 
@@ -59,7 +67,8 @@ Do the hard work to enable research on global properties of FLOSS:
    - Hackathon registration [form](http://bit.ly/WoC-Signup)
    - If you can not attend the hackathon but just want to try out WoC, please fill the hackathon form but indicate in the topic section is that you do not plan to attend the hackathon.
 
-## What WoC Prototype contains:
+## What WoC Prototype contains
+
 ![Workflow](https://github.com/woc-hack/tutorial/blob/master/Database-workflow.png)
 ![Content: Commits., trees, blobs, projects, authors](https://github.com/woc-hack/tutorial/blob/master/Database.png)
 
@@ -71,16 +80,8 @@ Do the hard work to enable research on global properties of FLOSS:
 - [Details on WoC storage/APIs](https://bitbucket.org/swsc/lookup/src/master/README.md)
 - [Fun Facts](https://bitbucket.org/swsc/overview/src/master/fun/README.md)
 
-### Set up accounts for GitHub and Bitbucket
 
-If you dont have these already, please setup an account on both
-GitHub and Bitbucket (they will be needed to invite you to the
-relevant repositories on GitHub&BitBucket).
-GitHub: https://github.com/pricing  
-BitBucket: https://bitbucket.org/account/signup/  
-
-
-### Access to da server(s)
+## Activity 1: Access to da server(s)
 
 Log in: `ssh da0`.
 
@@ -97,9 +98,56 @@ You can also login to other da servers:
 [username@da4]~% 
 ```
 
-This might be useful to accsess conent of the vobs, to calculate the
-diff produced by a commit, etc. For more examples [see full API](https://bitbucket.org/swsc/lookup/src/master/README.md). E.g, to see diff for commit
+#### Exercise
+
+Log in to da0 and clone two repositories that contain APIs to access WoC data
+```
+git clone http://bitbucket.org/swsc/lookup
+git clone https://github.com/ssc-oscar/oscar.py
+```
+
+Log in to da4 from da0:
+```
+ssh da4
+ls
+```
+
+
+## Activity 2: Shell APIs - Basic Operations
+
+
+Shell APIs might be useful to accsess content of the commit, trees, blobs, 
+to calculate the diff produced by a commit, etc. 
+
+For more examples [see full API](https://bitbucket.org/swsc/lookup/src/master/README.md). 
+
+Lets look at the commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a:
+
+```
+echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da4 ~/lookup/showCmt.perl 3
+tree 464ac950171f673d1e45e2134ac9a52eca422132
+parent dddff9a89ddd7098a1625cafd3c9d1aa87474cc7
+author Warner Losh <imp@FreeBSD.org> 1092638038 +0000
+committer Warner Losh <imp@FreeBSD.org> 1092638038 +0000
+
+Don't need to declare cbb module.  don't know why I never saw
+duplicate messages..
+```
+
+It has a tree and a parent commit and is created by Warner Losh. 
+Lets inspect the tree:
+```
+echo 464ac950171f673d1e45e2134ac9a52eca422132 | ssh da4 ~/lookup/showTree.perl
+100644;a8fe822f075fa3d159a203adfa40c3f59d6dd999;COPYRIGHT
+...
+040000;6618176f9f37fa3e62f2efd953c07096f8ecf6db;usr.sbin
+```
+
+
+
+E.g, to see diff for commit
 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a
+
 ```
 [username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da4 ~/lookup/cmputeDiff2.perl 
 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_isa.c;9d5818e25865797b96e4783b00b45f800423e527;594dc8cb2ce725658377bf09aa0f127183b89f77
