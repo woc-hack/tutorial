@@ -1,4 +1,4 @@
-# Tutorial basics for Hackathon
+# Tutorial: basics for the Hackathon
 
 ### Before the Tutorial: Access to da server(s)
 
