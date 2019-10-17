@@ -1,5 +1,9 @@
 # Tutorial: basics for the Hackathon
 
+
+[Recording of the tutorial conducted on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
+
+
 ### Before the Tutorial: Access to da server(s)
 
 To register for the hackathon/tutorial, please
