@@ -180,8 +180,8 @@ Don't need to declare cbb module.  don't know why I never saw
 duplicate messages..
 ```
 
-It has a tree and a parent commit and is created by Warner Losh. 
-Lets inspect the tree:
+This commit has a tree and a parent commit and is created by 'Warner Losh <imp@FreeBSD.org>'. 
+Lets inspect the tree (the root folder of the project):
 ```
 [username@da0]~% echo 464ac950171f673d1e45e2134ac9a52eca422132 | ssh da4 ~/lookup/showTree.perl
 100644;a8fe822f075fa3d159a203adfa40c3f59d6dd999;COPYRIGHT
@@ -189,7 +189,7 @@ Lets inspect the tree:
 040000;6618176f9f37fa3e62f2efd953c07096f8ecf6db;usr.sbin
 ```
 
-We can also inspect the first element: blob representing COPYRIGHT
+We may also want inspect the first element in the tree: blob representing file COPYRIGHT
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ssh da4 ~/lookup/showBlob.perl 
 blob;40;2999;66321199427;66321199427;2999;a8fe822f075fa3d159a203adfa40c3f59d6dd999
@@ -198,31 +198,40 @@ blob;40;2999;66321199427;66321199427;2999;a8fe822f075fa3d159a203adfa40c3f59d6dd9
 ...
 ```
 
+# Exercise 2
+
+Determine the author of the parent commit for commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a
+
+Hint 1: parent commit is listed in the content of commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a above
+
+
 ## Activity 3 - Investigate the maps
 
-We see the content of the copyright file above. Such files are copied verbatim a lot. Lets see the first author who have created it (irrespective of a repository):
+We see the content of the copyright file above. Such files are often copied verbatim. Lets determine the first author who have created it (irrespective of a repository).
+WoC has created this relationship and stored in b2a (Blob to Author) map:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues.perl /da0_data/basemaps/b2aFullP
 a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@ccf9f872-aa2e-dd11-9fc8-001c23d0bc1f>;00a8f599c25ded714d2a4da9e1bb30e2a335181c
 ```
-By looking at the b2a map it turns out that it was created by commit 00a8f599c25ded714d2a4da9e1bb30e2a335181c done by what appears to be the same author on unix second 1072910122.
+It turns out that it was created by commit 00a8f599c25ded714d2a4da9e1bb30e2a335181c done by what appears to be the same author on unix second 1072910122.
 
-What is b2aFullP?
+What is b2aFullP? The letters signify what keys (b - Blob) and values (a - author) means. These are key objects: 
 * a = Author
 * b = Blob
 * c = Commit
 * f = File
 * p = Project
 
-it maps b (Blob) to a (Author) an we use the map for a complete database (Full) version P. 
+FullP means it is a complete database (Full) version P. 
 
 
-We may also ask if this file has been widely copied?
+We may also ask if this blob has been widely copied as would be expected for copyright files:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues.perl /da0_data/basemaps/b2cFullP
 a8fe822f075fa3d159a203adfa40c3f59d6dd999;00729b406d8d3cfeeeda61c4586dcfd9f9399f4a;00a8f599c25ded714d2a4da9e1bb30e2a335181c;...
 ```
-b2c (blob to commit) shows the numerous commits that introduced that blob in all the repositories. We can use commit to project map to identify all associated projects:
+b2c (blob to commit) shows the numerous commits that introduced that blob in all repositories. We can further use commit to project map (c2p)
+to identify all associated projects:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  \
 ~/lookup/getValues.perl /da0_data/basemaps/b2cFullP | \
@@ -234,10 +243,10 @@ bu7cher_freebsd
 denghuancong_freebsd
 ...
 ```
-In fact there are 1072 repositories where this blob resides.
+In fact there are 1072 distinct repositories where this blob appears.
 
 Finally, we have the author 'Warner Losh <imp@FreeBSD.org>' for the commit we have investigated. 
-Can we find what other commits Warner has made?
+Can we find what other commits Warner has made?:
 ```
 [username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues.perl /da0_data/basemaps/a2cFullP
 Warner Losh <imp@FreeBSD.org>;0000ce4417bd8d9a2d66a7a61393558d503f2805;000109ae96e7132d90440c8fa12cb7df95a806c6;00014b72bf10ad43ca437daf388d33c4fea73df9;000171c80d0d0ab6ff22b58b922e559e51485936;000282fc6c091e1c0abdadf1f58c088fc3ed9bc9;0002d1cab0d367c074a601e28183c60657254820;000373a8c48347c3e0e30486ccf4d9b043438826;...
@@ -249,7 +258,8 @@ For example, find commits by any author named Warner:
 ```
 [username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP0.s | grep 'Warner'
 ```
-As described below, the maps are split into 32 parts to enable parallel search. 
+As described below, the maps are split into 32 parts to enable parallel search.
+
 
 ### Exercise 3
 
@@ -260,21 +270,20 @@ Hint 1: What is the map name?
 Hint 2: What is the type of the value for that map?
 
 
-Count all commits made by developers who share your last name
+Find all commits  developers who have your last and your first name:
 
 Hint 1: use wc (word count), e.g., 
 
 ```
-[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP0.s | grep 'Warner' | wc -l
+[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP*.s | grep -i 'audris' | grep -i 'mockus' | wc -l
 ```
 
-Hint 2: multiply the number you got by 32
 
 ## Activity 4: Using Python APIs from oscar.py
 
 Note: "/<function_name>" after a function name denotes the version of that function that returns a Generator object  
 
-These are corresponding functions in oscar.py that open the .tch files listed above for a given entity:
+These are corresponding functions in oscar.py that open the .tch files listed below for a given entity:
 
 1. `Author('...')`  - initialized with a combination of name and email
 	* `.commit_shas/commits`
@@ -304,7 +313,7 @@ for commit in Author(author_name).commit_shas:
 	print(commit)
 ```
 
-### Exercise 4:  Get a list of commits made by a specific author:  
+### Exercise 4a:  Get a list of commits made by a specific author:  
 
 Install the latest oscar.py
 ```
@@ -320,7 +329,7 @@ As we learned before, we can do that in shell
 "Albert Krawczyk" <pro-logic@optusnet.com.au>;d9fc680a69198300d34bc7e31bbafe36e7185c76
 ```
 
-Now the same thing above using oscar.py:  
+Now the same thing can be done using oscar.py:  
 ```
 [username@da0]~% python
 >>> from oscar import Author
@@ -328,7 +337,7 @@ Now the same thing above using oscar.py:
 ('17abdbdc90195016442a6a8dd8e38dea825292ae', '9cdc918bfba1010de15d0c968af8ee37c9c300ff', 'd9fc680a69198300d34bc7e31bbafe36e7185c76')
 ```
 
-### Exercise 5: Get the URL of a projects repository using the oscar.py `Project(...).toURL()` function:  
+### Exercise 4b: Get the URL of a projects repository using the oscar.py `Project(...).toURL()` function:  
 ```
 [username@da0]~%  python
 >>> from oscar import Project
@@ -336,14 +345,14 @@ Now the same thing above using oscar.py:
 'https://github.com/notcake/gcad'
 ```
 
-### Exercise 5
+### Exercise 4c
 
 Get list of files modified by commit 17abdbdc90195016442a6a8dd8e38dea825292ae
 
 Hint 1: What class to use?
 
 
-## Activity 6: Understanding Servers and folders
+## Activity 5: Understanding Servers and folders
 
 All home folders are on da2, so it is preferred not to do very large
 file operations to/from these folders  when running tasks on servers
@@ -388,7 +397,7 @@ List of relationships:
 * p2a (.s)	* p2c (.s)
 ```
 
-### Exercise 6
+### Exercise 5
 
 Find all blobs associated with Julia language files (extension .jl) 
 
@@ -397,7 +406,7 @@ Hint 1: What is the name of the map?
 Hint 1: What is the type of the key and of the value?
 
 
-## Activity 7: Investigating Technical dependencies
+## Activity 6: Investigating Technical dependencies
 
 The technical dependenciew have been extracted by parsing the content of all blobs related to 
 several different languages: and are located in `/da0_data/play/${LANG}thruMaps/`.
@@ -423,7 +432,26 @@ Lets get a list of commits and repositories that imported Tensorflow for .py fil
 .....
 ```
 
-## Activity Summary
+### Exercise 6
+
+Find all repositories using Julia language that import package 'StaticArrays'
+
+
+Hint 1: What file to look for?
+```
+zcat /da0_data/play/jlthruMaps/c2bptaPkgOjl.*.gz | grep StaticArrays
+```
+
+
+Hint 2: What field contains the repository name?
+```
+zcat /da0_data/play/jlthruMaps/c2bptaPkgOjl.*.gz | grep StaticArrays | cut -d\; -f2 | sort -u
+```
+
+## Activity 7: Suggested by the audiance
+
+
+## Activity 8: Summary of the activities undertaken
 
 * Shell API (faster) and Python API (also Perl API not illustrated) for random access
 
@@ -431,7 +459,17 @@ Lets get a list of commits and repositories that imported Tensorflow for .py fil
 
 * Key-Value maps to link authors, commits, files, projects, and blobs
 
+* Overview of naming conventions server/data/databases
+
 * Soon to debut:  mongodb tables with the summary information about authors and projects to enable selection of subsets for later analysis: (e.g, I want authors with at least 100 commits who worked no less than three years and participated in at least five java projects.)
+
+### Summary exercise
+
+* What type of usability improvements are needed?
+
+* What types of tasks would you like to work during the hackathon?
+
+* What would make you a long-time user of WoC?
 
 
 ## Self paced part of the tutorial
@@ -439,7 +477,7 @@ Lets get a list of commits and repositories that imported Tensorflow for .py fil
 The remainig activities are provided to illustrate various realistic 
 tasks. 
 
-## Activity 8: Finding 1st-time imports for AI modules (Simple)
+## Activity S0: Finding 1st-time imports for AI modules (Simple)
 
 Given the data available, this is a fairly simple task. Making an application to detect the first time that a repo adopted an AI module would give you a better idea as to when it was first used, and also when it started to gain popularity.  
 
@@ -491,7 +529,7 @@ The final graph looks something like this:
 
 
 
-## Activity 9: Detecting percentage language use and changes over time (Complex) 
+## Activity S1: Detecting percentage language use and changes over time (Complex) 
 
 An application to calculate this would be useful for seeing how different authors changed languages over a range of years, based on the commits they have made to different files.  
 In order to accomplish this task, we will modify an existing program from the swsc/lookup repo ([a2fBinSorted.perl](https://bitbucket.org/swsc/lookup/src/master/a2fBinSorted.perl)) and create a new program ([a2L.py](https://bitbucket.org/swsc/lookup/src/master/a2L.py)) that will get language counts per year per author.  
@@ -685,7 +723,7 @@ Ben Niemann <pink@odahoda.de>
 
 Although it is currently not implemented, one could take this one step further and visually represent an authors language changes on a graph, which would be simpler to interpret as opposed to viewing a long list of p values such as the one shown above.  
 
-## Activity 10: Useful Python imports for applications
+## Activity S2: Useful Python imports for applications
 ### subprocess
 Simlar to the C version, system(), this module allows you to run UNIX processes, and also allows you to gather any input, output, or error from those processes, all from within a Python script. This module becomes especially useful when you are looking for specific lines out of a .s/.gz file, as opposed to reading the entire file which takes more time.  
 A good example usage for subprocess is when we read the c2bPtaPkgO$LANG.{0-31}.gz files for first-time AI module imports in popmods.py. Rather than reading one of these files in its entirety, we look for lines of the file that have a specific module we are looking for.  
@@ -716,7 +754,7 @@ Addtional re documentation can be found [here](https://docs.python.org/2/library
 Useful graphing module for creating visual representations.  
 Extensive documentation can be found [here](https://matplotlib.org/).  
 
-## Activity 11: a comparison of oscar.py vs. Perl scripts
+## Activity S3: a comparison of oscar.py vs. Perl scripts
 
 When it comes to creating new relationship files (.tch/.s files), using Perl over Python for large data-reading is more time-saving overall. This situation occurred in the complex application we covered where we modified an existing Perl file to get the initial commit times of each file for each author, rather than using Python to accomplish this task.  
 Before making this decision, one of our team members decided to run a test between 2 programs, [a2ft.py](https://bitbucket.org/swsc/lookup/src/master/a2ft.py) and [a2ft.perl](https://bitbucket.org/swsc/lookup/src/master/a2ft.perl). These programs were run at the same time for a period of 10 minutes. Both programs had the same task of retrieving the earliest commit times for each file under each author from a2cFullP{0-31}.s files. The Python version calls the `Commit_info().time_author` and `Commit().changed_file_names` functions from oscar.py. The Perl version ties each of the 32 c2fFullO.{0-31}.tch (Commit().changed_file_names) and c2taFullP.{0-31}.tch (Commit_info().time_author) files into 2 different Perl hashes (Python dictionary equivalent), %c2f and %c2ta. The speed difference between Perl and Python was quite surprising:  
@@ -754,7 +792,7 @@ for my $c (@cs){	#where cs is a list of commits for an author and c is one of th
 This is not to say that oscar.py is inefficient and should not be utilized, but it is not the optimal solution for creating new .tch or .s relationship files. oscar.py solely provides a Python interface for gathering requested data out of the respective .tch files and not for mass-reading all 32 files. It also provides simple function calls that were mentioned earlier in the tutorial for retrieving bits of information at a time in a more convenient way.
 
 
-## Activity 11: Plumbing of WoC
+## Activity S4: Plumbing of WoC
 
 We can obtain a diff for any commit. It requires comparing trees fo it and its parent:
 
