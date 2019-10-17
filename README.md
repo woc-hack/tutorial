@@ -267,8 +267,10 @@ a) Find all files modified by 'Warner Losh <imp@FreeBSD.org>'
 
 Hint 1: What is the map name?
 
-Hint 2: What is the type of the value for that map?
-
+Author to File or a2f
+```
+echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues.perl /da0_data/basemaps/a2fFullP 
+```
 
 Find all commits  developers who have your last and your first name:
 
@@ -331,7 +333,8 @@ As we learned before, we can do that in shell
 
 Now the same thing can be done using oscar.py:  
 ```
-[username@da0]~% python
+[username@da0]~% cd oscar.py
+[username@da0:oscar.py]~% python
 >>> from oscar import Author
 >>> Author('"Albert Krawczyk" <pro-logic@optusnet.com.au>').commit_shas
 ('17abdbdc90195016442a6a8dd8e38dea825292ae', '9cdc918bfba1010de15d0c968af8ee37c9c300ff', 'd9fc680a69198300d34bc7e31bbafe36e7185c76')
@@ -339,7 +342,7 @@ Now the same thing can be done using oscar.py:
 
 ### Exercise 4b: Get the URL of a projects repository using the oscar.py `Project(...).toURL()` function:  
 ```
-[username@da0]~%  python
+[username@da0:oscar.py]~%  python
 >>> from oscar import Project
 >>> Project('notcake_gcad').toURL()
 'https://github.com/notcake/gcad'
@@ -350,7 +353,12 @@ Now the same thing can be done using oscar.py:
 Get list of files modified by commit 17abdbdc90195016442a6a8dd8e38dea825292ae
 
 Hint 1: What class to use?
-
+Commit
+```
+[username@da0:oscar.py]~%  python
+>>> from oscar import Commit
+>>> Commit('17abdbdc90195016442a6a8dd8e38dea825292ae').changed_file_names
+```
 
 ## Activity 5: Understanding Servers and folders
 
@@ -403,8 +411,9 @@ Find all blobs associated with Julia language files (extension .jl)
 
 Hint 1: What is the name of the map?
 
-Hint 1: What is the type of the key and of the value?
-
+```
+[username@da0] zcat /da0_data/basemaps/gz/f2bFullP*.s | grep '\.jl;'
+```
 
 ## Activity 6: Investigating Technical dependencies
 
@@ -439,17 +448,29 @@ Find all repositories using Julia language that import package 'StaticArrays'
 
 Hint 1: What file to look for?
 ```
-zcat /da0_data/play/jlthruMaps/c2bptaPkgOjl.*.gz | grep StaticArrays
+[username@da0]~% zcat /da0_data/play/jlthruMaps/c2bptaPkgOjl.*.gz | grep StaticArrays
 ```
-
 
 Hint 2: What field contains the repository name?
 ```
-zcat /da0_data/play/jlthruMaps/c2bptaPkgOjl.*.gz | grep StaticArrays | cut -d\; -f2 | sort -u
+[username@da0]~% zcat /da0_data/play/jlthruMaps/c2bptaPkgOjl.*.gz | grep StaticArrays | cut -d\; -f2 | sort -u
 ```
 
 ## Activity 7: Suggested by the audiance
 
+Find all projects that have commits mentioning "sql injection"
+
+List of commits is on da4:/data/All.blobs/
+Lets login to da4, create a data folder to store temporary data on the same server
+"/data/play/username", and uce pcommit to project map to get the list of projects.
+
+```
+[username@da0]~% ssh da4
+[username@da4]~% mkdir /data/play/audris
+[username@da4]~% cd /data/play/audris
+[username@da4:/data/play/audris]~% cut -d\; -f4 commit_*.idx | ~/lookup/showCmt.perl 2 | grep -i 'sql injection' > 
+[username@da4:/data/play/audris]~% cut -d\; -f1 sql_inject | ~/lookup/getValues.perl /da0_data/basemaps/c2pFullP > sql_inject.c2p
+```
 
 ## Activity 8: Summary of the activities undertaken
 
