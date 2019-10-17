@@ -43,7 +43,9 @@ BitBucket: https://bitbucket.org/account/signup/
 
 ## Tutorial Objectives
 
-Demonstrate basic functionality and potential of WoC to investigate global relationships
+Prepare for the hackathon, make sure connections work, 
+get familiar with the basic functionality, and potential of WoC, 
+start thinking on how to investigate global relationships
 in open source.  
 
 ## WoC Objectives
@@ -187,38 +189,50 @@ Lets inspect the tree:
 040000;6618176f9f37fa3e62f2efd953c07096f8ecf6db;usr.sbin
 ```
 
+We can also inspect the first element: blob representing COPYRIGHT
 ```
-[username@da0]~% echo 9d5818e25865797b96e4783b00b45f800423e527 | ssh da4 ~/lookup/showBlob.perl > new
-```
-Hint3: Use unix diff to calculate the difference
-```
-[username@da0]~% diff old new
-```
-
-## Activity 3 - investigate the maps
-
-We have author 'Warner Losh <imp@FreeBSD.org>' for the commit we have investigated. 
-Can we find what other commits Warner has made?
-```
-[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues.perl /da0_data/basemaps/a2cFullP s h
-Warner Losh <imp@FreeBSD.org>;0000ce4417bd8d9a2d66a7a61393558d503f2805;000109ae96e7132d90440c8fa12cb7df95a806c6;00014b72bf10ad43ca437daf388d33c4fea73df9;000171c80d0d0ab6ff22b58b922e559e51485936;000282fc6c091e1c0abdadf1f58c088fc3ed9bc9;0002d1cab0d367c074a601e28183c60657254820;000373a8c48347c3e0e30486ccf4d9b043438826;...
-
+[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ssh da4 ~/lookup/showBlob.perl 
+blob;40;2999;66321199427;66321199427;2999;a8fe822f075fa3d159a203adfa40c3f59d6dd999
+# $FreeBSD$
+#  @(#)COPYRIGHT  8.2 (Berkeley) 3/21/94
+...
 ```
 
-What are parameters s and h: 
 
-define the types of the key and values, in this case 
-s - string for author ID, h - sha1 for commit
+## Activity 3 - Investigate the maps
 
-What a2cFullP means:
+We see the copyright file above. Such files are copied verbatim a lot, lets see the first author to have created it:
+```
+echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues.perl /da0_data/basemaps/b2aFullP
+a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@ccf9f872-aa2e-dd11-9fc8-001c23d0bc1f>;00a8f599c25ded714d2a4da9e1bb30e2a335181c
+```
+By looking at the b2a map it turns ot it was created by commit 00a8f599c25ded714d2a4da9e1bb30e2a335181c done by the same author on unix second 1072910122.
+
+What is b2aFullP?
 * a = Author
 * b = Blob
 * c = Commit
 * f = File
-* h = Head Commit
 * p = Project
 
-FullP - means a complete extract for data version P 
+it maps b (Blob) to a (Author) an we use complete database (Full) version P. 
+
+
+Has this file been widely copied?
+```
+echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues.perl /da0_data/basemaps/b2cFullP
+a8fe822f075fa3d159a203adfa40c3f59d6dd999;00729b406d8d3cfeeeda61c4586dcfd9f9399f4a;00a8f599c25ded714d2a4da9e1bb30e2a335181c;...
+```
+b2c (blob to commit) shows the numerous commits that introduced that blob in all the repositories. 
+
+
+We have the author 'Warner Losh <imp@FreeBSD.org>' for the commit we have investigated. 
+Can we find what other commits Warner has made?
+```
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues.perl /da0_data/basemaps/a2cFullP
+Warner Losh <imp@FreeBSD.org>;0000ce4417bd8d9a2d66a7a61393558d503f2805;000109ae96e7132d90440c8fa12cb7df95a806c6;00014b72bf10ad43ca437daf388d33c4fea73df9;000171c80d0d0ab6ff22b58b922e559e51485936;000282fc6c091e1c0abdadf1f58c088fc3ed9bc9;0002d1cab0d367c074a601e28183c60657254820;000373a8c48347c3e0e30486ccf4d9b043438826;...
+
+```
 
 In addition to random lookup, the maps are also stored in flat sorted files and this format is preffered (faster) when investigating more than one million items. 
 For example, find commits by any author named Warner: 
@@ -234,6 +248,8 @@ a) Find all files modified by 'Warner Losh <imp@FreeBSD.org>'
 Hint 1: What is the map name?
 
 Hint 2: What is the type of the value for that map?
+
+
 
 Count all commits made by developers who share your last name
 
@@ -725,22 +741,17 @@ We can seee a diff for commit
 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_pci.c;b3c1363c90de7823ec87004fe084f41d0f224c9b;4155935a98ba3b5d3786fa1b6d3d5aa52c6de90a
 ```
 We can see it modifying two files.
-Lets inspect a blob for /sys/dev/pccbb/pccbb_isa.c created by this commit:
-```
-[username@da0]~% echo 9d5818e25865797b96e4783b00b45f800423e527 | ssh da4 ~/lookup/showBlob.perl
-blob;29;3528;1430262688;1430262688;3528;9d5818e25865797b96e4783b00b45f800423e527
-/*
- * Copyright (c) 2002-2004 M. Warner Losh.
- * All rights reserved.
- ...
-``` 
 
-### Exercise 2
+### Exercise
 
 Calculate the change made to /sys/dev/pccbb/pccbb_isa.c by commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a.
 
 Hint1: Get the old and new blob for  /sys/dev/pccbb/pccbb_isa.c
-Old blob as shown in diff is 594dc8cb2ce725658377bf09aa0f127183b89f77
 
 Hint2: Use shell redirect output '>' to save the content of each blob
+
+Hint3: Use unix diff to calculate the difference
 ```
+[username@da0]~% diff old new
+```
+
