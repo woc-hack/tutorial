@@ -174,7 +174,7 @@ For more examples [see full API](https://bitbucket.org/swsc/lookup/src/master/RE
 Lets look at the commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a:
 
 ```
-[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da4 ~/lookup/showCmt.perl 3
+[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ~/lookup/showCnt commit
 tree 464ac950171f673d1e45e2134ac9a52eca422132
 parent dddff9a89ddd7098a1625cafd3c9d1aa87474cc7
 author Warner Losh <imp@FreeBSD.org> 1092638038 +0000
@@ -187,7 +187,7 @@ duplicate messages..
 This commit has a tree and a parent commit and is created by 'Warner Losh <imp@FreeBSD.org>'. 
 Lets inspect the tree (the root folder of the project):
 ```
-[username@da0]~% echo 464ac950171f673d1e45e2134ac9a52eca422132 | ssh da4 ~/lookup/showTree.perl
+[username@da0]~% echo 464ac950171f673d1e45e2134ac9a52eca422132 | ~/lookup/showCnt tree
 100644;a8fe822f075fa3d159a203adfa40c3f59d6dd999;COPYRIGHT
 ...
 040000;6618176f9f37fa3e62f2efd953c07096f8ecf6db;usr.sbin
@@ -195,52 +195,52 @@ Lets inspect the tree (the root folder of the project):
 
 We may also want inspect the first element in the tree: blob representing file COPYRIGHT
 ```
-[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ssh da4 ~/lookup/showBlob.perl 
+[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob
 blob;40;2999;66321199427;66321199427;2999;a8fe822f075fa3d159a203adfa40c3f59d6dd999
 # $FreeBSD$
 #  @(#)COPYRIGHT  8.2 (Berkeley) 3/21/94
 ...
 ```
 
-# Exercise 2
+### Exercise 2
 
 Determine the author of the parent commit for commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a
 
 Hint 1: parent commit is listed in the content of commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a above
-
+```
+echo dddff9a89ddd7098a1625cafd3c9d1aa87474cc7 | ~/lookup/showCnt commit
+```
 
 ## Activity 3 - Investigate the maps
 
 We see the content of the copyright file above. Such files are often copied verbatim. Lets determine the first author who have created it (irrespective of a repository).
 WoC has created this relationship and stored in b2a (Blob to Author) map:
 ```
-[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues.perl /da0_data/basemaps/b2aFullP
+[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2a
 a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@ccf9f872-aa2e-dd11-9fc8-001c23d0bc1f>;00a8f599c25ded714d2a4da9e1bb30e2a335181c
 ```
 It turns out that it was created by commit 00a8f599c25ded714d2a4da9e1bb30e2a335181c done by what appears to be the same author on unix second 1072910122.
 
-What is b2aFullP? The letters signify what keys (b - Blob) and values (a - author) means. These are key objects: 
+What is b2a? The letters signify what keys (b - Blob) and values (a - author) means. These are key objects: 
 * a = Author
 * b = Blob
 * c = Commit
 * f = File
 * p = Project
 
-FullP means it is a complete database (Full) version P. 
-
 
 We may also ask if this blob has been widely copied as would be expected for copyright files:
 ```
-[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues.perl /da0_data/basemaps/b2cFullP
+[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2c
 a8fe822f075fa3d159a203adfa40c3f59d6dd999;00729b406d8d3cfeeeda61c4586dcfd9f9399f4a;00a8f599c25ded714d2a4da9e1bb30e2a335181c;...
 ```
 b2c (blob to commit) shows the numerous commits that introduced that blob in all repositories. We can further use commit to project map (c2p)
 to identify all associated projects:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  \
-~/lookup/getValues.perl /da0_data/basemaps/b2cFullP | \
+~/lookup/getValues b2c | \
 perl -ane 's/^[^;];//;s/;/\n/g;print' | \
-~/lookup/getValues.perl /da0_data/basemaps/c2pFullP | \
+~/lookup/getValues c2p | \
 perl -ane 's/^[^;];//;s/;/\n/g;print' 
 ajburton_freebsd
 bu7cher_freebsd
@@ -252,7 +252,7 @@ In fact there are 1072 distinct repositories where this blob appears.
 Finally, we have the author 'Warner Losh <imp@FreeBSD.org>' for the commit we have investigated. 
 Can we find what other commits Warner has made?:
 ```
-[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues.perl /da0_data/basemaps/a2cFullP
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2c
 Warner Losh <imp@FreeBSD.org>;0000ce4417bd8d9a2d66a7a61393558d503f2805;000109ae96e7132d90440c8fa12cb7df95a806c6;00014b72bf10ad43ca437daf388d33c4fea73df9;000171c80d0d0ab6ff22b58b922e559e51485936;000282fc6c091e1c0abdadf1f58c088fc3ed9bc9;0002d1cab0d367c074a601e28183c60657254820;000373a8c48347c3e0e30486ccf4d9b043438826;...
 
 ```
@@ -263,6 +263,7 @@ For example, find commits by any author named Warner:
 [username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP0.s | grep 'Warner'
 ```
 As described below, the maps are split into 32 parts to enable parallel search.
+FullP means that we are looking ata  complete extract at version P. 
 
 
 ### Exercise 3
@@ -273,7 +274,7 @@ Hint 1: What is the map name?
 
 Author to File or a2f
 ```
-echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues.perl /da0_data/basemaps/a2fFullP 
+echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2f 
 ```
 
 Find all commits  developers who have your last and your first name:
@@ -436,7 +437,7 @@ Each thruMaps directory has a different language ($LANG) that contains modules r
 
 Lets get a list of commits and repositories that imported Tensorflow for .py files:  
 ```
-[username@da0]~% zcat /data/play/PYthruMaps/c2bPtaPkgPPY.0.gz | grep tensorflow`
+[username@da0]~% zcat /da0_data/play/PYthruMaps/c2bPtaPkgPPY.0.gz | grep tensorflow`
 
 0000331084e1a567dbbaae4cc12935b610cd341a;abdella-mohamed_BreastCancer;1553266304;abdella <abdella.mohamed-idris-mohamed@de.sii.group>;0dd695391117e784d968c111f010cff802c0e6d1;sns;keras.models;np;random;tensorflow;os;pd;sklearn.metrics;plt;keras.layers;yaml
 00034db68f89d3d2061b763deb7f9e5f81fef27;lucaskjaero_chinese-character-recognizer;1497547797;Lucas Kjaero <lucas@lucaskjaero.com>;0629a6caa45ded5f4a2774ff7a72738460b399d4;tensorflow;preprocessing;sklearn
