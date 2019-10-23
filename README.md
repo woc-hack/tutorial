@@ -843,3 +843,56 @@ Hint3: Use unix diff to calculate the difference
 [username@da0]~% diff old new
 ```
 
+## Iterating over a dataset
+
+Sometimes, iterating over the entire dataset using the already created basemaps is the only way to retrieve the desired information. The basemappings from one datatype to another are key-value pairings of data. As such, the retrieval of the entire dataset can usually be done in one pass over one of the already created basemaps.
+
+For example, if the goal was to determine information pertaining to each author in WoC, simply iterating over one of the many basemaps from author to some other dataset e.g. (a2b, a2c, etc) will serve. Since these datasets are a key-value mapping from author to another dataset, this gurantees that each of the keys will be one of the unique authors in WoC, from there the desired information about that specific author can be determined. 
+
+Below is a Perl script template that allows for retrieval of all the keys from a2c. 
+
+-----------------------
+```perl
+#!/usr/bin/perl -I /home/audris/lookup -I /home/audris/lib64/perl5 -I /home/audris/lib/x86_64-linux-gnu/perl -I /usr/local/lib64/perl5 -I /usr/local/share/perl5                                                                                                             use strict;
+use warnings;
+use Error qw(:try);
+
+use TokyoCabinet;
+
+my $split = 32;
+my %a2cF = (); 
+for my $sec (0..($split-1)){   
+  my $fname = "/fast/a2cFullP.$sec.tch";   
+  tie %{$a2cF{$sec}}, "TokyoCabinet::HDB", "$fname", TokyoCabinet::HDB::OREADER | TokyoCabinet::HDB::ONOLCK,  16777213, -1, -1, TokyoCabinet::TDB::TLARGE, 100000 
+  or die "cant open $fname\n"; 
+}
+while (my ($i, $author) = each %a2cF) {
+  my $v1 = join ";", sort keys %{$author};
+  my @apl = split(';', $v1);
+  for my $a (@apl) {
+    print "$a\n";
+  }
+}
+
+```
+---------------
+This script simply prints each WoC authors name. This script helps illustrate how to go about retrieving the keys in a key-value basemap using Perl, but lacks any practical use on it's own.
+
+## Database Usage
+On the da1 server, there is a MongoDB server holding some relevant data. This data includes some information that was used for data analysis in the past. 
+The saved data pertains to specific information about mass datatypes e.g. (authors, projects, etc).
+
+When on da1, you can gain access to the MongoDB server simply by running the command 'mongo', or, when on any other da server, you can gain access by running ' mongo "da1.eecs.utk.edu" '.
+
+Once on the server, you can see all the available Databases using the "show dbs" command. However, the database that pertains primarily to the WoC is the WoC database. 
+You can switch to the WoC database, or any other, using the 'use "database name"' command. 
+After switching, you can view the available collections in the database by using the 'show collections' command. 
+
+In the WoC database, there are some metadata collections already provided. These metadata collections are intended to store relevant small data that takes lots of time to calculate.
+Iterarting over the entire dataset takes some time. So saving some of this information can sometimes save time.
+
+Currently, there is an author metadata collection (auth_metadata) that contains the total number of projects an author has participated in, the total number of blobs created, the total number of commits made, and the total number of files they have created.
+Alongside this, we are in the process of creating a project metadata collection that will show the language usage in projects and other relevant metadata specific to projects.
+
+To see data in one of the collections, you can run the 'db."collection name".findOne()' command. This will show the first element in the collection and should help clarify what is in the collection.
+From there, iterating over the collection can be done either through MongoDB, or your preferred programming language. Python has an excellent MongoDB interface that makes for easy retrieval of data.
