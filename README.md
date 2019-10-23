@@ -878,21 +878,106 @@ while (my ($i, $author) = each %a2cF) {
 ---------------
 This script simply prints each WoC authors name. This script helps illustrate how to go about retrieving the keys in a key-value basemap using Perl, but lacks any practical use on it's own.
 
-## Database Usage
-On the da1 server, there is a MongoDB server holding some relevant data. This data includes some information that was used for data analysis in the past. 
-The saved data pertains to specific information about mass datatypes e.g. (authors, projects, etc).
+## Mongo Database
 
-When on da1, you can gain access to the MongoDB server simply by running the command 'mongo', or, when on any other da server, you can gain access by running ' mongo "da1.eecs.utk.edu" '.
+On the da1 server, there is a MongoDB server holding some relevant data. This data includes some information that was used for data analysis in the past. Mongo provides an excellent place to store relatively small data without requiring relational information.
+The saved data pertains to specific information about mass datatypes e.g. (authors, projects, etc) and may prove useful in certain situations. 
+
+On the Mongo server within the WoC database, there are some collections provided that store previously useful data. These collections store relevant metadata on the mass datatypes e.g. (authors, projects, etc).
+Iterarting over the entire dataset takes time, so in order to avoid repeating the traversal storing some of the information can save time.
+
+### MongoDB Interface
+
+When on the da1 server, you can gain access to the MongoDB server simply by running the command 'mongo', or, when on any other da server, you can gain access by running 'mongo "da1.eecs.utk.edu"'.
 
 Once on the server, you can see all the available Databases using the "show dbs" command. However, the database that pertains primarily to the WoC is the WoC database. 
 You can switch to the WoC database, or any other, using the 'use "database name"' command. 
 After switching, you can view the available collections in the database by using the 'show collections' command. 
 
-In the WoC database, there are some metadata collections already provided. These metadata collections are intended to store relevant small data that takes lots of time to calculate.
-Iterarting over the entire dataset takes some time. So saving some of this information can sometimes save time.
-
 Currently, there is an author metadata collection (auth_metadata) that contains the total number of projects an author has participated in, the total number of blobs created, the total number of commits made, and the total number of files they have created.
 Alongside this, we are in the process of creating a project metadata collection that will show the language usage in projects and other relevant metadata specific to projects.
 
 To see data in one of the collections, you can run the 'db."collection name".findOne()' command. This will show the first element in the collection and should help clarify what is in the collection.
-From there, iterating over the collection can be done either through MongoDB, or your preferred programming language. Python has an excellent MongoDB interface that makes for easy retrieval of data.
+From there, iterating over the collection can be done either through MongoDB, or your preferred programming language. 
+
+When the above findOne() command is run on the auht_metadata collection, the output is as follows:
+
+-----------
+```
+mongos> db.auth_metadata.findOne() 
+{
+	"_id" : ObjectId("5d9e3de9c304de5cf415ea6e"), 
+	"TorvaldsIndex" : -1, 
+	"TotalProjects" : 2, 
+	"TotalBlobs" : -1,
+	"TotalCommits" : 1,
+	"AuthorID" : "  <mvivekananda@virtusa.com>",
+	"hidden" : false,
+	"creation_time" : ISODate("2019-10-09T20:07:05.921Z"),
+	"TotalFiles" : 2
+}                          
+```
+---------------
+
+This metadata can then be parsed for the desired information.
+
+Python, and most other programming languages, has an interface with Mongo that makes for data storage/retrieval much simpler. When retrieving or inputting large amounts of data onto the servers, it is almost always faster and easier to do so through one of the interfaces provided.
+
+
+### PyMongo
+
+PyMongo is an import for Python that simplifies access to the database and elements inside of it. When accessing the server you must first provide which Mongo Client you wish to connect to. For our server, the host will be "mongodb://da1.eecs.utk.edu/". 
+This will provide access to the data already saved and will allow for creation of new data if desired. 
+From there, accessing databases inside of the client becomes as simple as treating the desired database as an element inside the client. The same is true for accessing collections inside of a database. 
+The below code illustrates this process.
+
+--------
+```python
+client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
+
+db = client["WoC"]                                                    
+col = db["auth_metadata"]
+```
+-------
+
+#### Data Retrieval using PyMongo
+When attempting to retrieve data, iterating over the entire collection for specific info is often neccesary. This is done most often through a mongo specific data structure called cursors. However cursors have a limited life span. After roughly 10 minutes of continuous connection to the server, the cursor is forcibly disconnected. This is to limit the possible number of idle cursors connected to the server at any time. However, if the process may take longer than that, it may be neccesary to define the cursor as undying. When this is done, manual disconnection of the cursor after it's served it's purpose is required.
+
+In PyMongo, cursors can be treated as a list and be iterated over. This means that the next element in the list is the next element in the database. The below code illustrates creation and iteration with a cursor.
+
+--------
+```python
+client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
+
+db = client["WoC"]                                                    
+col = db["auth_metadata"]
+
+dataset = col.find({}, cursor_no_timeout=True)
+for data in dataset:
+...
+
+dataset.close()
+```
+-------
+
+Once data retrieval has begun, accessing the specific information desired is simple. 
+For example, above I provided the information saved in one element of auth_metadata. If I want to access the author id of each cursor, I can treate the "AuthorID" as the key in the key value mapping. However, as these AuthorIDs are strings, the way the data is stored must be considered. Most often, when storing data in Mongo, it will be stored in unicode format. Working with unicode can be an issue if printing needs to be done. As such, decoding from unicode must to be done for printing to be possible. Below illustrates a small program that prints each AuthorID from the auth_metadata collection.
+
+----------
+```python
+import pymongo                                                                                                       import bson                                                                                                                                                                                                                             
+client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
+db = client ['WoC']
+coll = db['auth_metadata']
+
+dataset = coll.find({}, no_cursor_timeout=True)
+for data in dataset:
+    a = data["AuthorID"].encode('utf-8').strip()
+    print(a)
+
+dataset.close()
+
+```
+----------
+
+### Data Storage
