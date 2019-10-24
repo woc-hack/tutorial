@@ -853,7 +853,8 @@ Below is a Perl script template that allows for retrieval of all the keys from a
 
 -----------------------
 ```perl
-#!/usr/bin/perl -I /home/audris/lookup -I /home/audris/lib64/perl5 -I /home/audris/lib/x86_64-linux-gnu/perl -I /usr/local/lib64/perl5 -I /usr/local/share/perl5                                                                                                             use strict;
+#!/usr/bin/perl -I /home/audris/lookup -I /home/audris/lib64/perl5 -I /home/audris/lib/x86_64-linux-gnu/perl -I /usr/local/lib64/perl5 -I /usr/local/share/perl5
+use strict;
 use warnings;
 use Error qw(:try);
 
@@ -965,7 +966,9 @@ For example, above I provided the information saved in one element of auth_metad
 
 ----------
 ```python
-import pymongo                                                                                                       import bson                                                                                                                                                                                                                             
+import pymongo
+import bson
+
 client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
 db = client ['WoC']
 coll = db['auth_metadata']
@@ -995,7 +998,17 @@ This specific call would allow for direct printing of the data, however, as note
 
 -------------
 ```
-{u'TotalCommits': 1, u'AuthorID': u'  <mvivekananda@virtusa.com>'}                                                     {u'TotalCommits': 0, u'AuthorID': u' <1151643598@163.com>'}                                                            {u'TotalCommits': 0, u'AuthorID': u' <1615638456@qq.com>'}                                                             {u'TotalCommits': 0, u'AuthorID': u' <182036137@qq.com>'}                                                              {u'TotalCommits': 0, u'AuthorID': u' <1974193036@qq.com>'}                                                             {u'TotalCommits': 0, u'AuthorID': u' <200sc@SomethingStupid.localdomain>'}                                             {u'TotalCommits': 0, u'AuthorID': u' <213>'}                                                                           {u'TotalCommits': 1, u'AuthorID': u' <3sodn@yuki.localdomain>'}                                                        {u'TotalCommits': 21, u'AuthorID': u' <625605841@qq.com>'}                                                             {u'TotalCommits': 0, u'AuthorID': u' <712641411@qq.com>'}                
+{u'TotalCommits': 1, u'AuthorID': u'  <mvivekananda@virtusa.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <1151643598@163.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <1615638456@qq.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <182036137@qq.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <1974193036@qq.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <200sc@SomethingStupid.localdomain>'}
+{u'TotalCommits': 0, u'AuthorID': u' <213>'}
+{u'TotalCommits': 1, u'AuthorID': u' <3sodn@yuki.localdomain>'}
+{u'TotalCommits': 21, u'AuthorID': u' <625605841@qq.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <712641411@qq.com>'}
+
 ```
 --------------
 
@@ -1003,7 +1016,9 @@ Sometimes, restricting the data even further is neccesary. Notice above that man
 
 ----------
 ```python
-dataset = coll.find({"TotalCommits : { "$gt" : 100 } }, {"AuthorID": 1, "TotalCommits": 1, "_id": 0}, no_cursor_timeout=True)
+dataset = coll.find({"TotalCommits : { "$gt" : 100 } }, 
+				     {"AuthorID": 1, "TotalCommits": 1, "_id": 0}, 
+				     no_cursor_timeout=True)
 
 for data in dataset:
     print(data)
@@ -1014,6 +1029,16 @@ The first 10 results are shown below.
 
 --------------
 ```
-{u'TotalCommits': 228, u'AuthorID': u' <bent.mozilla@gmail.com>'}                                                      {u'TotalCommits': 137, u'AuthorID': u' <carlosborca@gmail.com>'}                                                       {u'TotalCommits': 222, u'AuthorID': u' <carlosga_fb@users.sourceforge.net>'}                                           {u'TotalCommits': 466, u'AuthorID': u' <edward.lee@engineering.uiuc.edu>'}                                             {u'TotalCommits': 127, u'AuthorID': u' <lorenha@DESKTOP-BDBLRUP.localdomain>'}                                         {u'TotalCommits': 599, u'AuthorID': u' <manabu@jsk.t.u-tokyo.ac.jp>'}                                                  {u'TotalCommits': 2633, u'AuthorID': u' <mickeyl@openembedded.org>'}                                                   {u'TotalCommits': 4174, u'AuthorID': u' <paulb@eiffel.com>'}                                                           {u'TotalCommits': 605, u'AuthorID': u' <romans@eiffel.com>'}                                                           {u'TotalCommits': 147, u'AuthorID': u' <viperus@ubuntu.(none)>'}  
+{u'TotalCommits': 228, u'AuthorID': u' <bent.mozilla@gmail.com>'}
+{u'TotalCommits': 137, u'AuthorID': u' <carlosborca@gmail.com>'}
+{u'TotalCommits': 222, u'AuthorID': u' <carlosga_fb@users.sourceforge.net>'}
+{u'TotalCommits': 466, u'AuthorID': u' <edward.lee@engineering.uiuc.edu>'}
+{u'TotalCommits': 127, u'AuthorID': u' <lorenha@DESKTOP-BDBLRUP.localdomain>'}
+{u'TotalCommits': 599, u'AuthorID': u' <manabu@jsk.t.u-tokyo.ac.jp>'}
+{u'TotalCommits': 2633, u'AuthorID': u' <mickeyl@openembedded.org>'}
+{u'TotalCommits': 4174, u'AuthorID': u' <paulb@eiffel.com>'}
+{u'TotalCommits': 605, u'AuthorID': u' <romans@eiffel.com>'}
+{u'TotalCommits': 147, u'AuthorID': u' <viperus@ubuntu.(none)>'}
+
 ```
 -------------
