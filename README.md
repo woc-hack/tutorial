@@ -461,7 +461,7 @@ Hint 2: What field contains the repository name?
 [username@da0]~% zcat /da0_data/play/jlthruMaps/c2bptaPkgOjl.*.gz | grep StaticArrays | cut -d\; -f2 | sort -u
 ```
 
-## Activity 7: Suggested by the audiance
+## Activity 7: Suggested by the audience
 
 Find all projects that have commits mentioning "sql injection"
 
