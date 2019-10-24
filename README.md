@@ -882,10 +882,8 @@ This script simply prints each WoC authors name. This script helps illustrate ho
 ## Mongo Database
 
 On the da1 server, there is a MongoDB server holding some relevant data. This data includes some information that was used for data analysis in the past. Mongo provides an excellent place to store relatively small data without requiring relational information.
-The saved data pertains to specific information about mass datatypes e.g. (authors, projects, etc) and may prove useful in certain situations. 
 
-On the Mongo server within the WoC database, there are some collections provided that store previously useful data. These collections store relevant metadata on the mass datatypes e.g. (authors, projects, etc).
-Iterarting over the entire dataset takes time, so in order to avoid repeating the traversal storing some of the information can save time.
+On the Mongo server within the WoC database, there are some collections provided that store previously useful data. These collections store relevant metadata on the mass datatypes e.g. (authors, projects, etc). 
 
 ### MongoDB Interface
 
@@ -899,9 +897,8 @@ Currently, there is an author metadata collection (auth_metadata) that contains 
 Alongside this, we are in the process of creating a project metadata collection that will show the language usage in projects and other relevant metadata specific to projects.
 
 To see data in one of the collections, you can run the 'db."collection name".findOne()' command. This will show the first element in the collection and should help clarify what is in the collection.
-From there, iterating over the collection can be done either through MongoDB, or your preferred programming language. 
 
-When the above findOne() command is run on the auht_metadata collection, the output is as follows:
+When the above findOne() command is run on the auth_metadata collection, the output is as follows:
 
 -----------
 ```
@@ -928,7 +925,8 @@ Python, and most other programming languages, has an interface with Mongo that m
 ### PyMongo
 
 PyMongo is an import for Python that simplifies access to the database and elements inside of it. When accessing the server you must first provide which Mongo Client you wish to connect to. For our server, the host will be "mongodb://da1.eecs.utk.edu/". 
-This will provide access to the data already saved and will allow for creation of new data if desired. 
+This will allow access to the data already saved and will allow for creation of new data if desired. 
+
 From there, accessing databases inside of the client becomes as simple as treating the desired database as an element inside the client. The same is true for accessing collections inside of a database. 
 The below code illustrates this process.
 
@@ -937,32 +935,34 @@ The below code illustrates this process.
 client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
 
 db = client["WoC"]                                                    
-col = db["auth_metadata"]
+coll = db["auth_metadata"]
 ```
 -------
 
 #### Data Retrieval using PyMongo
-When attempting to retrieve data, iterating over the entire collection for specific info is often neccesary. This is done most often through a mongo specific data structure called cursors. However cursors have a limited life span. After roughly 10 minutes of continuous connection to the server, the cursor is forcibly disconnected. This is to limit the possible number of idle cursors connected to the server at any time. However, if the process may take longer than that, it may be neccesary to define the cursor as undying. When this is done, manual disconnection of the cursor after it's served it's purpose is required.
+When attempting to retrieve data, iterating over the entire collection for specific info is often neccesary. This is done most often through a mongo specific data structure called cursors. However, cursors have a limited life span. After roughly 10 minutes of continuous connection to the server, the cursor is forcibly disconnected. This is to limit the possible number of idle cursors connected to the server at any time. Taking this into consideration, if the process may take longer than that, it is neccesary to define the cursor as undying. If this is neccesary, manual disconnection of the cursor after it's served it's purpose is required as well.
 
-In PyMongo, cursors can be treated as a list and be iterated over. This means that the next element in the list is the next element in the database. The below code illustrates creation and iteration with a cursor.
+In PyMongo, cursors can be iterated over. The below code illustrates creation and iteration with a cursor.
 
 --------
 ```python
 client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
 
 db = client["WoC"]                                                    
-col = db["auth_metadata"]
+coll = db["auth_metadata"]
 
 dataset = col.find({}, cursor_no_timeout=True)
 for data in dataset:
-...
+   ...
 
 dataset.close()
 ```
 -------
 
 Once data retrieval has begun, accessing the specific information desired is simple. 
-For example, above I provided the information saved in one element of auth_metadata. If I want to access the author id of each cursor, I can treate the "AuthorID" as the key in the key value mapping. However, as these AuthorIDs are strings, the way the data is stored must be considered. Most often, when storing data in Mongo, it will be stored in Mongo specific format called BSON. BSON objects are saved in unicode. Working with unicode can be an issue if printing needs to be done. As such, decoding from unicode must to be done for printing to be possible. Below illustrates a small program that prints each AuthorID from the auth_metadata collection.
+For example, provided above is the information saved in one element of auth_metadata. If access to the AuthorID of each cursor is desired, treat the "AuthorID" as the key in the key value mapping. However, one thing to note is that these AuthorIDs are strings. This means the way the data is stored in Mongo must be considered.
+
+Most often, when storing data in Mongo, it will be stored in Mongo specific format called BSON. BSON objects are saved in unicode. Working with unicode can be an issue if printing needs to be done. As such, decoding from unicode must to be done. Below illustrates a small program that prints each AuthorID from the auth_metadata collection.
 
 ----------
 ```python
@@ -983,7 +983,7 @@ dataset.close()
 ```
 ----------
 
-When retrieving the data, it is possible to narrow the results directly through Mongo. For instance, if all the data is not needed in the auth_metadata, simply the TotalCommits and the AuthorID you can restrict the find call in Mongo. This is done by adding parameters to the find call. An example call is provided below.
+When retrieving the data, it is often neccesary to narrow the results. This possible directly through Mongo when querying for information. For instance, if all the data is not needed in the auth_metadata, simply the TotalCommits and the AuthorID you can restrict the find call by adding parameters. An example query is provided below.
 
 ----------
 ```python
@@ -1042,3 +1042,4 @@ The first 10 results are shown below.
 
 ```
 -------------
+
