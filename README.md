@@ -843,3 +843,195 @@ Hint3: Use unix diff to calculate the difference
 [username@da0]~% diff old new
 ```
 
+## Iterating over a dataset
+
+Sometimes, iterating over the entire dataset using the already created basemaps is the only way to retrieve the desired information. The basemappings from one datatype to another are key-value pairings of data. As such, the retrieval of the entire dataset can usually be done in one pass over one of the already created basemaps.
+
+For example, if the goal was to determine information pertaining to each author in WoC, simply iterating over one of the many basemaps from author to some other dataset e.g. (a2b, a2c, etc) will serve. Since these datasets are a key-value mapping from author to another dataset, this guarantees that each of the keys will be one of the unique authors in WoC. From there, the desired information about that specific author can be determined. 
+
+Below is a Perl script template that allows for retrieval of all the authors from a2c. 
+
+-----------------------
+```perl
+#!/usr/bin/perl -I /home/audris/lookup -I /home/audris/lib64/perl5 -I /home/audris/lib/x86_64-linux-gnu/perl -I /usr/local/lib64/perl5 -I /usr/local/share/perl5
+use strict;
+use warnings;
+use Error qw(:try);
+
+use TokyoCabinet;
+
+my $split = 32;
+my %a2cF = (); 
+for my $sec (0..($split-1)){   
+  my $fname = "/fast/a2cFullP.$sec.tch";   
+  tie %{$a2cF{$sec}}, "TokyoCabinet::HDB", "$fname", TokyoCabinet::HDB::OREADER | TokyoCabinet::HDB::ONOLCK,  16777213, -1, -1, TokyoCabinet::TDB::TLARGE, 100000 
+  or die "cant open $fname\n"; 
+}
+while (my ($i, $author) = each %a2cF) {
+  my $v1 = join ";", sort keys %{$author};
+  my @apl = split(';', $v1);
+  for my $a (@apl) {
+    print "$a\n";
+  }
+}
+
+```
+---------------
+This script simply prints each WoC authors name. This helps illustrate how to go about retrieving the keys in a key-value basemap using Perl, but lacks any practical use on it's own.
+
+Notice in this script the $split is defined to be 32 and the for loop iterates from 0 to 31. The reason for this is because of how the data is stored in the basemaps. Each basemap from one data type to another is split into 32 roughly equal parts based on their hashes. As such, in order to iterate over the entire data set, it is neccesary to look at each of these files separately.
+
+From there, Perl allows for direct tying to each of these files in the format of a hash. Because the basemappings are saved using TokyoCabinet, it requires them to be opened using TokyoCabinet to retrieve the data.
+
+Once the hash is tied to the mapping, iterating over the hash can be done, and retrieval of the information simply becomes accessing the elements.
+
+## Mongo Database
+
+On the da1 server, there is a MongoDB server holding some relevant data. This data includes some information that was used for data analysis in the past. Mongo provides an excellent place to store relatively small data without requiring relational information.
+
+On the Mongo server within the WoC database, there are some collections provided that store previously useful data. These collections store relevant metadata on the mass datatypes e.g. (authors, projects, etc). 
+
+### MongoDB Access
+
+When on the da1 server, you can gain access to the MongoDB server simply by running the command 'mongo', or, when on any other da server, you can gain access by running 'mongo "da1.eecs.utk.edu"'.
+
+Once on the server, you can see all the available databases using the "show dbs" command. However, the database that pertains primarily to the WoC is the WoC database. 
+
+You can switch to the WoC database, or any other, using the 'use "database name"' command and, after switching, you can view the available collections in the database by using the 'show collections' command. 
+
+Currently, there is an author metadata collection (auth_metadata) that contains the total number of projects an author has participated in, the total number of blobs created, the total number of commits made, and the total number of files they have created.
+Alongside this, we are in the process of creating a project metadata collection that will show the language usage in projects and other relevant metadata specific to projects.
+
+To see data in one of the collections, you can run the 'db."collection name".findOne()' command. This will show the first element in the collection and should help clarify what is in the collection.
+
+When the above findOne() command is run on the auth_metadata collection, the output is as follows:
+
+-----------
+```
+mongos> db.auth_metadata.findOne() 
+{
+	"_id" : ObjectId("5d9e3de9c304de5cf415ea6e"), 
+	"TorvaldsIndex" : -1, 
+	"TotalProjects" : 2, 
+	"TotalBlobs" : -1,
+	"TotalCommits" : 1,
+	"AuthorID" : "  <mvivekananda@virtusa.com>",
+	"hidden" : false,
+	"creation_time" : ISODate("2019-10-09T20:07:05.921Z"),
+	"TotalFiles" : 2
+}                          
+```
+---------------
+
+This metadata can then be parsed for the desired information.
+
+Python, like most other programming languages, has an interface with Mongo that makes for data storage/retrieval much simpler. When retrieving or inputting large amounts of data onto the servers, it is almost always faster and easier to do so through one of the interfaces provided.
+
+
+### PyMongo
+
+PyMongo is an import for Python that simplifies access to the database and elements inside of it. When accessing the server you must first provide which Mongo Client you wish to connect to. For our server, the host will be "mongodb://da1.eecs.utk.edu/". 
+This will allow access to the data already saved and will allow for creation of new data if desired. 
+
+From there, accessing databases inside of the client becomes as simple as treating the desired database as an element inside the client. The same is true for accessing collections inside of a database. 
+The below code illustrates this process.
+
+--------
+```python
+client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
+
+db = client["WoC"]                                                    
+coll = db["auth_metadata"]
+```
+-------
+
+#### Data Retrieval using PyMongo
+
+When attempting to retrieve data, iterating over the entire collection for specific info is often neccesary. This is done most often through a mongo specific data structure called cursors. However, cursors have a limited life span. After roughly 10 minutes of continuous connection to the server, the cursor is forcibly disconnected. This is to limit the possible number of idle cursors connected to the server at any time. 
+
+Taking this into consideration, if the process may take longer than that, it is neccesary to define the cursor as undying. If this is neccesary, manual disconnection of the cursor after it's served it's purpose is required as well.
+The below code illustrates creation and iteration over the collection with a cursor.
+
+--------
+```python
+client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
+
+db = client["WoC"]                                                    
+coll = db["auth_metadata"]
+
+dataset = col.find({}, cursor_no_timeout=True)
+for data in dataset:
+   ...
+
+dataset.close()
+```
+-------
+
+Once data retrieval has begun, accessing the specific information desired is simple. 
+For example, provided above is the information saved in one element of auth_metadata. If access to the AuthorID of each cursor is desired, the "AuthorID" can be treated as the key in a key value-mapping. However, it is often neccesary to consider how the data is stored.
+
+Most often, when storing data in Mongo, it will be stored in Mongo specific format called BSON. BSON objects are saved in unicode. Working with unicode can be an issue if printing needs to be done. As such, decoding from unicode must to be done. Below illustrates a small program that prints each AuthorID from the auth_metadata collection.
+
+----------
+```python
+import pymongo
+import bson
+
+client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
+db = client ['WoC']
+coll = db['auth_metadata']
+
+dataset = coll.find({}, no_cursor_timeout=True)
+for data in dataset:
+    a = data["AuthorID"].encode('utf-8').strip()
+    print(a)
+
+dataset.close()
+
+```
+----------
+
+When retrieving data, it is often neccesary to narrow the results. This is possible directly through Mongo when querying for information. For instance, if all the data is not needed in the auth_metadata, just the TotalCommits and the AuthorID, the query can be restricted adding parameters to the find call. An example query is provided below.
+
+----------
+```python
+dataset = coll.find({}, {"AuthorID": 1, "TotalCommits": 1, "_id": 0}, no_cursor_timeout=True)
+
+for data in dataset:
+    print(data)
+    
+dataset.close()
+```
+---------
+
+This specific call allows for direct printing of the data, however, as noted above, the names are saved in BSON and as such will be printed in unicode. The first 10 results are shown below.
+
+-------------
+```
+{u'TotalCommits': 1, u'AuthorID': u'  <mvivekananda@virtusa.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <1151643598@163.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <1615638456@qq.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <182036137@qq.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <1974193036@qq.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <200sc@SomethingStupid.localdomain>'}
+{u'TotalCommits': 0, u'AuthorID': u' <213>'}
+{u'TotalCommits': 1, u'AuthorID': u' <3sodn@yuki.localdomain>'}
+{u'TotalCommits': 21, u'AuthorID': u' <625605841@qq.com>'}
+{u'TotalCommits': 0, u'AuthorID': u' <712641411@qq.com>'}
+
+```
+--------------
+
+Sometimes, restricting the data even further is neccesary. Notice above that many of the users have 0 commits. Exclusion of these entries may be desired. The below example illustrates a way to restrict the results to only users with greater than 0 commits.
+
+----------
+```python
+dataset = coll.find({"TotalCommits : { "$gt" : 0 } }, 
+				     {"AuthorID": 1, "TotalCommits": 1, "_id": 0}, 
+				     no_cursor_timeout=True)
+
+for data in dataset:
+    print(data)
+```
+---------
+
