@@ -847,9 +847,9 @@ Hint3: Use unix diff to calculate the difference
 
 Sometimes, iterating over the entire dataset using the already created basemaps is the only way to retrieve the desired information. The basemappings from one datatype to another are key-value pairings of data. As such, the retrieval of the entire dataset can usually be done in one pass over one of the already created basemaps.
 
-For example, if the goal was to determine information pertaining to each author in WoC, simply iterating over one of the many basemaps from author to some other dataset e.g. (a2b, a2c, etc) will serve. Since these datasets are a key-value mapping from author to another dataset, this gurantees that each of the keys will be one of the unique authors in WoC, from there the desired information about that specific author can be determined. 
+For example, if the goal was to determine information pertaining to each author in WoC, simply iterating over one of the many basemaps from author to some other dataset e.g. (a2b, a2c, etc) will serve. Since these datasets are a key-value mapping from author to another dataset, this guarantees that each of the keys will be one of the unique authors in WoC. From there, the desired information about that specific author can be determined. 
 
-Below is a Perl script template that allows for retrieval of all the keys from a2c. 
+Below is a Perl script template that allows for retrieval of all the authors from a2c. 
 
 -----------------------
 ```perl
@@ -877,7 +877,13 @@ while (my ($i, $author) = each %a2cF) {
 
 ```
 ---------------
-This script simply prints each WoC authors name. This script helps illustrate how to go about retrieving the keys in a key-value basemap using Perl, but lacks any practical use on it's own.
+This script simply prints each WoC authors name. This helps illustrate how to go about retrieving the keys in a key-value basemap using Perl, but lacks any practical use on it's own.
+
+Notice in this script the $split is defined to be 32 and the for loop iterates from 0 to 31. The reason for this is because of how the data is stored in the basemaps. Each basemap from one data type to another is split into 32 roughly equal parts based on their hashes. As such, in order to iterate over the entire data set, it is neccesary to look at each of these files separately.
+
+From there, Perl allows for direct tying to each of these files in the format of a hash. Because the basemappings are saved using TokyoCabinet, it requires them to be opened using TokyoCabinet to retrieve the data.
+
+Once the hash is tied to the mapping, iterating over the hash can be done, and retrieval of the information simply becomes accessing the elements.
 
 ## Mongo Database
 
@@ -885,13 +891,13 @@ On the da1 server, there is a MongoDB server holding some relevant data. This da
 
 On the Mongo server within the WoC database, there are some collections provided that store previously useful data. These collections store relevant metadata on the mass datatypes e.g. (authors, projects, etc). 
 
-### MongoDB Interface
+### MongoDB Access
 
 When on the da1 server, you can gain access to the MongoDB server simply by running the command 'mongo', or, when on any other da server, you can gain access by running 'mongo "da1.eecs.utk.edu"'.
 
-Once on the server, you can see all the available Databases using the "show dbs" command. However, the database that pertains primarily to the WoC is the WoC database. 
-You can switch to the WoC database, or any other, using the 'use "database name"' command. 
-After switching, you can view the available collections in the database by using the 'show collections' command. 
+Once on the server, you can see all the available databases using the "show dbs" command. However, the database that pertains primarily to the WoC is the WoC database. 
+
+You can switch to the WoC database, or any other, using the 'use "database name"' command and, after switching, you can view the available collections in the database by using the 'show collections' command. 
 
 Currently, there is an author metadata collection (auth_metadata) that contains the total number of projects an author has participated in, the total number of blobs created, the total number of commits made, and the total number of files they have created.
 Alongside this, we are in the process of creating a project metadata collection that will show the language usage in projects and other relevant metadata specific to projects.
@@ -919,7 +925,7 @@ mongos> db.auth_metadata.findOne()
 
 This metadata can then be parsed for the desired information.
 
-Python, and most other programming languages, has an interface with Mongo that makes for data storage/retrieval much simpler. When retrieving or inputting large amounts of data onto the servers, it is almost always faster and easier to do so through one of the interfaces provided.
+Python, like most other programming languages, has an interface with Mongo that makes for data storage/retrieval much simpler. When retrieving or inputting large amounts of data onto the servers, it is almost always faster and easier to do so through one of the interfaces provided.
 
 
 ### PyMongo
@@ -940,9 +946,11 @@ coll = db["auth_metadata"]
 -------
 
 #### Data Retrieval using PyMongo
-When attempting to retrieve data, iterating over the entire collection for specific info is often neccesary. This is done most often through a mongo specific data structure called cursors. However, cursors have a limited life span. After roughly 10 minutes of continuous connection to the server, the cursor is forcibly disconnected. This is to limit the possible number of idle cursors connected to the server at any time. Taking this into consideration, if the process may take longer than that, it is neccesary to define the cursor as undying. If this is neccesary, manual disconnection of the cursor after it's served it's purpose is required as well.
 
-In PyMongo, cursors can be iterated over. The below code illustrates creation and iteration with a cursor.
+When attempting to retrieve data, iterating over the entire collection for specific info is often neccesary. This is done most often through a mongo specific data structure called cursors. However, cursors have a limited life span. After roughly 10 minutes of continuous connection to the server, the cursor is forcibly disconnected. This is to limit the possible number of idle cursors connected to the server at any time. 
+
+Taking this into consideration, if the process may take longer than that, it is neccesary to define the cursor as undying. If this is neccesary, manual disconnection of the cursor after it's served it's purpose is required as well.
+The below code illustrates creation and iteration over the collection with a cursor.
 
 --------
 ```python
@@ -960,7 +968,7 @@ dataset.close()
 -------
 
 Once data retrieval has begun, accessing the specific information desired is simple. 
-For example, provided above is the information saved in one element of auth_metadata. If access to the AuthorID of each cursor is desired, treat the "AuthorID" as the key in the key value mapping. However, one thing to note is that these AuthorIDs are strings. This means the way the data is stored in Mongo must be considered.
+For example, provided above is the information saved in one element of auth_metadata. If access to the AuthorID of each cursor is desired, the "AuthorID" can be treated as the key in a key value-mapping. However, it is often neccesary to consider how the data is stored.
 
 Most often, when storing data in Mongo, it will be stored in Mongo specific format called BSON. BSON objects are saved in unicode. Working with unicode can be an issue if printing needs to be done. As such, decoding from unicode must to be done. Below illustrates a small program that prints each AuthorID from the auth_metadata collection.
 
@@ -983,7 +991,7 @@ dataset.close()
 ```
 ----------
 
-When retrieving the data, it is often neccesary to narrow the results. This possible directly through Mongo when querying for information. For instance, if all the data is not needed in the auth_metadata, simply the TotalCommits and the AuthorID you can restrict the find call by adding parameters. An example query is provided below.
+When retrieving data, it is often neccesary to narrow the results. This is possible directly through Mongo when querying for information. For instance, if all the data is not needed in the auth_metadata, just the TotalCommits and the AuthorID, the query can be restricted adding parameters to the find call. An example query is provided below.
 
 ----------
 ```python
@@ -991,10 +999,12 @@ dataset = coll.find({}, {"AuthorID": 1, "TotalCommits": 1, "_id": 0}, no_cursor_
 
 for data in dataset:
     print(data)
+    
+dataset.close()
 ```
 ---------
 
-This specific call would allow for direct printing of the data, however, as noted above, the names are saved in BSON and as such will be printed in unicode. The first 10 results are shown below.
+This specific call allows for direct printing of the data, however, as noted above, the names are saved in BSON and as such will be printed in unicode. The first 10 results are shown below.
 
 -------------
 ```
@@ -1012,11 +1022,11 @@ This specific call would allow for direct printing of the data, however, as note
 ```
 --------------
 
-Sometimes, restricting the data even further is neccesary. Notice above that many of the users have 0 commits. If analysis of this was desired, there may be reason to exclude these entries. The below example illustrates a way to restrict the results to only users with greater than 100 commits.
+Sometimes, restricting the data even further is neccesary. Notice above that many of the users have 0 commits. Exclusion of these entries may be desired. The below example illustrates a way to restrict the results to only users with greater than 0 commits.
 
 ----------
 ```python
-dataset = coll.find({"TotalCommits : { "$gt" : 100 } }, 
+dataset = coll.find({"TotalCommits : { "$gt" : 0 } }, 
 				     {"AuthorID": 1, "TotalCommits": 1, "_id": 0}, 
 				     no_cursor_timeout=True)
 
@@ -1024,22 +1034,4 @@ for data in dataset:
     print(data)
 ```
 ---------
-
-The first 10 results are shown below.
-
---------------
-```
-{u'TotalCommits': 228, u'AuthorID': u' <bent.mozilla@gmail.com>'}
-{u'TotalCommits': 137, u'AuthorID': u' <carlosborca@gmail.com>'}
-{u'TotalCommits': 222, u'AuthorID': u' <carlosga_fb@users.sourceforge.net>'}
-{u'TotalCommits': 466, u'AuthorID': u' <edward.lee@engineering.uiuc.edu>'}
-{u'TotalCommits': 127, u'AuthorID': u' <lorenha@DESKTOP-BDBLRUP.localdomain>'}
-{u'TotalCommits': 599, u'AuthorID': u' <manabu@jsk.t.u-tokyo.ac.jp>'}
-{u'TotalCommits': 2633, u'AuthorID': u' <mickeyl@openembedded.org>'}
-{u'TotalCommits': 4174, u'AuthorID': u' <paulb@eiffel.com>'}
-{u'TotalCommits': 605, u'AuthorID': u' <romans@eiffel.com>'}
-{u'TotalCommits': 147, u'AuthorID': u' <viperus@ubuntu.(none)>'}
-
-```
--------------
 
