@@ -961,7 +961,7 @@ dataset.close()
 -------
 
 Once data retrieval has begun, accessing the specific information desired is simple. 
-For example, above I provided the information saved in one element of auth_metadata. If I want to access the author id of each cursor, I can treate the "AuthorID" as the key in the key value mapping. However, as these AuthorIDs are strings, the way the data is stored must be considered. Most often, when storing data in Mongo, it will be stored in unicode format. Working with unicode can be an issue if printing needs to be done. As such, decoding from unicode must to be done for printing to be possible. Below illustrates a small program that prints each AuthorID from the auth_metadata collection.
+For example, above I provided the information saved in one element of auth_metadata. If I want to access the author id of each cursor, I can treate the "AuthorID" as the key in the key value mapping. However, as these AuthorIDs are strings, the way the data is stored must be considered. Most often, when storing data in Mongo, it will be stored in Mongo specific format called BSON. BSON objects are saved in unicode. Working with unicode can be an issue if printing needs to be done. As such, decoding from unicode must to be done for printing to be possible. Below illustrates a small program that prints each AuthorID from the auth_metadata collection.
 
 ----------
 ```python
@@ -980,4 +980,40 @@ dataset.close()
 ```
 ----------
 
-### Data Storage
+When retrieving the data, it is possible to narrow the results directly through Mongo. For instance, if all the data is not needed in the auth_metadata, simply the TotalCommits and the AuthorID you can restrict the find call in Mongo. This is done by adding parameters to the find call. An example call is provided below.
+
+----------
+```python
+dataset = coll.find({}, {"AuthorID": 1, "TotalCommits": 1, "_id": 0}, no_cursor_timeout=True)
+
+for data in dataset:
+    print(data)
+```
+---------
+
+This specific call would allow for direct printing of the data, however, as noted above, the names are saved in BSON and as such will be printed in unicode. The first 10 results are shown below.
+
+-------------
+```
+{u'TotalCommits': 1, u'AuthorID': u'  <mvivekananda@virtusa.com>'}                                                     {u'TotalCommits': 0, u'AuthorID': u' <1151643598@163.com>'}                                                            {u'TotalCommits': 0, u'AuthorID': u' <1615638456@qq.com>'}                                                             {u'TotalCommits': 0, u'AuthorID': u' <182036137@qq.com>'}                                                              {u'TotalCommits': 0, u'AuthorID': u' <1974193036@qq.com>'}                                                             {u'TotalCommits': 0, u'AuthorID': u' <200sc@SomethingStupid.localdomain>'}                                             {u'TotalCommits': 0, u'AuthorID': u' <213>'}                                                                           {u'TotalCommits': 1, u'AuthorID': u' <3sodn@yuki.localdomain>'}                                                        {u'TotalCommits': 21, u'AuthorID': u' <625605841@qq.com>'}                                                             {u'TotalCommits': 0, u'AuthorID': u' <712641411@qq.com>'}                
+```
+--------------
+
+Sometimes, restricting the data even further is neccesary. Notice above that many of the users have 0 commits. If analysis of this was desired, there may be reason to exclude these entries. The below example illustrates a way to restrict the results to only users with greater than 100 commits.
+
+----------
+```python
+dataset = coll.find({"TotalCommits : { "$gt" : 100 } }, {"AuthorID": 1, "TotalCommits": 1, "_id": 0}, no_cursor_timeout=True)
+
+for data in dataset:
+    print(data)
+```
+---------
+
+The first 10 results are shown below.
+
+--------------
+```
+{u'TotalCommits': 228, u'AuthorID': u' <bent.mozilla@gmail.com>'}                                                      {u'TotalCommits': 137, u'AuthorID': u' <carlosborca@gmail.com>'}                                                       {u'TotalCommits': 222, u'AuthorID': u' <carlosga_fb@users.sourceforge.net>'}                                           {u'TotalCommits': 466, u'AuthorID': u' <edward.lee@engineering.uiuc.edu>'}                                             {u'TotalCommits': 127, u'AuthorID': u' <lorenha@DESKTOP-BDBLRUP.localdomain>'}                                         {u'TotalCommits': 599, u'AuthorID': u' <manabu@jsk.t.u-tokyo.ac.jp>'}                                                  {u'TotalCommits': 2633, u'AuthorID': u' <mickeyl@openembedded.org>'}                                                   {u'TotalCommits': 4174, u'AuthorID': u' <paulb@eiffel.com>'}                                                           {u'TotalCommits': 605, u'AuthorID': u' <romans@eiffel.com>'}                                                           {u'TotalCommits': 147, u'AuthorID': u' <viperus@ubuntu.(none)>'}  
+```
+-------------
