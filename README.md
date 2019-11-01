@@ -422,7 +422,7 @@ Hint 1: What is the name of the map?
 
 ## Activity 6: Investigating Technical dependencies
 
-The technical dependenciew have been extracted by parsing the content of all blobs related to 
+The technical dependencies have been extracted by parsing the content of all blobs related to 
 several different languages: and are located in `/da0_data/play/${LANG}thruMaps/`.
 
 These thruMaps directories contain mappings of repositories with modules that were utilized at a given UNIX timestamp under a specific commit. The mappings are in c2bPtaPkgP{$LANG}.{0-31}.gz files.   
