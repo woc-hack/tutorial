@@ -1,7 +1,7 @@
 # Tutorial: basics of using WoC
 
 In order to provide you with the access to the systems, please fill
-[WoC registration form http://bit.ly/WoCSignup].
+[WoC registration form http://bit.ly/WoCSignup](http://bit.ly/WoCSignup).
 
 
 [Recording of the tutorial conducted on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
