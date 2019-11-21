@@ -1,4 +1,7 @@
-# Tutorial: basics for the Hackathon
+# Tutorial: basics of using WoC
+
+In order to provide you with the access to the systems, please fill
+[WoC registration form http://bit.ly/WoCSignup].
 
 
 [Recording of the tutorial conducted on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
@@ -19,7 +22,7 @@ Type
 ```
 cat ~/.ssh/id_rsa.pub
 ```
-That is your public ssh key you include in the woc hackathon registration [form](http://bit.ly/WoC-Signup). The form will ask you for the contents of `id_rsa.pub` and the
+That is your public ssh key you include in the WoC registration [form http://bit.ly/WoCSignup](http://bit.ly/WoCSignup). The form will ask you for the contents of `id_rsa.pub` and the
 GitHub and BitBucket handles. You will receive a response to the
 email provided in the form once your account is set up.
 
