@@ -214,6 +214,21 @@ Hint 1: parent commit is listed in the content of commit 009d7b6da9c4419fe96ffd1
 echo dddff9a89ddd7098a1625cafd3c9d1aa87474cc7 | ~/lookup/showCnt commit
 ```
 
+### Summary 2
+
+Synopsis:
+```
+~/lookup/showCnt commit|tree|blob
+```
+reads from the standard input sha1 of the corresponding objects and 
+prints the content of these objects. Blob objects are preceeded by a line
+that can be used to recognize the object, e.g., blob 2f6e8c1336f6667eb86b60dd2aae5a63827329fd
+by:
+```
+blob;47;15472287;328027352742;328027352742;15472287;2f6e8c1336f6667eb86b60dd2aae5a63827329fd
+```
+blob, database (0-127), length compressed, length uncompressed, length uncompressed and compressed as recorded in the database, sha1
+
 ## Activity 3 - Investigate the maps
 
 We see the content of the copyright file above. Such files are often copied verbatim. Lets determine the first author who have created it (irrespective of a repository).
@@ -260,6 +275,19 @@ Warner Losh <imp@FreeBSD.org>;0000ce4417bd8d9a2d66a7a61393558d503f2805;000109ae9
 
 ```
 
+In addition to variable-length records (key;val1,;val2;...;valn), 
+the output can be produced as a flat table (key;val1\nkey;val2\n...\nkey;valn)
+using -f option:
+```
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues -f a2c
+Warner Losh echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues -f a2c| head
+Warner Losh <imp@FreeBSD.org>;0000ce4417bd8d9a2d66a7a61393558d503f2805
+Warner Losh <imp@FreeBSD.org>;000109ae96e7132d90440c8fa12cb7df95a806c6
+...
+```
+
+
+
 In addition to the random lookup, the maps are also stored in flat sorted files and this format is preffered (faster) when investigating over one million items. 
 For example, find commits by any author named Warner: 
 ```
@@ -288,6 +316,20 @@ Hint 1: use wc (word count), e.g.,
 [username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP*.s | grep -i 'audris' | grep -i 'mockus' | wc -l
 ```
 
+### Summary 3
+For any key provided on standard input, a list of values is provided
+```
+~/lookup/getValue [-f] a2c|c2a|b2c|c2b|b2f|f2b|c2f|f2c|p2c|c2p
+```
+option -f replaces one output line per input line into the number of lines corresponding to the number of values. 
+
+Also, only the first column of the input is considered as the key, other fields are passed through, e.g., 
+```
+echo 'Warner Losh <imp@FreeBSD.org>;zz' | ~/lookup/getValues -f a2c| head
+Warner Losh <imp@FreeBSD.org>;zz;0000ce4417bd8d9a2d66a7a61393558d503f2805
+Warner Losh <imp@FreeBSD.org>;zz;000109ae96e7132d90440c8fa12cb7df95a806c6
+...
+```
 
 ## Activity 4: Using Python APIs from oscar.py
 
