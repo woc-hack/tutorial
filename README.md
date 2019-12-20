@@ -1080,3 +1080,55 @@ for data in dataset:
 ```
 ---------
 
+## Accesing by time slices
+
+To access collection indexed by time we use clickhouse databse:
+https://clickhouse.yandex/docs/en/getting_started/tutorial/
+
+
+It has interfaces to various languages but the key is super fast indexing and the ability to distribute data over a cluster of da servers.
+
+Since only commits have time associated with them, we start from storing all commits in the database. We store only a subset of commits on each server, first we create a table local to each server (commits) and a table that represents all servers (commits_a):
+```
+for h in da0 da1 da2 da3 da4; 
+do echo "CREATE TABLE commits (date Date, sha1 FixedString(20), time Int32, tree FixedString(20), author String, parent String, comment String, content String) ENGINE = MergeTree(date, (sha1), 8192)" |clickhouse-client --host=$h
+  echo "CREATE TABLE commits_a AS commits ENGINE = Distributed(da, default, commits, rand())" | clickhouse-client --host=$h
+done
+```
+
+Then we import data into each of these five tables:
+```
+#illustyreated for da4
+for i in {4..127..5}
+do time ~/lookup/importCmt.perl $i | clickhouse-client --max_partitions_per_insert_block=1000 --host=da4 --query 'INSERT INTO commits FORMAT RowBinary'
+done 
+```
+
+Once the data is in there we can query it
+```
+clickhouse-client --host=da3 --query 'select count (*) from commits_a'
+1830088337
+```
+
+It works fast if we specify specific time or an interval:
+```
+clickhouse-client --host=da3 --query 'select author,comment from commits_a where time=1568656268'
+Matt Davis <mw.davis@hotmail.co.uk>     Made some SEO improvements and also added comments outlining what is contained in each section.\n
+Jessie 1307 <295101171@qq.com>  First Commit\n
+�
+ �� <910063@gmail.com>  0917\n
+nodemcu-custom-build <vladurash@yahoo.com>      Prepare my build.config for custom build
+zzzz1313 <zaki56@rambler.ru>    Initial commit
+Erik Faye-Lund <erik.faye-lund@collabora.com>   .mailmap: add an alias for Sergii Romantsov\n
+Paulus Pärssinen <paulus.parssinen01@edupori.fi>       Initial commit
+AnnaLub <yaskrava@gmail.com>    get all tickets command impl\n
+```
+
+
+We can create additional tables, so that the time filtering could be fast, for example for projects:
+
+```
+clickhouse-client --max_partitions_per_insert_block=1000 --host=da3 --query "CREATE TABLE c2p_$i (date Date, sha1 FixedString(20), np UInt32, p String) ENGINE = MergeTree(date, sha1, 8192)"
+for j in {3..31..4}; do time ./importc2p.perl $j | clickhouse-client --max_partitions_per_insert_block=1000 --host=da3 --query "INSERT INTO c2p_$j (date, sha1, np, p) FORMAT RowBinary"; done 
+```
+
