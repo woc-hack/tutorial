@@ -938,33 +938,34 @@ On the Mongo server within the WoC database, there are some collections provided
 
 ### MongoDB Access
 
-When on the da1 server, you can gain access to the MongoDB server simply by running the command 'mongo', or, when on any other da server, you can gain access by running 'mongo "da1.eecs.utk.edu"'.
+When on the da1 server, you can gain access to the MongoDB server simply by running the command 'mongo', or, when on any other da server, you can gain access by running 'mongo --host "da1.eecs.utk.edu"'.
 
 Once on the server, you can see all the available databases using the "show dbs" command. However, the database that pertains primarily to the WoC is the WoC database. 
 
-You can switch to the WoC database, or any other, using the 'use "database name"' command and, after switching, you can view the available collections in the database by using the 'show collections' command. 
+You can switch to the WoC database, or any other, using the 'use "database name"' command, E.G. (use WoC), and, after switching, you can view the available collections in the database by using the 'show collections' command. 
 
-Currently, there is an author metadata collection (auth_metadata) that contains the total number of projects an author has participated in, the total number of blobs created, the total number of commits made, and the total number of files they have created.
-Alongside this, we are in the process of creating a project metadata collection that will show the language usage in projects and other relevant metadata specific to projects.
+Currently, there is an author metadata collection (auth_metadata.P) that contains the total number of projects an author has participated in, the total number of blobs created, the total number of commits made, the total number of files they have created, the distribution of languages used by that author, and the first and last time the author committed to Git in Unix Timestamp based on the data contained on version P of WoC.
+
+Alongside this, there is a similar collection for projects on WoC (proj_metadata.P) that contains the total number of authors on the project, the total number of commits, the total number of files, the distribution of languages used, the first and last time there was a commit to the project in Unix Timestamp based on version P of WoC, the number of stars GitHub has given that project (if any), if the project is a fork, and where it was forked from (if anywhere).
 
 To see data in one of the collections, you can run the 'db."collection name".findOne()' command. This will show the first element in the collection and should help clarify what is in the collection.
 
-When the above findOne() command is run on the auth_metadata collection, the output is as follows:
+When the above findOne() command is run on the auth_metadata.P collection, the output is as follows:
 
 -----------
 ```
-mongos> db.auth_metadata.findOne() 
+mongos> db.auth_metadata.P.findOne() 
 {
-	"_id" : ObjectId("5d9e3de9c304de5cf415ea6e"), 
-	"TorvaldsIndex" : -1, 
-	"TotalProjects" : 2, 
-	"TotalBlobs" : -1,
-	"TotalCommits" : 1,
-	"AuthorID" : "  <mvivekananda@virtusa.com>",
-	"hidden" : false,
-	"creation_time" : ISODate("2019-10-09T20:07:05.921Z"),
-	"TotalFiles" : 2
-}                          
+        "_id" : ObjectId("5e0f87416450a4c9c14b34b7"),
+        "numCommits" : "8",
+        "authorID" : "  <mahisj7@gmail.com>",
+        "numBlobs" : "70",
+        "earliestCommitDate" : "1418274391",
+        "fileInfo" : "{ 'total_javascript_files' => 17,'total_files' => 119,'total_other_files' => 102 }",
+        "latestCommitDate" : "1418995004",
+        "numProjects" : "1"
+}
+    
 ```
 ---------------
 
