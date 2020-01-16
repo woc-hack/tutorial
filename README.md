@@ -1133,3 +1133,37 @@ clickhouse-client --max_partitions_per_insert_block=1000 --host=da3 --query "CRE
 for j in {3..31..4}; do time ./importc2p.perl $j | clickhouse-client --max_partitions_per_insert_block=1000 --host=da3 --query "INSERT INTO c2p_$j (date, sha1, np, p) FORMAT RowBinary"; done 
 ```
 
+## Python Clickhouse API
+
+We can also access the database through time_info python module:  
+1. `Time_info(tb_name, db_host=None)` - initialized with table name and host name (optional)  
+	* `.get_commits(start, end=None)` returns a list of commits where each commit is a dictionary.  
+
+We can use the `get_commits` to query by date when strings are passed to the method:
+```python
+>>> from time_info import Time_info
+>>>
+>>> t = Time_info('commits_a')
+>>> commits = t.get_commits('2016-06-05', '2016-06-06')
+```
+
+Additionally, the `get_commits` can also be used to query by time when given epoch seconds in integer:
+```python
+>>> commits = t.get_commits(1568656268, 1568656269)
+```
+
+We can access the sha1 of the commit using the dictionary key `sha1`:
+```python
+>>> for commit in commits:
+...     print(commit['sha1'])
+...
+0a8b6216a42e84d7d1e56661f63e5205d4680854
+39927c70a99f0949c1de3d65a2693c8768bc4e0f
+874d92e732d79d0d8bafb1d1bcc76a3b6d81302f
+c6d003ce5595e748c127c2b5baf0910ea662466a
+...
+```
+For each commits, the following keys are supported:
+```python
+['date', 'sha1', 'time', 'tree', 'author', 'parent', 'comment', 'content']
+```
