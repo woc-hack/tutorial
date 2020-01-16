@@ -865,7 +865,7 @@ This is not to say that oscar.py is inefficient and should not be utilized, but 
 
 ## Activity S4: Plumbing of WoC
 
-We can obtain a diff for any commit. It requires comparing trees fo it and its parent:
+We can obtain a diff for any commit. It requires comparing trees of it and its parent:
 
 Lets find the diff for 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a: 
 ```
