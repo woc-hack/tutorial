@@ -1135,35 +1135,97 @@ for j in {3..31..4}; do time ./importc2p.perl $j | clickhouse-client --max_parti
 
 ## Python Clickhouse API
 
-We can also access the database through time_info python module:  
-1. `Time_info(tb_name, db_host=None)` - initialized with table name and host name (optional)  
-	* `.get_commits(start, end=None)` returns a list of commits where each commit is a dictionary.  
+There are classes in oscar.py that allow for querying the clickhouse database:  
+1. `Time_commit_info(tb_name='commits_all', db_host='localhost')` - commits
+	* `.commit_counts(start, end=None)` - get the count of the commits given a time interval
+	* `.commits_iter(start, end=None)` - get the commits as 'Commit' objects in a generator
+	* `.commits_shas(start, end=None)` - get the sha1 of the commits in a list
+	* `.commits_shas_iter(start, end=None)` - get the sha1 of the commits in a generator
+2. `Time_projects_info(tb_name='projects_all', db_host='localhsot')` - \*projects
+	* `.get_values_iter(cols, start, end)` - query columns given a time interval (generator)
+	* `.project_timeline(cols, repo)` - query columns of a given project name, sorted by time (generator)
+	* `.author_timeline(cols, author)` - query columns of a given author, sorted by time (generator)
+	
+\*note that the *projects_all* table currently does not contain projects that uses the following programming languages: php, rb, Lisp, Sql, Fml, Swift, Lua, Cob, Erlang
 
-We can use the `get_commits` to query by date when strings are passed to the method:
+The structures of the databases are listed below:  
+**commits_all:**  
+| name    | type            |
+|---------|-----------------|
+| sha1    | FixedString(20) |
+| time    | Int32           |
+| tree    | FixedString(20) |
+| author  | String          |
+| parent  | String          |
+| comment | String          |
+| content | String          |
+
+**projects_all:**  
+| name     | type            |
+|----------|-----------------|
+| sha1     | FixedString(20) |
+| time     | Int32           |
+| blob     | FixedString(20) |
+| language | String          |
+| repo     | String          |
+| author   | String          |
+| deps     | String          |
+
+We can use the `commit_counts` to query the count of the commits given a time interval:
 ```python
->>> from time_info import Time_info
+>>> from oscar import Time_commit_info
 >>>
->>> t = Time_info('commits_a')
->>> commits = t.get_commits('2016-06-05', '2016-06-06')
+>>> t = Time_commit_info()
+>>> t.commit_counts(1568656268)
+8 
 ```
 
-Additionally, the `get_commits` can also be used to query by time when given epoch seconds in integer:
+The `commits_shas_iter` can be used to iterate through commits given a time interval:
 ```python
->>> commits = t.get_commits(1568656268, 1568656269)
-```
-
-We can access the sha1 of the commit using the dictionary key `sha1`:
-```python
->>> for commit in commits:
-...     print(commit['sha1'])
-...
+>>> t = Time_commit_info()
+>>> for sha1 in t.commits_shas_iter(1568656268):
+...     print(sha1)
 0a8b6216a42e84d7d1e56661f63e5205d4680854
-39927c70a99f0949c1de3d65a2693c8768bc4e0f
 874d92e732d79d0d8bafb1d1bcc76a3b6d81302f
-c6d003ce5595e748c127c2b5baf0910ea662466a
+ccf1a5847661de2df791a5a962e3499a478f48ab
+39927c70a99f0949c1de3d65a2693c8768bc4e0f
+fbb7add2a58b733a797d97a1e63cb8661702d0a3
 ...
 ```
-For each commits, the following keys are supported:
+For `projects_all` table, `get_values_iter` queries for columns in a given time interval:
 ```python
-['date', 'sha1', 'time', 'tree', 'author', 'parent', 'comment', 'content']
+>>> from oscar import Time_project_info as Proj
+>>> p = Proj()
+>>> rows = p.get_values_iter(['time','repo'], 1568571909, 1568571910)
+>>> for row in rows:
+...     print(row)
+...
+(1568571909, 'mrtrevanderson_CECS_424')
+(1568571909, 'gitlab.com_surajpatel_tic_toc_toe')
+(1568571909, 'gitlab.com_surajpatel_tic_toc_toe')
+...
+```
+
+`project_timeline` can be used to query for a specific repository. The result shows the time of the commit and the name of the commit repo sorted by time:
+```python
+>>> rows = p.project_timeline(['time','repo'], 'mrtrevanderson_CECS_424')
+>>> for row in rows:
+...     print(row)
+...
+(1568571909, 'mrtrevanderson_CECS_424')
+(1568571909, 'mrtrevanderson_CECS_424')
+(1568571909, 'mrtrevanderson_CECS_424')
+...
+```
+
+Similarily, `author_timeline` queries for a specific author:
+```python
+>>> rows = p.author_timeline(['time', 'repo'], 'Andrew Gacek <andrew.gacek@gmail.com>')
+>>> for row in rows:
+...     print(row)
+...
+(49, 'smaccm_camera_demo')
+(677, 'smaccm_vm_hack')
+(1180017188, 'teyjus_teyjus')
+...
 ```
