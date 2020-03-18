@@ -6,6 +6,11 @@ In order to provide you with the access to the systems, please fill
 
 [Recording of the tutorial conducted on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
 
+### MOOC on using shell script
+
+Please consider auditing this course if you are not comfortable working with the terminal/shell script
+
+[Unix Tools: Data, Software and Production Engineering](https://courses.edx.org/courses/course-v1:DelftX+UnixTx+1T2020/course/)
 
 ### Before the Tutorial: Access to da server(s)
 
