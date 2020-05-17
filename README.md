@@ -1197,6 +1197,8 @@ ccf1a5847661de2df791a5a962e3499a478f48ab
 fbb7add2a58b733a797d97a1e63cb8661702d0a3
 ...
 ```
+
+The `projects_all` table stores the information associated to each **commit**.  
 For `projects_all` table, `get_values_iter` queries for columns in a given time interval:
 ```python
 >>> from oscar import Time_project_info as Proj
@@ -1210,7 +1212,6 @@ For `projects_all` table, `get_values_iter` queries for columns in a given time 
 (1568571909, 'gitlab.com_surajpatel_tic_toc_toe')
 ...
 ```
-
 `project_timeline` can be used to query for a specific repository. The result shows the time of the commit and the name of the commit repo sorted by time:
 ```python
 >>> rows = p.project_timeline(['time','repo'], 'mrtrevanderson_CECS_424')
@@ -1223,6 +1224,16 @@ For `projects_all` table, `get_values_iter` queries for columns in a given time 
 ...
 ```
 
+It might be useful to examine the dependencies (i.e. includes in C or imports in Python) for each commit.  
+The snippet below shows the time, repo name, language, and dependencies for each commit. Note that the commits are sorted by time and the dependencies are separated by semicolon.
+```python
+>>> rows = p.get_values_iter(['time', 'repo', 'language', 'deps'], 1568571915, 1568571916)
+>>> for row in rows:
+...     print(row)
+...
+(1568571916, 'Nakwendaa_neural-network', 'PY', 'numpy\n')
+(1568571916, 'Nakwendaa_neural-network', 'PY', 'os;pickle;numpy;time;matplotlib.pyplot;gzip;Mlp.Mlp\n')
+```  
 Similarily, `author_timeline` queries for a specific author:
 ```python
 >>> rows = p.author_timeline(['time', 'repo'], 'Andrew Gacek <andrew.gacek@gmail.com>')
