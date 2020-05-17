@@ -1234,3 +1234,130 @@ Similarily, `author_timeline` queries for a specific author:
 (1180017188, 'teyjus_teyjus')
 ...
 ```
+## Environment Variable Configuration for OSCAR
+Environment variables can be used to tell oscar where to look for data files and set its version. The default paths for data files are:
+```python
+PATHS = {
+    # data_type: (path, prefix_bit_length)
+    # prefix length means that the data are split into 2**n files,
+    # e.g. key is in 0..31 for prefix length of 5 bit.
+
+    # The most critical: raw data for the initial storage, use in sweeps, 100TB da4+ backup
+    'commit_sequential_idx': ('/da4_data/All.blobs/commit_{key}.idx', 7),
+    'commit_sequential_bin': ('/da4_data/All.blobs/commit_{key}.bin', 7),
+    'tree_sequential_idx': ('/da4_data/All.blobs/tree_{key}.idx', 7),
+    'tree_sequential_bin': ('/da4_data/All.blobs/tree_{key}.bin', 7),
+    
+    'tag_data': ('/da4_data/All.blobs/tag_{key}.bin', 7),
+    'commit_data': ('/da4_data/All.blobs/commit_{key}.bin', 7),
+    'tree_data': ('/da4_data/All.blobs/tree_{key}.bin', 7),
+    'blob_data': ('/da4_data/All.blobs/blob_{key}.bin', 7),
+
+    # critical - random access to trees and commits on da4 - need to do offsets for the da3
+    'commit_random': ('/fast/All.sha1c/commit_{key}.tch', 7),
+    'tree_random': ('/fast/All.sha1c/tree_{key}.tch', 7),
+
+    'blob_offset': ('/fast/All.sha1o/sha1.blob_{key}.tch', 7),
+    'commit_offset': ('/fast/All.sha1o/sha1.commit_{key}.tch', 7),
+    'tree_offset': ('/fast/All.sha1o/sha1.tree_{key}.tch', 7),
+    # the rest of x_data is currently unused:
+    # 'commit_data': ('/data/All.blobs/commit_{key}.bin',  # 7)
+    # 'tree_data': ('/data/All.blobs/tree_{key}.bin', 7)
+    # 'tag_data': ('/data/All.blobs/tag_{key}.bin', 7)
+
+    # relations - good to have but not critical
+  
+    # move to current version R as they get updated
+    'commit_projects': ('/da0_data/basemaps/c2pFull{ver}.{key}.tch', 5),
+    'commit_children': ('/da0_data/basemaps/c2ccFull{ver}.{key}.tch', 5),
+    'commit_time_author': ('/da0_data/basemaps/c2taFull{ver}.{key}.tch', 5),
+    'commit_root': ('/da0_data/basemaps/c2rFull{ver}.{key}.tch', 5),
+    'commit_parent': ('/da0_data/basemaps/c2pcFull{ver}.{key}.tch', 5),
+    'author_commits': ('/da0_data/basemaps/a2cFull{ver}.{key}.tch', 5),
+    'author_projects': ('/da0_data/basemaps/a2pFull{ver}.{key}.tch', 5),
+    'project_authors': ('/da0_data/basemaps/p2aFull{ver}.{key}.tch', 5),
+
+    'commit_head': ('/da0_data/basemaps/c2hFull{ver}.{key}.tch', 5),
+    'commit_blobs': ('/da0_data/basemaps/c2bFull{ver}.{key}.tch', 5),
+    'commit_files': ('/da0_data/basemaps/c2fFull{ver}.{key}.tch', 5),
+    'project_commits': ('/da0_data/basemaps/p2cFull{ver}.{key}.tch', 5),
+    'blob_commits': ('/da0_data/basemaps/b2cFull{ver}.{key}.tch', 5),
+    'blob_authors': ('/da0_data/basemaps/b2aFull{ver}.{key}.tch', 5),
+    'file_commits': ('/da0_data/basemaps/f2cFull{ver}.{key}.tch', 5),
+    'file_blobs': ('/da0_data/basemaps/f2bFull{ver}.{key}.tch', 5),
+    'blob_files': ('/da0_data/basemaps/b2fFull{ver}.{key}.tch', 5),
+
+    'author_trpath':('/da0_data/basemaps/a2trp{ver}.tch', 5),
+
+    # another way to get commit parents, currently unused
+    # 'commit_parents': ('/da0_data/basemaps/c2pcK.{key}.tch', 7)
+
+    # SHA1 cache, currently only on da4, da5  668G
+    'blob_index_line': ('/fast/All.sha1/sha1.blob_{key}.tch', 7),
+    'tree_index_line': ('/fast/All.sha1/sha1.tree_{key}.tch', 7),
+    'commit_index_line': ('/fast/All.sha1/sha1.commit_{key}.tch', 7),
+    'tag_index_line': ('/fast/All.sha1/sha1.tag_{key}.tch', 7)
+}
+```  
+There are 6 general environment variables:  
+1. `OSCAR_ALL_BLOBS`:
+	* `commit_sequential_idx`
+	* `commit_sequential_bin`
+	* `tree_sequential_idx`
+	* `tree_sequential_bin`
+	* `tag_data`
+	* `commit_data`
+	* `tree_data`
+	* `blob_data`
+2. `OSCAR_ALL_SHA1C`:
+	* `commit_random`
+	* `tree_random` 
+3. `OSCAR_ALL_SHA1O`:
+	* `blob_offset`
+	* `commit_offset`
+	* `tree_offset`
+4. `OSCAR_BASEMAPS`:
+	* `commit_projects`
+	* `commit_children`
+	* `commit_time_author`
+	* `commit_root`
+	* `commit_parent`
+	* `author_commits`
+	* `author_projects`
+	* `project_authors`
+	* `commit_head`
+	* `commit_blobs`
+	* `commit_files`
+	* `project_commits`
+	* `blob_commits`
+	* `blob_authors`
+	* `file_commits`
+	* `file_blobs`
+	* `blob_files`
+	* `author_trpath`
+5. `OSCAR_ALL_SHA1`: 
+	* `blob_index_line`
+	* `tree_index_line`
+	* `commit_index_line`
+	* `tag_index_line`
+6. `OSCAR_BASEMAPS_VER`:
+	* Version of all basemaps  
+	
+For environment variable 1-5, each will be responsible for a group of data files.  
+
+For example, if the environment variable `OSCAR_ALL_SHA1C` is set to `/mydir/mysubdir`, then it will change the path for  `commit_random` and `tree_random`. Specifically:  
+Change the path for `commit_random` to `/mydir/mysubdir/commit_{key}.tch`  
+Change the path for `tree_random` to `/mydir/mysubdir/tree_{key}.tch`  
+
+Each individual data file path can be configured by the `OSCAR_{PATHS name}` environment variable.  
+
+For example, if the environment variable `OSCAR_COMMIT_RANDOM` is set to `/foo/bar`, then it will change the path for `commit_random`. Specifically:  
+Change the path for `commit_random` to `/foo/bar/commit_{key}.tch`  
+The path for `tree_random` remains `/mydir/mysubdir/tree_{key}.tch`  
+**Note that the individual file configuration always overwrites the general configuration.**  
+
+The `OSCAR_BASEMAPS_VER` environment variable specifies which version of the basemaps to use. It will change the version for **all** basemaps.
+
+Each individual basemap version can be configured via the `OSCAR_{basemap name}_VER` variable.  
+
+For example, if the environment variable `OSCAR_BLOB_FILES_VER` is set to `Q`, then the version `Q` of the `blob_files` basemap will be used. This overwrites the version set by the `OSCAR_BASEMAPS_VER`.  
