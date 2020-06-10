@@ -343,18 +343,22 @@ Note: "/<function_name>" after a function name denotes the version of that funct
 These are corresponding functions in oscar.py that open the .tch files listed below for a given entity:
 
 1. `Author('...')`  - initialized with a combination of name and email
+	* `.blobs`
 	* `.commit_shas/commits`
 	* `.project_names`
 	* `.torvald` - returns the torvald path of an Author, i.e, who did this Author work
 				 with that also worked with Linus Torvald
 2. `Blob('...')` -  initialized with SHA of blob
 	* `.commit_shas/commits` - commits removing this blob are not included
+	* `.tkns` - result of ctags run on this blob, if there were any
 3. `Commit('...')` - initialized with SHA of commit
 	* `.blob_shas/blobs`
 	* `.child_shas/children`
 	* `.changed_file_names/files_changed`
 	* `.parent_shas/parents`
 	* `.project_names/projects`
+	* `.reporoot` - original repository for this commit
+	* `.tdiff`
 4. `Commit_info('...')` - initialized like Commit()
 	* `.head`
 	* `.time_author`
@@ -363,6 +367,10 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 6. `Project('...')` - initialized with project name/URI
 	* `.author_names`
 	* `.commit_shas/commits`
+	* `.fork_commits` - like `commit_shas`, but also accounts for forks
+7. `Tdiff('...')` - initialized with SHA, result of diff run on 2 blobs (if there was a diff)
+	* `.commit`
+	* `.file`
 
 The non-Generator version of these functions will return a tuple of items which can then be iterated:
 ```
