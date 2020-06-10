@@ -345,10 +345,15 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 1. `Author('...')`  - initialized with a combination of name and email
 	* `.commit_shas/commits`
 	* `.project_names`
+	* `.files`
 	* `.torvald` - returns the torvald path of an Author, i.e, who did this Author work
 				 with that also worked with Linus Torvald
 2. `Blob('...')` -  initialized with SHA of blob
 	* `.commit_shas/commits` - commits removing this blob are not included
+	* `.string_sha(string)`
+	* `.file_sha(filename)` - compute blob sha from a file content
+	* `.position` - get offset and length of blob data in storage
+	* `.data` - content of the blob
 3. `Commit('...')` - initialized with SHA of commit
 	* `.blob_shas/blobs`
 	* `.child_shas/children`
@@ -359,7 +364,8 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 	* `.head`
 	* `.time_author`
 5. `File('...')` - initialized with a path, starting from a commit root tree
-	* `.commit_shas/commits`
+	* `.authors`
+	* `.commit_shas/commits`	
 6. `Project('...')` - initialized with project name/URI
 	* `.author_names`
 	* `.commit_shas/commits`
