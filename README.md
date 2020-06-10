@@ -343,6 +343,7 @@ Note: "/<function_name>" after a function name denotes the version of that funct
 These are corresponding functions in oscar.py that open the .tch files listed below for a given entity:
 
 1. `Author('...')`  - initialized with a combination of name and email
+	* `.blobs`
 	* `.commit_shas/commits`
 	* `.project_names`
 	* `.files`
@@ -350,25 +351,38 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 				 with that also worked with Linus Torvald
 2. `Blob('...')` -  initialized with SHA of blob
 	* `.commit_shas/commits` - commits removing this blob are not included
-	* `.string_sha(string)`
+	* `.data` - content of the blob
 	* `.file_sha(filename)` - compute blob sha from a file content
 	* `.position` - get offset and length of blob data in storage
-	* `.data` - content of the blob
+	* `.string_sha(string)`
+	* `.tkns` - result of ctags run on this blob, if there were any
 3. `Commit('...')` - initialized with SHA of commit
 	* `.blob_shas/blobs`
 	* `.child_shas/children`
 	* `.changed_file_names/files_changed`
 	* `.parent_shas/parents`
 	* `.project_names/projects`
+	* `.reporoot` - original repository for this commit
+	* `.tdiff`
 4. `Commit_info('...')` - initialized like Commit()
 	* `.head`
 	* `.time_author`
 5. `File('...')` - initialized with a path, starting from a commit root tree
 	* `.authors`
-	* `.commit_shas/commits`	
+	* `.blobs`
+	* `.commit_shas/commits`
 6. `Project('...')` - initialized with project name/URI
 	* `.author_names`
 	* `.commit_shas/commits`
+	* `.fork_commits` - like `commit_shas`, but also accounts for forks
+7. `Tdiff('...')` - initialized with SHA, result of diff run on 2 blobs (if there was a diff)
+	* `.commit`
+	* `.file`
+8. `Tree('...')` - representation of a git tree object (dir), initialized with SHA of tree
+	* `.files`
+	* `.blob_shas/blobs`
+	* `.commit_shas/commits`
+	* `.traverse`
 
 The non-Generator version of these functions will return a tuple of items which can then be iterated:
 ```
