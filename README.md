@@ -346,6 +346,7 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 	* `.blobs`
 	* `.commit_shas/commits`
 	* `.project_names`
+	* `.files`
 	* `.torvald` - returns the torvald path of an Author, i.e, who did this Author work
 				 with that also worked with Linus Torvald
 2. `Blob('...')` -  initialized with SHA of blob
