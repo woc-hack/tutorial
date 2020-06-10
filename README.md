@@ -346,11 +346,14 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 	* `.blobs`
 	* `.commit_shas/commits`
 	* `.project_names`
-	* `.files`
 	* `.torvald` - returns the torvald path of an Author, i.e, who did this Author work
 				 with that also worked with Linus Torvald
 2. `Blob('...')` -  initialized with SHA of blob
 	* `.commit_shas/commits` - commits removing this blob are not included
+	* `.data` - content of the blob
+	* `.file_sha(filename)` - compute blob sha from a file content
+	* `.position` - get offset and length of blob data in storage
+	* `.string_sha(string)`
 	* `.tkns` - result of ctags run on this blob, if there were any
 3. `Commit('...')` - initialized with SHA of commit
 	* `.blob_shas/blobs`
@@ -365,7 +368,8 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 	* `.time_author`
 5. `File('...')` - initialized with a path, starting from a commit root tree
 	* `.authors`
-	* `.commit_shas/commits`	
+	* `.blobs`
+	* `.commit_shas/commits`
 6. `Project('...')` - initialized with project name/URI
 	* `.author_names`
 	* `.commit_shas/commits`
@@ -373,6 +377,11 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 7. `Tdiff('...')` - initialized with SHA, result of diff run on 2 blobs (if there was a diff)
 	* `.commit`
 	* `.file`
+8. `Tree('...')` - representation of a git tree object (dir), initialized with SHA of tree
+	* `.files`
+	* `.blob_shas/blobs`
+	* `.commit_shas/commits`
+	* `.traverse`
 
 The non-Generator version of these functions will return a tuple of items which can then be iterated:
 ```
