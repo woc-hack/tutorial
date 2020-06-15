@@ -338,9 +338,9 @@ Warner Losh <imp@FreeBSD.org>;zz;000109ae96e7132d90440c8fa12cb7df95a806c6
 
 ## Activity 4: Using Python APIs from oscar.py
 
-Note: "/<function_name>" after a function name denotes the version of that function that returns a Generator object  
+Important Note: If you experience any difficulties in retrieving data from oscar.py's function calls (i.e., you receive an empty tuple on function return), please run `git pull` in your cloned repo to stay up-to-date with the latest version of oscar.py.   
 
-These are corresponding functions in oscar.py that open the .tch files listed below for a given entity:
+These are corresponding functions in oscar.py that open the .tch files listed below for a given entity. "/<function_name>" after a function name denotes the version of that function that returns a Generator object.
 
 1. `Author('...')`  - initialized with a combination of name and email
 	* `.blobs`
@@ -350,10 +350,12 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 	* `.torvald` - returns the torvald path of an Author, i.e, who did this Author work
 				 with that also worked with Linus Torvald
 2. `Blob('...')` -  initialized with SHA of blob
+	* `.author` - returns timestamp, author name, and binary SHA of commit
 	* `.commit_shas/commits` - commits removing this blob are not included
 	* `.data` - content of the blob
 	* `.file_sha(filename)` - compute blob sha from a file content
 	* `.position` - get offset and length of blob data in storage
+	* `.parent`
 	* `.string_sha(string)`
 	* `.tkns` - result of ctags run on this blob, if there were any
 3. `Commit('...')` - initialized with SHA of commit
@@ -465,20 +467,29 @@ Keys for identifying letters:
 * cc = Child Commit
 * f = File
 * h = Head Commit
+* ob = Parent Blob
 * p = Project
 * pc = Parent Commit
+* P = Forked/Root Project (see Note below)
 * ta = Time Author
+* td = Tdiff
+* tk = Tokens (ctags)
 * trp = Torvalds Path
 
 List of relationships:
 ```
-* a2c (.s)	* a2f		* a2ft		* a2p (.s)	* a2trp0 (.s)
-* b2c (.s)	* b2f (.s)
-* c2b (.s)	* c2cc		* c2f (.s)		
-* c2h		* c2pc		* c2p (.s)	* c2ta (.s)
-* f2b (.s)	* f2c (.s)		
-* p2a (.s)	* p2c (.s)
+* a2b 		* a2c (.s)	* a2f		* a2ft		
+* a2p (.s)	* a2trp0 (.s)
+* b2a		* b2c (.s)	* b2f (.s)	* b2ob		* b2tk
+* c2b (.s)	* c2cc		* c2f (.s)	* c2h		* c2pc
+* c2p (.s)	* c2P		* c2ta (.s)	* c2td
+* f2a		* f2b (.s)	* f2c (.s)		
+* p2a (.s)	* p2c (.s)	* P2c
+* td2c		* td2f
 ```
+
+Note: c2P returns the most central repository for this commit, and does not include repos that forked off of this commit. 
+      P2c returns ALL commits associated with this repo, including commits made to forks of this particular repo. 
 
 ### Exercise 5
 
