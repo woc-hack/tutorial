@@ -1177,12 +1177,12 @@ There are classes in oscar.py that allow for querying the clickhouse database:
 	* `.commits_iter(start, end=None)` - get the commits as 'Commit' objects in a generator
 	* `.commits_shas(start, end=None)` - get the sha1 of the commits in a list
 	* `.commits_shas_iter(start, end=None)` - get the sha1 of the commits in a generator
-2. `Time_projects_info(tb_name='projects_all', db_host='localhsot')` - \*projects
+2. `Time_projects_info(tb_name='b2cPtaPkgR_all', db_host='localhsot')` - \*projects
 	* `.get_values_iter(cols, start, end)` - query columns given a time interval (generator)
 	* `.project_timeline(cols, repo)` - query columns of a given project name, sorted by time (generator)
 	* `.author_timeline(cols, author)` - query columns of a given author, sorted by time (generator)
 	
-\*note that the *projects_all* table currently does not contain projects that uses the following programming languages: php, rb, Lisp, Sql, Fml, Swift, Lua, Cob, Erlang
+\*note that the *b2cPtaPkgR_all* table currently does not contain projects that uses the following programming languages: php, Lisp, Sql, Fml, Swift, Lua, Cob, Erlang, Clojure, Markdown, CSS
 
 The structures of the databases are listed below:  
 **commits_all:**  
@@ -1196,15 +1196,15 @@ The structures of the databases are listed below:
 | comment | String          |
 | content | String          |
 
-**projects_all:**  
+**b2cPtaPkgR_all:**  
 | name     | type            |
 |----------|-----------------|
-| sha1     | FixedString(20) |
-| time     | Int32           |
 | blob     | FixedString(20) |
-| language | String          |
-| repo     | String          |
+| commit   | FixedString(20) |
+| project  | String          |
+| time     | UInt32          |
 | author   | String          |
+| language | String          |
 | deps     | String          |
 
 We can use the `commit_counts` to query the count of the commits given a time interval:
@@ -1215,11 +1215,20 @@ We can use the `commit_counts` to query the count of the commits given a time in
 >>> t.commit_counts(1568656268)
 8 
 ```
-
-The `commits_shas_iter` can be used to iterate through commits given a time interval:
+The `commits` method can be used to iterate through commit objects given a time interval:
 ```python
 >>> t = Time_commit_info()
->>> for sha1 in t.commits_shas_iter(1568656268):
+>>> commits = t.commits(1568656268)
+>>> c = commits.next()
+>>> type(c)
+<class 'oscar.Commit'>
+>>> c.parent_shas
+('9c4cc4f6f8040ed98388c7dedeb683469f7210f5',)
+```
+The `commits_shas` method can be used to iterate through commit hashes given a time interval:
+```python
+>>> t = Time_commit_info()
+>>> for sha1 in t.commits_shas(1568656268):
 ...     print(sha1)
 0a8b6216a42e84d7d1e56661f63e5205d4680854
 874d92e732d79d0d8bafb1d1bcc76a3b6d81302f
@@ -1229,12 +1238,12 @@ fbb7add2a58b733a797d97a1e63cb8661702d0a3
 ...
 ```
 
-The `projects_all` table stores the information associated to each **commit**.  
-For `projects_all` table, `get_values_iter` queries for columns in a given time interval:
+The `b2cPtaPkgR_all` table stores the information associated to each **commit**.  
+For `b2cPtaPkgR_all` table, use `get_values_iter` of the `Time_projects_info` class to queries for columns in a given time interval:
 ```python
 >>> from oscar import Time_project_info as Proj
 >>> p = Proj()
->>> rows = p.get_values_iter(['time','repo'], 1568571909, 1568571910)
+>>> rows = p.get_values_iter(['time','project'], 1568571909, 1568571910)
 >>> for row in rows:
 ...     print(row)
 ...
@@ -1245,7 +1254,7 @@ For `projects_all` table, `get_values_iter` queries for columns in a given time 
 ```
 `project_timeline` can be used to query for a specific repository. The result shows the time of the commit and the name of the commit repo sorted by time:
 ```python
->>> rows = p.project_timeline(['time','repo'], 'mrtrevanderson_CECS_424')
+>>> rows = p.project_timeline(['time','project'], 'mrtrevanderson_CECS_424')
 >>> for row in rows:
 ...     print(row)
 ...
@@ -1258,7 +1267,7 @@ For `projects_all` table, `get_values_iter` queries for columns in a given time 
 It might be useful to examine the dependencies (i.e. includes in C or imports in Python) for each commit.  
 The snippet below shows the time, repo name, language, and dependencies for each commit. Note that the commits are sorted by time and the dependencies are separated by semicolon.
 ```python
->>> rows = p.get_values_iter(['time', 'repo', 'language', 'deps'], 1568571915, 1568571916)
+>>> rows = p.get_values_iter(['time', 'project', 'language', 'deps'], 1568571915, 1568571916)
 >>> for row in rows:
 ...     print(row)
 ...
@@ -1267,7 +1276,7 @@ The snippet below shows the time, repo name, language, and dependencies for each
 ```  
 Similarily, `author_timeline` queries for a specific author:
 ```python
->>> rows = p.author_timeline(['time', 'repo'], 'Andrew Gacek <andrew.gacek@gmail.com>')
+>>> rows = p.author_timeline(['time', 'project'], 'Andrew Gacek <andrew.gacek@gmail.com>')
 >>> for row in rows:
 ...     print(row)
 ...
