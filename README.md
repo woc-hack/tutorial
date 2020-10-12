@@ -296,11 +296,18 @@ Warner Losh <imp@FreeBSD.org>;000109ae96e7132d90440c8fa12cb7df95a806c6
 In addition to the random lookup, the maps are also stored in flat sorted files and this format is preffered (faster) when investigating over one million items. 
 For example, find commits by any author named Warner: 
 ```
-[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP0.s | grep 'Warner'
+[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullS0.s | grep 'Warner'
 ```
 As described below, the maps are split into 32 parts to enable parallel search.
-FullP means that we are looking ata  complete extract at version P. 
+FullS means that we are looking ata  complete extract at version S. 
 
+As versions keep being updated, and data no longer fits on a single server, 
+a more flexible way to run the same command would be
+```
+[username@da0]~% zcat /da?_data/basemaps/gz/a2cFull?0.s | grep 'Warner'
+```
+In other words, we look for the file on any of the servers and selecting an arbitrary 
+version of the datbase.
 
 ### Exercise 3
 
