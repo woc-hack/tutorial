@@ -331,7 +331,7 @@ Hint 1: use wc (word count), e.g.,
 ### Summary 3
 For any key provided on standard input, a list of values is provided
 ```
-~/lookup/getValue [-f] a2c|c2a|b2c|c2b|b2f|f2b|c2f|f2c|p2c|c2p
+~/lookup/getValue [-f] a2c|c2ta|b2c|c2b|b2f|f2b|c2f|f2c|p2c|c2p
 ```
 option -f replaces one output line per input line into the number of lines corresponding to the number of values. 
 
