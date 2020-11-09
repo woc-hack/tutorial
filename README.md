@@ -1,10 +1,10 @@
 # Tutorial: basics of using WoC
 
 In order to provide you with the access to the systems, please fill
-[WoC registration form http://bit.ly/WoCSignup](http://bit.ly/WoCSignup).
+1. [WoC registration form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link)
 
 
-[Recording of the tutorial conducted on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
+2. [Recording of the tutorial conducted on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
 
 ### MOOC on using shell script
 
