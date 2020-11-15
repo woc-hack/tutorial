@@ -182,7 +182,7 @@ For more examples [see full API](https://bitbucket.org/swsc/lookup/src/master/RE
 Lets look at the commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a:
 
 ```
-[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ~/lookup/showCnt commit
+[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ~/lookup/showCnt commit 3
 tree 464ac950171f673d1e45e2134ac9a52eca422132
 parent dddff9a89ddd7098a1625cafd3c9d1aa87474cc7
 author Warner Losh <imp@FreeBSD.org> 1092638038 +0000
@@ -192,7 +192,10 @@ Don't need to declare cbb module.  don't know why I never saw
 duplicate messages..
 ```
 
+
 This commit has a tree and a parent commit and is created by 'Warner Losh <imp@FreeBSD.org>'. 
+(parameter 3 defines that raw output needs to be produced)
+
 Lets inspect the tree (the root folder of the project):
 ```
 [username@da0]~% echo 464ac950171f673d1e45e2134ac9a52eca422132 | ~/lookup/showCnt tree
@@ -226,13 +229,7 @@ Synopsis:
 ~/lookup/showCnt commit|tree|blob
 ```
 reads from the standard input sha1 of the corresponding objects and 
-prints the content of these objects. Blob objects are preceeded by a line
-that can be used to recognize the object, e.g., blob 2f6e8c1336f6667eb86b60dd2aae5a63827329fd
-by:
-```
-blob;47;15472287;328027352742;328027352742;15472287;2f6e8c1336f6667eb86b60dd2aae5a63827329fd
-```
-blob, database (0-127), length compressed, length uncompressed, length uncompressed and compressed as recorded in the database, sha1
+prints the content of these objects. 
 
 ## Activity 3 - Investigate the maps
 
@@ -261,10 +258,8 @@ b2c (blob to commit) shows the numerous commits that introduced that blob in all
 to identify all associated projects:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  \
-~/lookup/getValues b2c | \
-perl -ane 's/^[^;];//;s/;/\n/g;print' | \
-~/lookup/getValues c2p | \
-perl -ane 's/^[^;];//;s/;/\n/g;print' 
+~/lookup/getValues -f b2c | cut -d\; -f2 | \
+~/lookup/getValues -f c2p  
 ajburton_freebsd
 bu7cher_freebsd
 denghuancong_freebsd
@@ -331,7 +326,7 @@ Hint 1: use wc (word count), e.g.,
 ### Summary 3
 For any key provided on standard input, a list of values is provided
 ```
-~/lookup/getValue [-f] a2c|c2ta|b2c|c2b|b2f|f2b|c2f|f2c|p2c|c2p
+~/lookup/getValue [-f] a2c|c2ta|b2c|c2b|b2f|f2b|c2f|f2c|p2c|c2p|c2P|P2c
 ```
 option -f replaces one output line per input line into the number of lines corresponding to the number of values. 
 
@@ -404,7 +399,10 @@ for commit in Author(author_name).commit_shas:
 Install the latest oscar.py
 ```
 [username@da0]~% cd ~/oscar.py
-[username@da0]~% easy_install --user --upgrade oscar
+```
+If "import oscar" fails
+```
+[username@da0]~% easy_install --user clickhouse-driver
 ```
 
 As we learned before, we can do that in shell
@@ -479,6 +477,8 @@ Keys for identifying letters:
 * pc = Parent Commit
 * P = Forked/Root Project (see Note below)
 * ta = Time Author
+* r = root commit obtained by traversing commit history
+* h = head commit obtained by traversing commit history
 * td = Tdiff
 * tk = Tokens (ctags)
 * trp = Torvalds Path
