@@ -396,6 +396,11 @@ for commit in Author(author_name).commit_shas:
 
 ### Exercise 4a:  Get a list of commits made by a specific author:  
 
+Python api needs logging in to da4, so start by
+```
+ssh da4
+```
+
 Install the latest oscar.py
 ```
 [username@da0]~% cd ~/oscar.py
