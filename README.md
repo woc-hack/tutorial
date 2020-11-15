@@ -377,8 +377,7 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 	* `.commit_shas/commits`
 6. `Project('...')` - initialized with project name/URI
 	* `.author_names`
-	* `.commit_shas/commits`
-	* `.fork_commits` - like `commit_shas`, but also accounts for forks
+	* `.commit_shas/commits`	
 7. `Tdiff('...')` - initialized with SHA, result of diff run on 2 blobs (if there was a diff)
 	* `.commit`
 	* `.file`
