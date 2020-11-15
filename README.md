@@ -427,11 +427,11 @@ Now the same thing can be done using oscar.py:
 ('17abdbdc90195016442a6a8dd8e38dea825292ae', '9cdc918bfba1010de15d0c968af8ee37c9c300ff', 'd9fc680a69198300d34bc7e31bbafe36e7185c76')
 ```
 
-### Exercise 4b: Get the URL of a projects repository using the oscar.py `Project(...).toURL()` function:  
+### Exercise 4b: Get the URL of a projects repository using the oscar.py `Project(...).url` attribute:  
 ```
 [username@da0:oscar.py]~%  python
 >>> from oscar import Project
->>> Project('notcake_gcad').toURL()
+>>> Project('notcake_gcad').url
 'https://github.com/notcake/gcad'
 ```
 
