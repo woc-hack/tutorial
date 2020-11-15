@@ -6,6 +6,9 @@ In order to provide you with the access to the systems, please fill
 
 2. [Recording of the tutorial conducted on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
 
+3. [Recording of the tutorial conducted on 2020-11-15](https://tennessee.zoom.us/rec/share/FlvZPgnHk5r69O5xC0WZr0e3EriEQwU38ytdg6dt7UTW9Wlnl_460QDpvpteSTFF.ExMj_s71WutaNaGw)
+
+
 ### MOOC on using shell script
 
 Please consider auditing this course if you are not comfortable working with the terminal/shell script
