@@ -483,7 +483,8 @@ Keys for identifying letters:
 * p = Project
 * pc = Parent Commit
 * P = Forked/Root Project (see Note below)
-* ta = Time Author
+* ta = Time;Author
+* fa = First;Author;commit
 * r = root commit obtained by traversing commit history
 * h = head commit obtained by traversing commit history
 * td = Tdiff
@@ -494,7 +495,8 @@ List of relationships:
 ```
 * a2b 		* a2c (.s)	* a2f		* a2ft		
 * a2p (.s)	* a2trp0 (.s)
-* b2a		* b2c (.s)	* b2f (.s)	* b2ob		* b2tk
+* b2a		* b2c (.s)	* b2f (.s)	* b2ob		* ob2b
+* b2tk
 * c2b (.s)	* c2cc		* c2f (.s)	* c2h		* c2pc
 * c2p (.s)	* c2P		* c2ta (.s)	* c2td
 * f2a		* f2b (.s)	* f2c (.s)		
