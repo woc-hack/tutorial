@@ -244,15 +244,34 @@ a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@ccf9f872-aa
 ```
 It turns out that it was created by commit 00a8f599c25ded714d2a4da9e1bb30e2a335181c done by what appears to be the same author on unix second 1072910122.
 
-What is b2a? The letters signify what keys (b - Blob) and values (a - author) means. These are key objects: 
+What is b2a? The letters signify what keys (b - Blob) and values
+(a - author) means. These are the primary objects: 
+
 * a = Author
 * b = Blob
 * c = Commit
 * f = File
 * p = Project
 
+Captal version simply means that the data as corrected: in case of
+author A means aliased version (see
+https://arxiv.org/abs/2003.08349) and it also means that
+organizational and group IDs, bot IDs as well as author IDs that do not
+contain sufficient info to alias are excluded.
+Similarly, P represents a deforked project (via Leuwen community
+detection on commit / repo bi-graph: https://arxiv.org/abs/2002.02707)
 
-We may also ask if this blob has been widely copied as would be expected for copyright files:
+We can inspect the relationships between a and A and also between p
+and P:
+```
+echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2A
+Warner Losh <imp@FreeBSD.org>;imp <imp@bsdimp.com>
+echo 'imp <imp@bsdimp.com>' | ~/lookup/getValues A2a
+imp <imp@bsdimp.com>;M. Warner Losh <imp@bsdimp.com>;M. Warner Losh <imp@freebsd.org>;M. Warner Losh <imp@openbsd.org>;M. Warner Losh <wlosh@netflix.com>;Warner Losh <imp@FreeBSD.org>;Warner Losh <imp@bsdimp.com>;Warner Losh <imp@freebsd.org>;Warner Losh <wlosh@netflix.com>;Warner.Losh <imp@bsdimp.com>;imp <imp@FreeBSD.org>;imp <imp@bsdimp.com>;imp <imp@freebsd.org>;im
+p <imp@openbsd.org>;nodemcu-custom-build <imp@bsdimp.com>
+```
+
+Going back to blob we may ask if this blob has been widely copied as would be expected for copyright files:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2c
 a8fe822f075fa3d159a203adfa40c3f59d6dd999;00729b406d8d3cfeeeda61c4586dcfd9f9399f4a;00a8f599c25ded714d2a4da9e1bb30e2a335181c;...
@@ -309,11 +328,11 @@ version of the datbase.
 
 ### Exercise 3
 
-a) Find all files modified by 'Warner Losh <imp@FreeBSD.org>'
+a) Find all files modified by author id 'Warner Losh <imp@FreeBSD.org>'
 
 Hint 1: What is the map name?
 
-Author to File or a2f
+Author ID to File or a2f
 ```
 echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2f 
 ```
@@ -325,6 +344,22 @@ Hint 1: use wc (word count), e.g.,
 ```
 [username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP*.s | grep -i 'audris' | grep -i 'mockus' | wc -l
 ```
+
+b) Find all files modified by all author IDs used by a developer 'Warner Losh <imp@FreeBSD.org>'
+
+Hint 1: What is the map name?
+A represents all author IDs so we first get the group name:
+```
+echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2A
+Warner Losh <imp@FreeBSD.org>;imp <imp@bsdimp.com>
+```
+
+and then use it to get all files via A2f
+```
+echo 'imp <imp@FreeBSD.org>' | ~/lookup/getValues A2f 
+```
+
+
 
 ### Summary 3
 For any key provided on standard input, a list of values is provided
@@ -520,26 +555,32 @@ Hint 1: What is the name of the map?
 ## Activity 6: Investigating Technical dependencies
 
 The technical dependencies have been extracted by parsing the content of all blobs related to 
-several different languages: and are located in `/da0_data/play/${LANG}thruMaps/`.
+several different languages: and are located in
+`/da?_data/basemaps/gz/c2PtabllfPkgFullSX.s` wirt X ranging from 0
+to 127 based on the 7 bits in the first byte of the commit sha1. 
 
 These thruMaps directories contain mappings of repositories with modules that were utilized at a given UNIX timestamp under a specific commit. The mappings are in c2bPtaPkgP{$LANG}.{0-31}.gz files.   
 
-The format of each file is: 
+The format of each file is endoded in its name: 
 ```
-commit;repo_name;timestamp;author;blob;module1;module2;...`  
+commit;deforked repo;timestamp;author;blob;language (as used in WoC);language (as determined by ctags);filename;module1;module2;...`  
+
+```
+for example
+```
+4c000001f431b9d7e2c970e2c7303a8cad6384c3;Zigur_irods-rest;1371500555;mconway <michael_conway@unc.edu>;196702d7588fa988ae11e152600c4fdd44b45dab;java;Java;UserService.java;org.irods.jargon.core.pub.domain.User;...
 ```
 
-
-Each thruMaps directory has a different language ($LANG) that contains modules relevant to that language.
+Unlike or version R where each language had a separate thruMaps
+directory, info on all languages is kept in one place. 
 
 Lets get a list of commits and repositories that imported Tensorflow for .py files:  
 ```
-[username@da0]~% zcat /da0_data/play/PYthruMaps/c2bPtaPkgPPY.0.gz | grep tensorflow`
-
-0000331084e1a567dbbaae4cc12935b610cd341a;abdella-mohamed_BreastCancer;1553266304;abdella <abdella.mohamed-idris-mohamed@de.sii.group>;0dd695391117e784d968c111f010cff802c0e6d1;sns;keras.models;np;random;tensorflow;os;pd;sklearn.metrics;plt;keras.layers;yaml
-00034db68f89d3d2061b763deb7f9e5f81fef27;lucaskjaero_chinese-character-recognizer;1497547797;Lucas Kjaero <lucas@lucaskjaero.com>;0629a6caa45ded5f4a2774ff7a72738460b399d4;tensorflow;preprocessing;sklearn
-000045f6a3601be885b0b028011440dd5a5b89f2;yjernite_DeepCRF;1451682395;yacine <yacine.jernite@nyu.edu>;4aac89ae85b261dba185d5ee35d12f6939fc2e44;nn_defs;utils;tensorflow
-000069240776f2b94acb9420e042f5043ec869d0;tickleliu_tf_learn;1530460653;tickleliu <tickleliu@163.com>;493f0fc310765d62b03390ddd4a7a8be96c7d48c;np;tf;tensorflow
+[username@da0]~%zcat c2PtabllfPkgFullS76.s |grep tensorflow|head -2
+4c000005e3fd536e6b53c5140e20598dae820f7f;abdy22_mask_detection_CNN;1598133787;abdirahman hassan <45052790+abdy22@users.noreply.github.com>;87d5fd92991ffbb48cf9fc276c0c4e8189f0cd53;ipy;;mask_detection_model.ipynb;tensorflow.keras.preprocessing.image;matplotlib.pyplot;google.colab.drive;os;tensorflow.keras.optimize
+rs.RMSprop;numpy;tensorflow;tensorflow.keras.preprocessing.image.ImageDataGenerator
+4c0000d52c7f7761a6d3ca437b2eb4bb9ca4f28f;OLGKAD_deeplearning-project;1527095742;Lucasljungberg <lucasljungberg@gmail.com>;bdd68d5d1e33d78bc7839af7c450710ff133e8e0;PY;Python;resnet50.py;keras.models.Model;keras.utils.np_utils;keras.applications.resnet50.ResNet50;keras.layers.Input;os.path;os;keras.preprocessing.im
+age;tensorflow;keras.datasets.cifar10;keras.optimizers;sys;numpy
 .....
 ```
 
@@ -550,12 +591,12 @@ Find all repositories using Julia language that import package 'StaticArrays'
 
 Hint 1: What file to look for?
 ```
-[username@da0]~% zcat /da0_data/play/jlthruMaps/c2bptaPkgOjl.*.gz | grep StaticArrays
+[username@da0]~% zcat /da?_data/basemaps/gz/c2PtabllfPkgFullS*.s | grep ';jl;' | grep StaticArrays
 ```
 
 Hint 2: What field contains the repository name?
 ```
-[username@da0]~% zcat /da0_data/play/jlthruMaps/c2bptaPkgOjl.*.gz | grep StaticArrays | cut -d\; -f2 | sort -u
+[username@da0]~% zcat /da?_data/basemaps/gz/c2PtabllfPkgFullS*.s | grep ';jl;'| grep StaticArrays | cut -d\; -f2 | sort -u
 ```
 
 ## Activity 7: Suggested by the audience
@@ -960,7 +1001,7 @@ use TokyoCabinet;
 my $split = 32;
 my %a2cF = (); 
 for my $sec (0..($split-1)){   
-  my $fname = "/fast/a2cFullP.$sec.tch";   
+  my $fname = "/da1_data/basemaps/a2cFullS.$sec.tch";   
   tie %{$a2cF{$sec}}, "TokyoCabinet::HDB", "$fname", TokyoCabinet::HDB::OREADER | TokyoCabinet::HDB::ONOLCK,  16777213, -1, -1, TokyoCabinet::TDB::TLARGE, 100000 
   or die "cant open $fname\n"; 
 }
@@ -984,7 +1025,10 @@ Once the hash is tied to the mapping, iterating over the hash can be done, and r
 
 ## Mongo Database
 
-On the da1 server, there is a MongoDB server holding some relevant data. This data includes some information that was used for data analysis in the past. Mongo provides an excellent place to store relatively small data without requiring relational information.
+On the da1 server, there is a MongoDB server holding some relevant
+data. This data includes some information that was used for data
+analysis in the past. Mongo provides an excellent place to store
+relatively small data without requiring relational information. 
 
 Two collections the WoC database cand be helpful for sampling
 projects and authors A_metadata.V and P.metadata.V where V
@@ -1118,8 +1162,7 @@ illustrates a small program that prints each AuthorID from the
 auth_metadata collection. 
 
 ----------
-```
-python
+```python
 import pymongo
 import bson
 
@@ -1145,8 +1188,7 @@ be restricted adding parameters to the find call. An example query
 is provided below. 
 
 ----------
-```
-python
+```python
 dataset = coll.find({}, {"AuthorID": 1, "NumCommits": 1, "_id": 0}, no_cursor_timeout=True)
 
 for data in dataset:
@@ -1169,8 +1211,7 @@ This specific call allows for direct printing of the data, however, as noted abo
 Sometimes, restricting the data even further is neccesary. Notice above that many of the users have 0 commits. Exclusion of these entries may be desired. The below example illustrates a way to restrict the results to only users with greater than 0 commits.
 
 ----------
-```
-python
+```python
 dataset = coll.find({"NumCommits : { "$gt" : 0 } }, 
 				     {"AuthorID": 1, "NumCommits": 1, "_id": 0}, 
 				     no_cursor_timeout=True)
