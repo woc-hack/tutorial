@@ -584,7 +584,7 @@ Lets login to da4, create a data folder to store temporary data on the same serv
 
 * Overview of naming conventions server/data/databases
 
-* Soon to debut:  mongodb tables with the summary information about authors and projects to enable selection of subsets for later analysis: (e.g, I want authors with at least 100 commits who worked no less than three years and participated in at least five java projects.)
+* Mongodb tables with the summary information about authors and projects to enable selection of subsets for later analysis: (e.g, I want authors with at least 100 commits who worked no less than three years and participated in at least five java projects.)
 
 ### Summary exercise
 
@@ -986,7 +986,10 @@ Once the hash is tied to the mapping, iterating over the hash can be done, and r
 
 On the da1 server, there is a MongoDB server holding some relevant data. This data includes some information that was used for data analysis in the past. Mongo provides an excellent place to store relatively small data without requiring relational information.
 
-On the Mongo server within the WoC database, there are some collections provided that store previously useful data. These collections store relevant metadata on the mass datatypes e.g. (authors, projects, etc). 
+Two collections the WoC database cand be helpful for sampling
+projects and authors A_metadata.V and P.metadata.V where V
+represents the version (e.g., S) , A stands for aliased author id
+and P for deforked repository name. 
 
 ### MongoDB Access
 
@@ -994,36 +997,71 @@ When on the da1 server, you can gain access to the MongoDB server simply by runn
 
 Once on the server, you can see all the available databases using the "show dbs" command. However, the database that pertains primarily to the WoC is the WoC database. 
 
-You can switch to the WoC database, or any other, using the 'use "database name"' command, E.G. (use WoC), and, after switching, you can view the available collections in the database by using the 'show collections' command. 
+Most databases are used for teaching and other tasks, spo please use
+WoC database using the 'use "database name"' command, E.G. (use WoC), and, after switching, you can view the available collections in the database by using the 'show collections' command. 
 
-Currently, there is an author metadata collection (auth_metadata.P) that contains the total number of projects an author has participated in, the total number of blobs created, the total number of commits made, the total number of files they have created, the distribution of languages used by that author, and the first and last time the author committed to Git in Unix Timestamp based on the data contained on version P of WoC.
+Currently, there is an author metadata collection (A_metadata.S)
+that contains the total number of projects an author has
+participated in, the total number of blobs created by them (before
+anyone else), the total number
+of commits made, the total number of files they have modified, the
+distribution of language files modified by that author, and the first and
+last time the author committed in Unix Timestamp based on the
+data contained on version S of WoC. Author names have ben aliased
+and the number of aliases and the list are also included in the record.
 
-Alongside this, there is a similar collection for projects on WoC (proj_metadata.P) that contains the total number of authors on the project, the total number of commits, the total number of files, the distribution of languages used, the first and last time there was a commit to the project in Unix Timestamp based on version P of WoC, the number of stars GitHub has given that project (if any), if the project is a fork, and where it was forked from (if anywhere).
+Alongside this, there is a similar collection for projects on WoC
+(P_metadata.S) that contains the total number of authors on the
+project, the total number of commits, the total number of files, the
+distribution of languages used, the first and last time there was a
+commit to the project in Unix Timestamp based on version S of
+WoC. Since the project is deforked, the community size (the number
+of other projects that share commits with the deforeked project) is
+also provided. WoC relation P2p can be used to list other projects
+linked to it.  We also provide additional info based on linking to
+attributes that exist only in GitHub. That data is not as recent,
+however and more work is needed to make it complete. These
+attributes include the number of stars GitHub has given that project
+(if any), if the project is a GitHub fork, and where it was forked
+from (if anywhere).
 
 To see data in one of the collections, you can run the 'db."collection name".findOne()' command. This will show the first element in the collection and should help clarify what is in the collection.
 
-When the above findOne() command is run on the auth_metadata.P collection, the output is as follows:
+When the above findOne() command is run on the A_metadata.S collection, the output is as follows:
 
 -----------
 ```
-mongos> db.auth_metadata.P.findOne() 
+db.A_metadata.S.findOne()
 {
-        "_id" : ObjectId("5e0f87416450a4c9c14b34b7"),
-        "numCommits" : "8",
-        "authorID" : "  <mahisj7@gmail.com>",
-        "numBlobs" : "70",
-        "earliestCommitDate" : "1418274391",
-        "fileInfo" : "{ 'total_javascript_files' => 17,'total_files' => 119,'total_other_files' => 102 }",
-        "latestCommitDate" : "1418995004",
-        "numProjects" : "1"
-}
-    
+        "_id" : ObjectId("5fed4644041b556b8257d39a"),
+        "FileInfo" : {
+                "Python" : 6,
+                "other" : 21,
+                "JavaScript" : 2
+        },
+        "NumFirstBlobs" : 45,
+        "LatestCommitDate" : 1512772452,
+        "Alias" : [
+                "waltcobb <walt.cobb@ymail.com>",
+                "Walt Cobb <walt.cobb@ymail.com>"
+        ],
+        "NumAlias" : 2,
+        "AuthorID" : "waltcobb <walt.cobb@ymail.com>",
+        "EarlistCommitDate" : 1500939360,
+        "NumCommits" : 71,
+        "NumFiles" : 29,
+        "NumProjects" : 3
+}    
 ```
 ---------------
 
 This metadata can then be parsed for the desired information.
 
-Python, like most other programming languages, has an interface with Mongo that makes for data storage/retrieval much simpler. When retrieving or inputting large amounts of data onto the servers, it is almost always faster and easier to do so through one of the interfaces provided.
+Python, like most other programming languages, has an interface with
+Mongo that makes for data storage/retrieval much simpler. When
+retrieving or inputting large amounts of data onto the servers, it
+is almost always faster and easier to do so through one of the
+interfaces provided. 
 
 
 ### PyMongo
@@ -1039,7 +1077,7 @@ The below code illustrates this process.
 client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
 
 db = client["WoC"]                                                    
-coll = db["auth_metadata"]
+coll = db["A_metadata.S"]
 ```
 -------
 
@@ -1055,7 +1093,7 @@ The below code illustrates creation and iteration over the collection with a cur
 client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
 
 db = client["WoC"]                                                    
-coll = db["auth_metadata"]
+coll = db["A_metadata.S"]
 
 dataset = col.find({}, cursor_no_timeout=True)
 for data in dataset:
@@ -1066,18 +1104,28 @@ dataset.close()
 -------
 
 Once data retrieval has begun, accessing the specific information desired is simple. 
-For example, provided above is the information saved in one element of auth_metadata. If access to the AuthorID of each cursor is desired, the "AuthorID" can be treated as the key in a key value-mapping. However, it is often neccesary to consider how the data is stored.
+For example, provided above is the information saved in one element
+of auth_metadata. If access to the AuthorID of each cursor is
+desired, the "AuthorID" can be treated as the key in a key
+value-mapping. However, it is often neccesary to consider how the
+data is stored. 
 
-Most often, when storing data in Mongo, it will be stored in Mongo specific format called BSON. BSON objects are saved in unicode. Working with unicode can be an issue if printing needs to be done. As such, decoding from unicode must to be done. Below illustrates a small program that prints each AuthorID from the auth_metadata collection.
+Most often, when storing data in Mongo, it will be stored in Mongo
+specific format called BSON. BSON objects are saved in
+unicode. Working with unicode can be an issue if printing needs to
+be done. As such, decoding from unicode must to be done. Below
+illustrates a small program that prints each AuthorID from the
+auth_metadata collection. 
 
 ----------
-```python
+```
+python
 import pymongo
 import bson
 
 client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
 db = client ['WoC']
-coll = db['auth_metadata']
+coll = db['A_metadata.S']
 
 dataset = coll.find({}, no_cursor_timeout=True)
 for data in dataset:
@@ -1089,11 +1137,17 @@ dataset.close()
 ```
 ----------
 
-When retrieving data, it is often neccesary to narrow the results. This is possible directly through Mongo when querying for information. For instance, if all the data is not needed in the auth_metadata, just the TotalCommits and the AuthorID, the query can be restricted adding parameters to the find call. An example query is provided below.
+When retrieving data, it is often neccesary to narrow the
+results. This is possible directly through Mongo when querying for
+information. For instance, if all the data is not needed in the
+auth_metadata, just the NumCommits and the AuthorID, the query can
+be restricted adding parameters to the find call. An example query
+is provided below. 
 
 ----------
-```python
-dataset = coll.find({}, {"AuthorID": 1, "TotalCommits": 1, "_id": 0}, no_cursor_timeout=True)
+```
+python
+dataset = coll.find({}, {"AuthorID": 1, "NumCommits": 1, "_id": 0}, no_cursor_timeout=True)
 
 for data in dataset:
     print(data)
@@ -1106,26 +1160,19 @@ This specific call allows for direct printing of the data, however, as noted abo
 
 -------------
 ```
-{u'TotalCommits': 1, u'AuthorID': u'  <mvivekananda@virtusa.com>'}
-{u'TotalCommits': 0, u'AuthorID': u' <1151643598@163.com>'}
-{u'TotalCommits': 0, u'AuthorID': u' <1615638456@qq.com>'}
-{u'TotalCommits': 0, u'AuthorID': u' <182036137@qq.com>'}
-{u'TotalCommits': 0, u'AuthorID': u' <1974193036@qq.com>'}
-{u'TotalCommits': 0, u'AuthorID': u' <200sc@SomethingStupid.localdomain>'}
-{u'TotalCommits': 0, u'AuthorID': u' <213>'}
-{u'TotalCommits': 1, u'AuthorID': u' <3sodn@yuki.localdomain>'}
-{u'TotalCommits': 21, u'AuthorID': u' <625605841@qq.com>'}
-{u'TotalCommits': 0, u'AuthorID': u' <712641411@qq.com>'}
-
+{u'NumCommits': 1, u'AuthorID': u'  <mvivekananda@virtusa.com>'}
+{u'NumCommits': 0, u'AuthorID': u' <1151643598@163.com>'}
+...
 ```
 --------------
 
 Sometimes, restricting the data even further is neccesary. Notice above that many of the users have 0 commits. Exclusion of these entries may be desired. The below example illustrates a way to restrict the results to only users with greater than 0 commits.
 
 ----------
-```python
-dataset = coll.find({"TotalCommits : { "$gt" : 0 } }, 
-				     {"AuthorID": 1, "TotalCommits": 1, "_id": 0}, 
+```
+python
+dataset = coll.find({"NumCommits : { "$gt" : 0 } }, 
+				     {"AuthorID": 1, "NumCommits": 1, "_id": 0}, 
 				     no_cursor_timeout=True)
 
 for data in dataset:
