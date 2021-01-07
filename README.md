@@ -559,7 +559,6 @@ several different languages: and are located in
 `/da?_data/basemaps/gz/c2PtabllfPkgFullSX.s` wirt X ranging from 0
 to 127 based on the 7 bits in the first byte of the commit sha1. 
 
-These thruMaps directories contain mappings of repositories with modules that were utilized at a given UNIX timestamp under a specific commit. The mappings are in c2bPtaPkgP{$LANG}.{0-31}.gz files.   
 
 The format of each file is endoded in its name: 
 ```
@@ -571,8 +570,9 @@ for example
 4c000001f431b9d7e2c970e2c7303a8cad6384c3;Zigur_irods-rest;1371500555;mconway <michael_conway@unc.edu>;196702d7588fa988ae11e152600c4fdd44b45dab;java;Java;UserService.java;org.irods.jargon.core.pub.domain.User;...
 ```
 
-Unlike or version R where each language had a separate thruMaps
-directory, info on all languages is kept in one place. 
+Unlike in version R where each language had a separate thruMaps
+directory, info on all languages is kept in a single place. TODO:
+put it into clickhouse to speed up access. 
 
 Lets get a list of commits and repositories that imported Tensorflow for .py files:  
 ```
@@ -645,12 +645,22 @@ tasks.
 
 Given the data available, this is a fairly simple task. Making an application to detect the first time that a repo adopted an AI module would give you a better idea as to when it was first used, and also when it started to gain popularity.  
 
-A good example of this lies in [popmods.py](https://github.com/ssc-oscar/aiframeworks/blob/master/popmods.py). In this application, we can read all 32 c2bPtaPkgO$LANG.{0-31}.gz files of a given language and look for a given module with the earliest import times. The program then creates a <module_name>.first file, with each line formatted as `repo_name;UNIX_timestamp`.  
+A good example of this is in
+[popmods.py](https://github.com/ssc-oscar/aiframeworks/blob/master/popmods.py). In
+this application, we can read all 128 c2PtabllfPkgFullS*.s
+files and look for a given module with the earliest import times. The program then creates a <module_name>.first file, with each line formatted as `repo_name;UNIX_timestamp`.  
 
+TODO: update popmods.py to work with c2PtabllfPkgFullS*.s
 Usage: `[username@da0]~%  python popmods.py language_file_extension module_name`  
 
-Before anything else (and this can be applied to many other programs), you want to know what your input looks like ahead of time and know how you are going to parse it. Since each line of the file has this format:  
-`commit;repo_name;timestamp;author;blob;module1;module2;...`  
+Before anything else (and this can be applied to many other
+programs), you want to know what your input looks like ahead of time
+and know how you are going to parse it.
+Since each line of the file has this format:  
+```
+commit;deforked repo;timestamp;author;blob;language (as used in WoC);language (as determined by ctags);filename;module1;module2;...
+```
+
 We can use the `string.split()` method to turn this string into a list of words, split by a semicolon (;).  
 By turning this line into a list, and giving it a variable name, `entry = ['commit', 'repo_name', 'timestamp', ...]`, we can then grab the pieces of information we need with `repo, time = entry[1], entry[2]`. 
 
