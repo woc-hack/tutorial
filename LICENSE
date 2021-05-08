@@ -1,17 +1,27 @@
 World of Code Infrastructure includes 
-
+=====================================
 a) software to collect and process open source data as well as 
+If not otherwise indicated part a) is licensed under 
+Copyright (c) (2018, 2019, 2020, 2021) Audris Mockus
+World of Code software used to discover retrieve, clean, cross-reference, 
+query, and analyse open source version control data is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:  http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details.
+=====================================
 
-b) the metadata including the collections and relationships among the source code and
-
-c) the actual source code in the collection.
-
-If not othervise indicated part a) is under GPLv3+ <https://www.gnu.org/licenses/gpl-3.0> 
-
-part b) is under Creative Commons Attribution 4.0 International. https://creativecommons.org/licenses/by/4.0/
-
-part c) is under the original license  of the specific source code/version 
+b) The metadata including the collections and relationships among the source code 
+is licensed under Creative Commons Attribution 4.0 International license. Please see full details 
+at: https://creativecommons.org/licenses/by/4.0/
 
 Furthermore, by accessing the data in WoC infrastructure, you agree with the Ethical Charter for using the 
 archive data (see, e.g., https://www.softwareheritage.org/legal/users-ethical-charter/).
 
+=====================================
+
+c) The actual source code in the collection retains the original license 
+of the specific source code/version. 
+=====================================
