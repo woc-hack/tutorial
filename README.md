@@ -1052,7 +1052,7 @@ Once on the server, you can see all the available databases using the "show dbs"
 Most databases are used for teaching and other tasks, spo please use
 WoC database using the 'use "database name"' command, E.G. (use WoC), and, after switching, you can view the available collections in the database by using the 'show collections' command. 
 
-Currently, there is an author metadata collection (A_metadata.S)
+Currently, there is an author metadata collection (A_metadata.T)
 that contains the total number of projects an author has
 participated in, the total number of blobs created by them (before
 anyone else), the total number
@@ -1063,7 +1063,7 @@ data contained on version S of WoC. Author names have ben aliased
 and the number of aliases and the list are also included in the record.
 
 Alongside this, there is a similar collection for projects on WoC
-(P_metadata.S) that contains the total number of authors on the
+(P_metadata.T) that contains the total number of authors on the
 project, the total number of commits, the total number of files, the
 distribution of languages used, the first and last time there was a
 commit to the project in Unix Timestamp based on version S of
@@ -1079,11 +1079,15 @@ from (if anywhere).
 
 To see data in one of the collections, you can run the 'db."collection name".findOne()' command. This will show the first element in the collection and should help clarify what is in the collection.
 
-When the above findOne() command is run on the A_metadata.S collection, the output is as follows:
+
+When the above findOne() command is run on the A_metadata.T
+collection, the output is as follows:
 
 -----------
 ```
-db.A_metadata.T.findOne()
+mongo --host=da1
+mongo>use WoC;
+mongo>db.A_metadata.T.findOne()
 {
         "_id" : ObjectId("60abc711041b556b82b75ef8"),
         "FileInfo" : {
@@ -1107,7 +1111,7 @@ db.A_metadata.T.findOne()
         "NumFiles" : 46,
         "NumProjects" : 1
 }
-db.P_metadata.T.findOne()
+mongo>db.P_metadata.T.findOne()
 {
         "_id" : ObjectId("60aaee08041b556b825375ee"),
         "FileInfo" : {
