@@ -1040,7 +1040,7 @@ relatively small data without requiring relational information.
 
 Two collections the WoC database cand be helpful for sampling
 projects and authors A_metadata.V and P.metadata.V where V
-represents the version (e.g., S) , A stands for aliased author id
+represents the version (e.g., T) , A stands for aliased author id
 and P for deforked repository name. 
 
 ### MongoDB Access
@@ -1083,27 +1083,63 @@ When the above findOne() command is run on the A_metadata.S collection, the outp
 
 -----------
 ```
-db.A_metadata.S.findOne()
+db.A_metadata.T.findOne()
 {
-        "_id" : ObjectId("5fed4644041b556b8257d39a"),
+        "_id" : ObjectId("60abc711041b556b82b75ef8"),
         "FileInfo" : {
-                "Python" : 6,
-                "other" : 21,
-                "JavaScript" : 2
+                "1" : 0,
+                "other" : 43,
+                "14" : 0,
+                "JavaScript" : 3
         },
-        "NumFirstBlobs" : 45,
-        "LatestCommitDate" : 1512772452,
-        "Alias" : [
-                "waltcobb <walt.cobb@ymail.com>",
-                "Walt Cobb <walt.cobb@ymail.com>"
-        ],
-        "NumAlias" : 2,
-        "AuthorID" : "waltcobb <walt.cobb@ymail.com>",
-        "EarlistCommitDate" : 1500939360,
-        "NumCommits" : 71,
-        "NumFiles" : 29,
-        "NumProjects" : 3
-}    
+        "NumActiveMon" : 1,
+        "NumFirstBlobs" : 33,
+        "LatestCommitDate" : 1520588214,
+        "MonNprj" : {
+                "2018-03" : 1
+        },
+        "AuthorID" : "Anastasyan <37178041+Anastasyan@users.noreply.github.com>",
+        "MonNcmt" : {
+                "2018-03" : 14
+        },
+        "EarlistCommitDate" : 1520588214,
+        "NumCommits" : 14,
+        "NumFiles" : 46,
+        "NumProjects" : 1
+}
+db.P_metadata.T.findOne()
+{
+        "_id" : ObjectId("60aaee08041b556b825375ee"),
+        "FileInfo" : {
+                "other" : 6,
+                "JavaScript" : 8,
+                "TypeScript" : 36
+        },
+        "NumAuthors" : 1,
+        "NumActiveMon" : 1,
+        "Gender" : {
+                "male" : 1
+        },
+        "NumBlobs" : 183,
+        "ProjectID" : "alexey-oblomov_chat_app_backend",
+        "MonNcmt" : {
+                "2020-09" : 46
+        },
+        "MonNauth" : {
+                "2020-09" : 1
+        },
+        "LatestCommitDate" : 1599910495,
+        "EarlistCommitDate" : 1599910495,
+        "NumCore" : 1,
+        "NumOriginalBlobs" : 160,
+        "NumFiles" : 50,
+        "CommunitySize" : 1,
+        "NumCommits" : 46,
+        "NumForks" : 0,
+        "Core" : {
+                "Alexey Oblomov <alexey.oblomov@mail.ru>" : 1
+        }
+}
 ```
 ---------------
 
