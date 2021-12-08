@@ -84,7 +84,7 @@ Do the hard work to enable research on global properties of FLOSS:
    - Hackathon will help determine community needs
    - [Hackathon Schedule](https://github.com/woc-hack/schedule)
 * How to participate?
-   - Hackathon registration [form](http://bit.ly/WoC-Signup)
+   - Hackathon registration [form](http://bit.ly/WoCSignup)
    - If you can not attend the hackathon but just want to try out WoC, please fill the hackathon form but indicate in the topic section is that you do not plan to attend the hackathon.
 
 ### What WoC Prototype contains
