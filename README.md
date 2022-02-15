@@ -526,6 +526,20 @@ Keys for identifying letters:
 * tk = Tokens (ctags)
 * trp = Torvalds Path
 
+Version T keys for identifying letters:
+* L = LICENSE* files
+* Lb - blobs that are shared among fewer than 100 Projects
+* fb = firstblob
+* tac = time, author, commit
+* t = root tree
+
+Recall that the captal version of author A means aliased version (see
+https://arxiv.org/abs/2003.08349) and it also means that
+organizational and group IDs, bot IDs as well as author IDs that do not
+contain sufficient info to alias are excluded.
+Similarly, the capital version of project P represents a deforked project (via Leuwen community
+detection on commit / repo bi-graph: https://arxiv.org/abs/2002.02707)
+
 List of relationships:
 ```
 * a2b 		* a2c (.s)	* a2f		* a2ft		
@@ -539,8 +553,27 @@ List of relationships:
 * td2c		* td2f
 ```
 
+Special relationships (names do not correspond to keys):
+```
+Version T:
+bb2cf  - result of diff on a commit: blob old blob, commit, file
+obb2cf - see bb2cf but blobs reversed
+c2fbb  - result of diff on a commit: commit file, blob, old blob
+
+P2core - Project to devs who make 80+% of the commits
+
+b2fLICENSE - grep for LICESNSE in b2f
+bL2P - license blob to project
+
+c2dat - full commit data in semicolon-separated fields
+
+dl2Pf - API defined; language; project; file
+====
+```
+
 Note: c2P returns the most central repository for this commit, and does not include repos that forked off of this commit. 
       P2c returns ALL commits associated with this repo, including commits made to forks of this particular repo. 
+	  The list of relationships is not exhaustive and more information can be found at https://github.com/woc-hack/tutorial/issues/17#issuecomment-850823408
 
 ### Exercise 5
 
