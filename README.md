@@ -589,18 +589,18 @@ Hint 1: What is the name of the map?
 
 The technical dependencies have been extracted by parsing the content of all blobs related to 
 several different languages: and are located in
-`/da?_data/basemaps/gz/c2PtabllfPkgFullSX.s` wirt X ranging from 0
+`/da?_data/basemaps/gz/c2PtAbflPkgFullUX.s` wirt X ranging from 0
 to 127 based on the 7 bits in the first byte of the commit sha1. 
 
 
 The format of each file is endoded in its name: 
 ```
-commit;deforked repo;timestamp;author;blob;language (as used in WoC);language (as determined by ctags);filename;module1;module2;...`  
+commit;deforked repo;timestamp;Aliased author;blob;filename;language (as used in WoC);module1;module2;...`  
 
 ```
 for example
 ```
-4c000001f431b9d7e2c970e2c7303a8cad6384c3;Zigur_irods-rest;1371500555;mconway <michael_conway@unc.edu>;196702d7588fa988ae11e152600c4fdd44b45dab;java;Java;UserService.java;org.irods.jargon.core.pub.domain.User;...
+000000000fcd56c8536abd09cac5f2a54ba600c2;not-an-aardvark_lucky-commit;1510643197;Teddy Katz <teddykatz@fb.com>;d9730ab3fca05f4d61e7225de5731868cfb99fb6;lucky-commit.c;C;errno.h;string.h;math.h;zlib.h;stdio.h;sha.h;stdbool.h;stdlib.h;stat.h
 ```
 
 Unlike in version R where each language had a separate thruMaps
@@ -609,12 +609,9 @@ put it into clickhouse to speed up access.
 
 Lets get a list of commits and repositories that imported Tensorflow for .py files:  
 ```
-[username@da0]~%zcat c2PtabllfPkgFullS76.s |grep tensorflow|head -2
-4c000005e3fd536e6b53c5140e20598dae820f7f;abdy22_mask_detection_CNN;1598133787;abdirahman hassan <45052790+abdy22@users.noreply.github.com>;87d5fd92991ffbb48cf9fc276c0c4e8189f0cd53;ipy;;mask_detection_model.ipynb;tensorflow.keras.preprocessing.image;matplotlib.pyplot;google.colab.drive;os;tensorflow.keras.optimize
-rs.RMSprop;numpy;tensorflow;tensorflow.keras.preprocessing.image.ImageDataGenerator
-4c0000d52c7f7761a6d3ca437b2eb4bb9ca4f28f;OLGKAD_deeplearning-project;1527095742;Lucasljungberg <lucasljungberg@gmail.com>;bdd68d5d1e33d78bc7839af7c450710ff133e8e0;PY;Python;resnet50.py;keras.models.Model;keras.utils.np_utils;keras.applications.resnet50.ResNet50;keras.layers.Input;os.path;os;keras.preprocessing.im
-age;tensorflow;keras.datasets.cifar10;keras.optimizers;sys;numpy
-.....
+[username@da0]~%zcat c2PtAbflPkgFullU76.s |grep tensorflow|head -2
+000005efe300482514d70d44c5fa922b34ff79a5;Rayhane-mamah_Tacotron-2;1557284915;qq443452099 <47710489+qq443452099@users.noreply.github.com>;05604b3f0632e98cc0eee3afef589dc5031f3a43;tacotron/synthesizer.py;PY;tacotron.utils.text.text_to_sequence;tacotron.utils.plot;tacotron.models.create_model;wave;datasets.audio;os;librosa.effects;tensorflow;infolog.log;datetime.datetime;io;numpy
+000005efe300482514d70d44c5fa922b34ff79a5;Rayhane-mamah_Tacotron-2;1557284915;qq443452099 <47710489+qq443452099@users.noreply.github.com>;49bc3b8b6533b93941223ccbeb401e47e5a573d7;hparams.py;PY;tensorflow;numpy
 ```
 
 ### Exercise 6
