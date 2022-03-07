@@ -1091,9 +1091,9 @@ import pymongo
 client = pymongo.MongoClient (host='da1') # 
 woc = client ['WoC']
 ps = woc ['P_metadata.U']
-as = woc ['A_metadata.U']
+aus = woc ['A_metadata.U']
 apis = woc ['API_metadata.U']
-for api in apis .find ({ $and: [ { NumCommits:{$gt:200} }, { NumProjects: {$gt:200} }, {NumAuthors:{$gt:200}} ] }}):
+for api in apis .find ({ "$and": [ { "NumCommits":{"$gt":200} }, { "NumProjects": {"$gt":200} }, {"NumAuthors":{"$gt":200}} ] }):
   fields = api.keys()
   for f in fields: print (f+'='+str(api[f]))
 ```
