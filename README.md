@@ -1084,20 +1084,6 @@ Once on the server, you can see all the available databases using the "show dbs"
 
 Most databases are used for teaching and other tasks, spo please use
 WoC database using the 'use "database name"' command, E.G. (use WoC), and, after switching, you can view the available collections in the database by using the 'show collections' command. 
-
-Via python:
-```
-python3
-import pymongo
-client = pymongo.MongoClient (host='da1') # 
-woc = client ['WoC']
-ps = woc ['P_metadata.U']
-aus = woc ['A_metadata.U']
-apis = woc ['API_metadata.U']
-for api in apis .find ({ "$and": [ { "NumCommits":{"$gt":200} }, { "NumProjects": {"$gt":200} }, {"NumAuthors":{"$gt":200}} ] }):
-  fields = api.keys()
-  for f in fields: print (f+'='+str(api[f]))
-```
 	
 Currently, there is an author metadata collection (A_metadata.U)
 that contains basic stats: the total number of projects, 
@@ -1136,7 +1122,7 @@ collection, the output is as follows: (in this case we look only for items with 
 
 -----------
 ```
-mongoshell --host=da1
+mongosh --host=da1
 mongosh>use WoC;
 WoC> db.A_metadata.U.findOne({NumCommits:{$gt:200}})
 { 
@@ -1294,11 +1280,12 @@ From there, accessing databases inside of the client becomes as simple as treati
 The below code illustrates this process.
 
 --------
-```python
+```python3
+import pymongo
 client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
 
 db = client["WoC"]                                                    
-coll = db["A_metadata.S"]
+coll = db["A_metadata.U"]
 ```
 -------
 
@@ -1314,7 +1301,7 @@ The below code illustrates creation and iteration over the collection with a cur
 client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
 
 db = client["WoC"]                                                    
-coll = db["A_metadata.S"]
+coll = db["A_metadata.U"]
 
 dataset = col.find({}, cursor_no_timeout=True)
 for data in dataset:
@@ -1345,7 +1332,7 @@ import bson
 
 client = pymongo.MongoClient("mongodb://da1.eecs.utk.edu/")
 db = client ['WoC']
-coll = db['A_metadata.S']
+coll = db['A_metadata.U']
 
 dataset = coll.find({}, no_cursor_timeout=True)
 for data in dataset:
