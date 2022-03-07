@@ -1084,6 +1084,20 @@ Once on the server, you can see all the available databases using the "show dbs"
 Most databases are used for teaching and other tasks, spo please use
 WoC database using the 'use "database name"' command, E.G. (use WoC), and, after switching, you can view the available collections in the database by using the 'show collections' command. 
 
+Via python:
+```
+python3
+import pymongo
+client = pymongo.MongoClient (host='da1') # 
+woc = client ['WoC']
+ps = woc ['P_metadata.U']
+as = woc ['A_metadata.U']
+apis = woc ['API_metadata.U']
+for api in apis .find ({ $and: [ { NumCommits:{$gt:200} }, { NumProjects: {$gt:200} }, {NumAuthors:{$gt:200}} ] }}):
+  fields = api.keys()
+  for f in fields: print (f+'='+str(api[f]))
+```
+	
 Currently, there is an author metadata collection (A_metadata.U)
 that contains basic stats: the total number of projects, 
 	the total number of blobs created by them (before
