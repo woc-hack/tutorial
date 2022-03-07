@@ -604,8 +604,9 @@ for example
 ```
 
 Unlike in version R where each language had a separate thruMaps
-directory, info on all languages is kept in a single place. TODO:
-put it into clickhouse to speed up access. 
+directory, info on all languages is kept in a single place. 
+	
+*TODO*:put it into clickhouse to speed up access. 
 
 Lets get a list of commits and repositories that imported Tensorflow for .py files:  
 ```
@@ -1408,25 +1409,42 @@ It has interfaces to various languages but the key is super fast indexing and th
 Since only commits have time associated with them, we start from storing all commits in the database. We store only a subset of commits on each server, first we create a table local to each server (commits) and a table that represents all servers (commits_a):
 ```
 for h in da0 da1 da2 da3 da4; 
-do echo "CREATE TABLE commits (date Date, sha1 FixedString(20), time Int32, tree FixedString(20), author String, parent String, comment String, content String) ENGINE = MergeTree(date, (sha1), 8192)" |clickhouse-client --host=$h
-  echo "CREATE TABLE commits_a AS commits ENGINE = Distributed(da, default, commits, rand())" | clickhouse-client --host=$h
+do echo "CREATE TABLE api_$v (api String, from Int32, to Int32, ncmt Int32, nauth Int32, nproj Int32) ENGINE = MergeTree() ORDER BY from" |clickhouse-client --host=$h
+   echo "CREATE TABLE api_all AS api_$v ENGINE = Distributed(da, default, api_$v, rand())" | clickhouse-client --host=$h
+
+  echo "CREATE TABLE commit_$v (sha1 FixedString(20), time Int32, tc Int32, tree FixedString(20), parent String, taz String, tcz String, author String, commiter String, project String, comment String) ENGINE = MergeTree() ORDER BY time" |clickhouse-client --host=$h
+  echo "CREATE TABLE commit_all AS commit_$v ENGINE = Distributed(da, default, commit_$v, rand())" | clickhouse-client --host=$h
 done
 ```
 
 Then we import data into each of these five tables:
 ```
-#illustyreated for da4
-for i in {4..127..5}
-do time ~/lookup/importCmt.perl $i | clickhouse-client --max_partitions_per_insert_block=1000 --host=da4 --query 'INSERT INTO commits FORMAT RowBinary'
+for j in {0..4}
+do da=da$j
+  for i in $(eval echo "{$j..31..5}")
+  do echo "start inserting $da file $i"
+    time /da?_data/basemaps/gz/Pkg2stat$i.gz | ~/lookup/chImportPkg.perl | clickhouse-client --max_partitions_pe
+r_insert_block=1000 --host=$da --query 'INSERT INTO api_u FORMAT RowBinary'
+  done
+  for i in $(eval echo "{$j..127..5}")
+  do echo "start inserting $da file $i"
+    time zcat /da?_data/basemaps/gz/c2chFullU$i.s | ~/lookup/chImportCmt.perl | clickhouse-client --max_partitio
+ns_per_insert_block=1000 --host=$da --query 'INSERT INTO commit_u FORMAT RowBinary'
+  done
 done 
 ```
 
 Once the data is in there we can query it
 ```
-clickhouse-client --host=da3 --query 'select count (*) from commits_a'
+clickhouse-client --host=da3 --query 'select count (*) from commits_all'
 1830088337
 ```
+Or for APIs:
+```
+echo "select api,ncmt, nauth, nproj from api_all where match(api, 'stdio') and nauth > 100 limit 30 FORMAT CSV" |clickhouse-client --host=da3 --format_csv_delimiter=";"
+```
 
+	
 It works fast if we specify specific time or an interval:
 ```
 clickhouse-client --host=da3 --query 'select author,comment from commits_a where time=1568656268'
@@ -1442,6 +1460,7 @@ AnnaLub <yaskrava@gmail.com>    get all tickets command impl\n
 ```
 
 
+
 We can create additional tables, so that the time filtering could be fast, for example for projects:
 
 ```
@@ -1449,6 +1468,8 @@ clickhouse-client --max_partitions_per_insert_block=1000 --host=da3 --query "CRE
 for j in {3..31..4}; do time ./importc2p.perl $j | clickhouse-client --max_partitions_per_insert_block=1000 --host=da3 --query "INSERT INTO c2p_$j (date, sha1, np, p) FORMAT RowBinary"; done 
 ```
 
+	
+	
 ## Python Clickhouse API
 
 There are classes in oscar.py that allow for querying the clickhouse database:  
