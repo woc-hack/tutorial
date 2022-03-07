@@ -1405,36 +1405,38 @@ done
 ```
 
 Then we import data into each of these five tables:
-```
+```bash
+v=u
 for j in {0..4}
 do da=da$j
   for i in $(eval echo "{$j..31..5}")
   do echo "start inserting $da file $i"
-    time /da?_data/basemaps/gz/Pkg2stat$i.gz | ~/lookup/chImportPkg.perl | clickhouse-client --max_partitions_pe
-r_insert_block=1000 --host=$da --query 'INSERT INTO api_u FORMAT RowBinary'
+    time /da?_data/basemaps/gz/Pkg2stat$i.gz | ~/lookup/chImportPkg.perl | clickhouse-client --max_partitions_per_insert_block=1000 --host=$da --query 'INSERT INTO api_u FORMAT RowBinary'
   done
   for i in $(eval echo "{$j..127..5}")
   do echo "start inserting $da file $i"
-    time zcat /da?_data/basemaps/gz/c2chFullU$i.s | ~/lookup/chImportCmt.perl | clickhouse-client --max_partitio
-ns_per_insert_block=1000 --host=$da --query 'INSERT INTO commit_u FORMAT RowBinary'
+    time zcat /da?_data/basemaps/gz/c2chFullU$i.s | ~/lookup/chImportCmt.perl | clickhouse-client --max_partitions_per_insert_block=1000 --host=$da --query 'INSERT INTO commit_u FORMAT RowBinary'
   done
 done 
 ```
 
-Once the data is in there we can query it
-```
+Once the data is in there we can query commits
+```bash
 clickhouse-client --host=da3 --query 'select count (*) from commits_all'
-1830088337
+2061780191
 ```
-Or for APIs:
-```
-echo "select api,ncmt, nauth, nproj from api_all where match(api, 'stdio') and nauth > 100 limit 30 FORMAT CSV" |clickhouse-client --host=da3 --format_csv_delimiter=";"
+or APIs:
+```bash
+echo "select api,ncmt, nauth, nproj from api_all where match(api, 'stdio') and nauth > 100 limit 3 FORMAT CSV" |clickhouse-client --host=da3 --format_csv_delimiter=";"
+"C:stdio_ext.h";153898;4797;1671
+"C:ustdio.h";9995;1107;230
+"C:vcl_cstdio.h";5868;163;9
 ```
 
 	
 It works fast if we specify specific time or an interval:
-```
-clickhouse-client --host=da3 --query 'select author,comment from commits_a where time=1568656268'
+```bash
+clickhouse-client --host=da3 --query 'select author,comment from commits_all where time=1568656268'
 Matt Davis <mw.davis@hotmail.co.uk>     Made some SEO improvements and also added comments outlining what is contained in each section.\n
 Jessie 1307 <295101171@qq.com>  First Commit\n
 �
@@ -1446,7 +1448,25 @@ Paulus Pärssinen <paulus.parssinen01@edupori.fi>       Initial commit
 AnnaLub <yaskrava@gmail.com>    get all tickets command impl\n
 ```
 
-
+We may want to match on commit comment
+```bash
+echo "select author, project, comment from commit_all where match(comment, 'CVE-2021') limit 3 FORMAT CSV" |clickhouse-client --host=da3 --format_csv_delimiter=";"
+"Florian Westphal <fw@strlen.de>";"Jackeagle_kernel_msm-3.18";"netfilter: x_tables: make xt_replace_table wait until old rules are not used anymore\nxt_replace_table relies on table replacement counter retrieval (which__NEWLINE__uses xt_recseq to synchronize pcpu counters).\nThis is fine, however with large rule 
+set get_counters() can take__NEWLINE__a very long time -- it needs to synchronize all counters because__NEWLINE__it has to assume concurrent modifications can occur.\nMake xt_replace_table synchronize by itself by waiting until all cpus__NEWLINE__had an even seqcount.\nThis allows a followup patch to copy the cou
+nters of the old ruleset__NEWLINE__without any synchonization after xt_replace_table has completed.\nCc: Dan Williams <dcbw@redhat.com>__NEWLINE__Reviewed-by: Eric Dumazet <edumazet@google.com>__NEWLINE__Signed-off-by: Florian Westphal <fw@strlen.de>__NEWLINE__Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org
+>\n(cherry picked from commit 80055dab5de0c8677bc148c4717ddfc753a9148e)__NEWLINE__Orabug: 32709122__NEWLINE__CVE: CVE-2021-29650__NEWLINE__Signed-off-by: Sherry Yang <sherry.yang@oracle.com>__NEWLINE__Reviewed-by: John Donnelly <john.p.donnelly@oracle.com>__NEWLINE__Signed-off-by: Somasundaram Krishnasamy <somasu
+ndaram.krishnasamy@oracle.com>"
+"Joe Yu <joe.yu@unisoc.com>";"daedroza_aosp_development_sony8960_n";"Fix storaged memory leak\nCVE-2021-0330 : (AOSP) EoP Vulnerability in Framework / storaged__NEWLINE__A-170732441__NEWLINE__Mot-CRs-fixed: (CR)\nstoraged try to load user's proto even if it has been loaded before\nhttps://partnerissuetracker.corp
+.google.com/u/2/issues/118719575\nChange-Id: Ia7575cdc60e82b028c6db9a29ae80e31e02268b1__NEWLINE__(cherry picked from commit 857a63eb6604baa1ed6b0e31839ccce8da18c716)__NEWLINE__Signed-off-by: Mark Salyzyn <salyzyn@google.com>__NEWLINE__Bug: 170732441__NEWLINE__Test: compile__NEWLINE__(cherry picked from commit 8ec
+2afb91400818b0a8843b8917c05aba75b00db)__NEWLINE__Reviewed-on: https://gerrit.mot.com/1843719__NEWLINE__SLTApproved: Slta Waiver__NEWLINE__SME-Granted: SME Approvals Granted__NEWLINE__Tested-by: Jira Key__NEWLINE__Reviewed-by: Konstantin Makariev <kmakariev@motorola.com>__NEWLINE__Submit-Approved: Jira Key"
+"Joe Yu <joe.yu@unisoc.com>";"daedroza_aosp_development_sony8960_n";"Fix storaged memory leak\nCVE-2021-0330 : (AOSP) EoP Vulnerability in Framework / storaged__NEWLINE__A-170732441__NEWLINE__Mot-CRs-fixed: (CR)\nstoraged try to load user's proto even if it has been loaded before\nhttps://partnerissuetracker.corp
+.google.com/u/2/issues/118719575\nChange-Id: Ia7575cdc60e82b028c6db9a29ae80e31e02268b1__NEWLINE__(cherry picked from commit 857a63eb6604baa1ed6b0e31839ccce8da18c716)__NEWLINE__Signed-off-by: Mark Salyzyn <salyzyn@google.com>__NEWLINE__Bug: 170732441__NEWLINE__Test: compile__NEWLINE__(cherry picked from commit 8ec
+2afb91400818b0a8843b8917c05aba75b00db)__NEWLINE__Reviewed-on: https://gerrit.mot.com/1844255__NEWLINE__SLTApproved: Slta Waiver__NEWLINE__SME-Granted: SME Approvals Granted__NEWLINE__Tested-by: Jira Key__NEWLINE__Reviewed-by: Konstantin Makariev <kmakariev@motorola.com>__NEWLINE__Submit-Approved: Jira Key"
+```
+commit sha1's are binary, so to print them we need to process, e.g., 
+```bash
+clickhouse-client --host=da1 --query "select sha1 from commits_all where match(comment, '^(CVE-(1999|2\d{3})-(0\d{2}[0-9]|[1-9]\d{3,}))$') limit 2 format RowBinary" | perl -ane 'chop(); $o=unpack "H*", $_; print "$o\n";'
+```
 
 We can create additional tables, so that the time filtering could be fast, for example for projects:
 
@@ -1458,6 +1478,9 @@ for j in {3..31..4}; do time ./importc2p.perl $j | clickhouse-client --max_parti
 	
 	
 ## Python Clickhouse API
+
+CH API is disabled in the current version of oscar:   make a separate module - oscar-ch.py)
+
 
 There are classes in oscar.py that allow for querying the clickhouse database:  
 1. `Time_commit_info(tb_name='commits_all', db_host='localhost')` - commits
@@ -1573,130 +1596,3 @@ Similarily, `author_timeline` queries for a specific author:
 (1180017188, 'teyjus_teyjus')
 ...
 ```
-## Environment Variable Configuration for OSCAR
-Environment variables can be used to tell oscar where to look for data files and set its version. The default paths for data files are:
-```python
-PATHS = {
-    # data_type: (path, prefix_bit_length)
-    # prefix length means that the data are split into 2**n files,
-    # e.g. key is in 0..31 for prefix length of 5 bit.
-
-    # The most critical: raw data for the initial storage, use in sweeps, 100TB da4+ backup
-    'commit_sequential_idx': ('/da4_data/All.blobs/commit_{key}.idx', 7),
-    'commit_sequential_bin': ('/da4_data/All.blobs/commit_{key}.bin', 7),
-    'tree_sequential_idx': ('/da4_data/All.blobs/tree_{key}.idx', 7),
-    'tree_sequential_bin': ('/da4_data/All.blobs/tree_{key}.bin', 7),
-    
-    'tag_data': ('/da4_data/All.blobs/tag_{key}.bin', 7),
-    'commit_data': ('/da4_data/All.blobs/commit_{key}.bin', 7),
-    'tree_data': ('/da4_data/All.blobs/tree_{key}.bin', 7),
-    'blob_data': ('/da4_data/All.blobs/blob_{key}.bin', 7),
-
-    # critical - random access to trees and commits on da4 - need to do offsets for the da3
-    'commit_random': ('/fast/All.sha1c/commit_{key}.tch', 7),
-    'tree_random': ('/fast/All.sha1c/tree_{key}.tch', 7),
-
-    'blob_offset': ('/fast/All.sha1o/sha1.blob_{key}.tch', 7),
-    'commit_offset': ('/fast/All.sha1o/sha1.commit_{key}.tch', 7),
-    'tree_offset': ('/fast/All.sha1o/sha1.tree_{key}.tch', 7),
-    # the rest of x_data is currently unused:
-    # 'commit_data': ('/data/All.blobs/commit_{key}.bin',  # 7)
-    # 'tree_data': ('/data/All.blobs/tree_{key}.bin', 7)
-    # 'tag_data': ('/data/All.blobs/tag_{key}.bin', 7)
-
-    # relations - good to have but not critical
-  
-    # move to current version R as they get updated
-    'commit_projects': ('/da0_data/basemaps/c2pFull{ver}.{key}.tch', 5),
-    'commit_children': ('/da0_data/basemaps/c2ccFull{ver}.{key}.tch', 5),
-    'commit_time_author': ('/da0_data/basemaps/c2taFull{ver}.{key}.tch', 5),
-    'commit_root': ('/da0_data/basemaps/c2rFull{ver}.{key}.tch', 5),
-    'commit_parent': ('/da0_data/basemaps/c2pcFull{ver}.{key}.tch', 5),
-    'author_commits': ('/da0_data/basemaps/a2cFull{ver}.{key}.tch', 5),
-    'author_projects': ('/da0_data/basemaps/a2pFull{ver}.{key}.tch', 5),
-    'project_authors': ('/da0_data/basemaps/p2aFull{ver}.{key}.tch', 5),
-
-    'commit_head': ('/da0_data/basemaps/c2hFull{ver}.{key}.tch', 5),
-    'commit_blobs': ('/da0_data/basemaps/c2bFull{ver}.{key}.tch', 5),
-    'commit_files': ('/da0_data/basemaps/c2fFull{ver}.{key}.tch', 5),
-    'project_commits': ('/da0_data/basemaps/p2cFull{ver}.{key}.tch', 5),
-    'blob_commits': ('/da0_data/basemaps/b2cFull{ver}.{key}.tch', 5),
-    'blob_authors': ('/da0_data/basemaps/b2aFull{ver}.{key}.tch', 5),
-    'file_commits': ('/da0_data/basemaps/f2cFull{ver}.{key}.tch', 5),
-    'file_blobs': ('/da0_data/basemaps/f2bFull{ver}.{key}.tch', 5),
-    'blob_files': ('/da0_data/basemaps/b2fFull{ver}.{key}.tch', 5),
-
-    'author_trpath':('/da0_data/basemaps/a2trp{ver}.tch', 5),
-
-    # another way to get commit parents, currently unused
-    # 'commit_parents': ('/da0_data/basemaps/c2pcK.{key}.tch', 7)
-
-    # SHA1 cache, currently only on da4, da5  668G
-    'blob_index_line': ('/fast/All.sha1/sha1.blob_{key}.tch', 7),
-    'tree_index_line': ('/fast/All.sha1/sha1.tree_{key}.tch', 7),
-    'commit_index_line': ('/fast/All.sha1/sha1.commit_{key}.tch', 7),
-    'tag_index_line': ('/fast/All.sha1/sha1.tag_{key}.tch', 7)
-}
-```  
-There are 6 general environment variables:  
-1. `OSCAR_ALL_BLOBS`:
-	* `commit_sequential_idx`
-	* `commit_sequential_bin`
-	* `tree_sequential_idx`
-	* `tree_sequential_bin`
-	* `tag_data`
-	* `commit_data`
-	* `tree_data`
-	* `blob_data`
-2. `OSCAR_ALL_SHA1C`:
-	* `commit_random`
-	* `tree_random` 
-3. `OSCAR_ALL_SHA1O`:
-	* `blob_offset`
-	* `commit_offset`
-	* `tree_offset`
-4. `OSCAR_BASEMAPS`:
-	* `commit_projects`
-	* `commit_children`
-	* `commit_time_author`
-	* `commit_root`
-	* `commit_parent`
-	* `author_commits`
-	* `author_projects`
-	* `project_authors`
-	* `commit_head`
-	* `commit_blobs`
-	* `commit_files`
-	* `project_commits`
-	* `blob_commits`
-	* `blob_authors`
-	* `file_commits`
-	* `file_blobs`
-	* `blob_files`
-	* `author_trpath`
-5. `OSCAR_ALL_SHA1`: 
-	* `blob_index_line`
-	* `tree_index_line`
-	* `commit_index_line`
-	* `tag_index_line`
-6. `OSCAR_BASEMAPS_VER`:
-	* Version of all basemaps  
-	
-For environment variable 1-5, each will be responsible for a group of data files.  
-
-For example, if the environment variable `OSCAR_ALL_SHA1C` is set to `/mydir/mysubdir`, then it will change the path for  `commit_random` and `tree_random`. Specifically:  
-Change the path for `commit_random` to `/mydir/mysubdir/commit_{key}.tch`  
-Change the path for `tree_random` to `/mydir/mysubdir/tree_{key}.tch`  
-
-Each individual data file path can be configured by the `OSCAR_{PATHS name}` environment variable.  
-
-For example, if the environment variable `OSCAR_COMMIT_RANDOM` is set to `/foo/bar`, then it will change the path for `commit_random`. Specifically:  
-Change the path for `commit_random` to `/foo/bar/commit_{key}.tch`  
-The path for `tree_random` remains `/mydir/mysubdir/tree_{key}.tch`  
-**Note that the individual file configuration always overwrites the general configuration.**  
-
-The `OSCAR_BASEMAPS_VER` environment variable specifies which version of the basemaps to use. It will change the version for **all** basemaps.
-
-Each individual basemap version can be configured via the `OSCAR_{basemap name}_VER` variable.  
-
-For example, if the environment variable `OSCAR_BLOB_FILES_VER` is set to `Q`, then the version `Q` of the `blob_files` basemap will be used. This overwrites the version set by the `OSCAR_BASEMAPS_VER`.  
