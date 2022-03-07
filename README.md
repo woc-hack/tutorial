@@ -589,7 +589,7 @@ Hint 1: What is the name of the map?
 
 The technical dependencies have been extracted by parsing the content of all blobs related to 
 several different languages: and are located in
-`/da?_data/basemaps/gz/c2PtAbflPkgFullUX.s` wirt X ranging from 0
+`/da?_data/basemaps/gz/c2PtAbflPkgFullUX.s` with X ranging from 0
 to 127 based on the 7 bits in the first byte of the commit sha1. 
 
 
@@ -605,7 +605,21 @@ for example
 
 Unlike in version R where each language had a separate thruMaps
 directory, info on all languages is kept in a single place. 
-	
+
+To identify the implementation of various packages one can use
+`/da?_data/basemaps/gz/c2PtAbflDefFullUX.s` with X ranging from 0
+to 127 based on the 7 bits in the first byte of the commit sha1. 
+for example
+```
+zcat /da?_data/basemaps/gz/c2PtAbflDefFullU0.s|head
+0000000000abc668c5388237320e97d0dadae7b1;not-an-aardvark_lucky-commit;1613716402;Teddy Katz <teddykatz@fb.com>;050e87971a0a069043821c8d5f0c55d1f4761edc;Cargo.toml;Rust;lucky_commit
+0000000000abc668c5388237320e97d0dadae7b1;not-an-aardvark_lucky-commit;1613716402;Teddy Katz <teddykatz@fb.com>;61aebdecc47b2b7521a353b1cc180b2af1080977;Cargo.lock;Rust;addr2line
+```
+Instead of the list of dependencies the last field identifies the
+package implemented within the blob, specifically, lucky_commit and
+addr2line in the above two blobs.
+
+
 *TODO*:put it into clickhouse to speed up access. 
 
 Lets get a list of commits and repositories that imported Tensorflow for .py files:  
