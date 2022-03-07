@@ -1084,21 +1084,23 @@ Once on the server, you can see all the available databases using the "show dbs"
 Most databases are used for teaching and other tasks, spo please use
 WoC database using the 'use "database name"' command, E.G. (use WoC), and, after switching, you can view the available collections in the database by using the 'show collections' command. 
 
-Currently, there is an author metadata collection (A_metadata.T)
-that contains the total number of projects an author has
-participated in, the total number of blobs created by them (before
+Currently, there is an author metadata collection (A_metadata.U)
+that contains basic stats: the total number of projects, 
+	the total number of blobs created by them (before
 anyone else), the total number
 of commits made, the total number of files they have modified, the
-distribution of language files modified by that author, and the first and
-last time the author committed in Unix Timestamp based on the
+distribution of language files modified by that author, 
+and the first and last time the author committed in Unix Timestamp based on the
 data contained on version S of WoC. Author names have ben aliased
 and the number of aliases and the list are also included in the record.
-
+Furthermore, up to 100 most commonly used API (packages) in author modified files are 
+also included. 
+	
 Alongside this, there is a similar collection for projects on WoC
-(P_metadata.T) that contains the total number of authors on the
+(P_metadata.U) that contains the total number of authors on the
 project, the total number of commits, the total number of files, the
 distribution of languages used, the first and last time there was a
-commit to the project in Unix Timestamp based on version S of
+commit to the project in Unix Timestamp based on the version U of
 WoC. Since the project is deforked, the community size (the number
 of other projects that share commits with the deforeked project) is
 also provided. WoC relation P2p can be used to list other projects
@@ -1109,72 +1111,152 @@ attributes include the number of stars GitHub has given that project
 (if any), if the project is a GitHub fork, and where it was forked
 from (if anywhere).
 
+Finally the collection of APIs or packages contains summary of the first and last time the package was used in a modified file as well as the number of commits, authors and repositories associated with the use of that package.
+	
 To see data in one of the collections, you can run the 'db."collection name".findOne()' command. This will show the first element in the collection and should help clarify what is in the collection.
 
 
-When the above findOne() command is run on the A_metadata.T
-collection, the output is as follows:
+When the above findOne() command is run on the A_metadata.U
+collection, the output is as follows: (in this case we look only for items with more than 200 commits:
 
 -----------
 ```
-mongo --host=da1
-mongo>use WoC;
-mongo>db.A_metadata.T.findOne()
-{
-        "_id" : ObjectId("60abc711041b556b82b75ef8"),
-        "FileInfo" : {
-                "1" : 0,
-                "other" : 43,
-                "14" : 0,
-                "JavaScript" : 3
-        },
-        "NumActiveMon" : 1,
-        "NumFirstBlobs" : 33,
-        "LatestCommitDate" : 1520588214,
-        "MonNprj" : {
-                "2018-03" : 1
-        },
-        "AuthorID" : "Anastasyan <37178041+Anastasyan@users.noreply.github.com>",
-        "MonNcmt" : {
-                "2018-03" : 14
-        },
-        "EarlistCommitDate" : 1520588214,
-        "NumCommits" : 14,
-        "NumFiles" : 46,
-        "NumProjects" : 1
+mongoshell --host=da1
+mongosh>use WoC;
+WoC> db.A_metadata.U.findOne({NumCommits:{$gt:200}})
+{ 
+  _id: ObjectId("62229b132bc6e5f0dbd0307f"),
+  FileInfo: {
+    Ruby: 2,
+    TypeScript: 1,
+    Python: 2,
+    Rust: 92,
+    PHP: 6895,
+    other: 2406,
+    Sql: 1,
+    JavaScript: 1384,
+    'C/C++': 6,
+    Java: 1
+  },
+  NumActiveMon: 19,
+  EarliestCommitDate: 1512136069,
+  ApiInfo: {
+    'Rust:the': 1,
+    'PY:sys': 1,
+    'PY:datetime': 1,
+    'Rust:on': 1,
+    'PY:os': 1
+  },
+  LatestCommitDate: 1550574037,
+  MonNprj: {
+    '2019-02': 1,
+    '2017-11': 5,
+    '2018-04': 2,
+    '2018-12': 2,
+    '2018-03': 2,
+    '2019-05': 1,
+    '2019-04': 1,
+    '2019-03': 1,
+    '2018-05': 2,
+    '2018-02': 3,
+    '2018-08': 1,
+    '2018-01': 1,
+    '2019-06': 1,
+    '2017-12': 4,
+    '2018-10': 1,
+    '2018-06': 1,
+    '2018-11': 1,
+    '2018-07': 1,
+    '2019-01': 4
+  },
+  NumOriginatingBlobs: 2187,
+  AuthorID: 'Jennifer Calipel <jennifer.calipel@gmail.com>',
+  MonNcmt: {
+    '2019-02': 9,
+    '2017-11': 21,
+    '2018-04': 13,
+    '2018-12': 2,
+    '2018-03': 29,
+    '2019-05': 1,
+    '2019-04': 2,
+    '2019-03': 5,
+    '2018-05': 9,
+    '2018-02': 32,
+    '2018-08': 42,
+    '2018-01': 6,
+    '2019-06': 2,
+    '2017-12': 23,
+    '2018-10': 1,
+    '2018-06': 5,
+    '2018-11': 1,
+    '2018-07': 12,
+    '2019-01': 17
+  },
+  NumCommits: 232,
+  NumProjects: 18,
+  NumFiles: 10790
 }
-mongo>db.P_metadata.T.findOne()
+```
+Similarly for projects:
+```
+ WoC> db.P_metadata.U.findOne({NumCommits:{$gt:200}})
+{ 
+  _id: ObjectId("62228cb7e65a0aefc2ca086f"),
+  FileInfo: { other: 442, JavaScript: 17 },
+  NumAuthors: 11,
+  MonNauth: {
+    '2020-04': 9,
+    '2021-07': 1,
+    '2020-11': 1,
+    '2020-07': 1,
+    '2021-05': 1,
+    '2021-08': 1,
+    '2020-08': 1,
+    '2020-03': 5,
+    '2020-06': 5,
+    '2020-12': 1,
+    '2020-05': 5
+  },
+  EarliestCommitDate: 1584055325,
+  NumStars: 17,
+  NumBlobs: 709,
+  LatestCommitDate: 1628739252,
+  ProjectID: 'foss-responders_fossresponders.com',
+  MonNcmt: {
+    '2020-04': 60,
+    '2021-07': 2,
+    '2020-11': 1,
+    '2020-07': 1,
+    '2021-05': 2,
+    '2021-08': 2,
+    '2020-08': 4,
+    '2020-03': 48,
+    '2020-06': 16,
+    '2020-12': 3,
+    '2020-05': 91
+  },
+  NumCore: 3,
+  NumCommits: 230,
+  CommunitySize: 1,
+  NumFiles: 459,
+  Core: {
+    'SaptakS <saptak013@gmail.com>': '23',
+    'Awele <awele.osuka@gmail.com>': '11',
+    'Richard Littauer <richard@maintainer.io>': '157'
+  },
+  NumForks: 11
+}
+```
+And for APIs
+```
+mongosh> WoC> db.API_metadata.U.findOne({$and: [ { NumCommits:{$gt:200} }, { NumProjects: {$gt:200} }, {NumAuthors:{$gt:200}} ]})
 {
-        "_id" : ObjectId("60aaee08041b556b825375ee"),
-        "FileInfo" : {
-                "other" : 6,
-                "JavaScript" : 8,
-                "TypeScript" : 36
-        },
-        "NumAuthors" : 1,
-        "NumActiveMon" : 1,
-        "Gender" : {
-                "male" : 1
-        },
-        "NumBlobs" : 183,
-        "ProjectID" : "alexey-oblomov_chat_app_backend",
-        "MonNcmt" : {
-                "2020-09" : 46
-        },
-        "MonNauth" : {
-                "2020-09" : 1
-        },
-        "LatestCommitDate" : 1599910495,
-        "EarlistCommitDate" : 1599910495,
-        "NumCore" : 1,
-        "NumOriginalBlobs" : 160,
-        "NumFiles" : 50,
-        "CommunitySize" : 1,
-        "NumCommits" : 46,
-        "NumForks" : 0,
-        "Core" : {
-                "Alexey Oblomov <alexey.oblomov@mail.ru>" : 1
-        }
+  _id: ObjectId("62257192758fdfbec79e9125"),
+  NumAuthors: 456,
+  Lang: 'C',
+  NumProjects: 236,
+  NumCommits: 4366,
+  API: 'C:BasicUsageEnvironment.hh'
 }
 ```
 ---------------
