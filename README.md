@@ -1450,7 +1450,7 @@ AnnaLub <yaskrava@gmail.com>    get all tickets command impl\n
 
 We may want to match on commit comment
 ```bash
-echo "select author, project, comment from commit_all where match(comment, 'CVE-2021') limit 3 FORMAT CSV" |clickhouse-client --host=da3 --format_csv_delimiter=";"
+echo "select lower(hex(sha1)),author, project, comment from commit_all where match(comment, 'CVE-2021') limit 3 FORMAT CSV" |clickhouse-client --host=da3 --format_csv_delimiter=";"
 "Florian Westphal <fw@strlen.de>";"Jackeagle_kernel_msm-3.18";"netfilter: x_tables: make xt_replace_table wait until old rules are not used anymore\nxt_replace_table relies on table replacement counter retrieval (which__NEWLINE__uses xt_recseq to synchronize pcpu counters).\nThis is fine, however with large rule 
 set get_counters() can take__NEWLINE__a very long time -- it needs to synchronize all counters because__NEWLINE__it has to assume concurrent modifications can occur.\nMake xt_replace_table synchronize by itself by waiting until all cpus__NEWLINE__had an even seqcount.\nThis allows a followup patch to copy the cou
 nters of the old ruleset__NEWLINE__without any synchonization after xt_replace_table has completed.\nCc: Dan Williams <dcbw@redhat.com>__NEWLINE__Reviewed-by: Eric Dumazet <edumazet@google.com>__NEWLINE__Signed-off-by: Florian Westphal <fw@strlen.de>__NEWLINE__Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org
@@ -1465,7 +1465,14 @@ ndaram.krishnasamy@oracle.com>"
 ```
 commit sha1's are binary, so to print them we need to process, e.g., 
 ```bash
-clickhouse-client --host=da1 --query "select sha1 from commits_all where match(comment, '^(CVE-(1999|2\d{3})-(0\d{2}[0-9]|[1-9]\d{3,}))$') limit 2 format RowBinary" | perl -ane 'chop(); $o=unpack "H*", $_; print "$o\n";'
+clickhouse-client --host=da1 --query 'select sha1, author,comment from commits_all where time=1568656268 limit 1 format RowBinary' | perl -ane '$sha1=substr($_, 0, 20); $o=unpack "H*", $sha1; $rest=substr($_,21,length($_)-21); print "$o;$rest\n";' 
+fbb7add2a58b733a797d97a1e63cb8661702d0a3;zzzz1313 <zaki56@rambler.ru>Initial commit
+```
+Alternatively, we can hex them in the select statement:
+```bash
+clickhouse-client --host=da1 --query "select lower(hex(sha1)),author,comment from commits_all where match(comment, '^(CVE-(1999|2\d{3})-(0\d{2}[0-9]|[1-9]\d{3,}))$') limit 2 format CSV" 
+"024fbd8de50c1269d178c3ee6b8664f5eee7f57b","nickmx1896 <nickmx1896@Hotmail.com>","CVE-2016-2355"
+"209446bab86e996d58c233abee0376cb26dcd4c4","jonathanliem94 <jonathanliem94@gmail.com>","CVE-2017-4963"
 ```
 
 We can create additional tables, so that the time filtering could be fast, for example for projects:
@@ -1479,7 +1486,8 @@ for j in {3..31..4}; do time ./importc2p.perl $j | clickhouse-client --max_parti
 	
 ## Python Clickhouse API
 
-CH API is disabled in the current version of oscar:   make a separate module - oscar-ch.py)
+CH API is disabled in the current version of oscar:   make a
+separate module - see draft in lookup/oscarch.py)
 
 
 There are classes in oscar.py that allow for querying the clickhouse database:  
@@ -1497,15 +1505,18 @@ There are classes in oscar.py that allow for querying the clickhouse database:
 
 The structures of the databases are listed below:  
 **commits_all:**  
-| name    | type            |
-|---------|-----------------|
-| sha1    | FixedString(20) |
-| time    | Int32           |
-| tree    | FixedString(20) |
-| author  | String          |
-| parent  | String          |
-| comment | String          |
-| content | String          |
+        |__name___|______type_______|
+        | sha1    | FixedString(20) |
+        | time    | Int32           |
+        | timeCmt | Int32           |
+        | tree    | FixedString(20) |
+        | parent  | String          |
+        | TZAuth  | String          |
+        | TZCmt   | String          |
+        | author  | String          |
+        | commiter| String          |
+        | project | String          |
+        | comment | String          |
 
 **b2cPtaPkgR_all:**  
 | name     | type            |
@@ -1520,11 +1531,11 @@ The structures of the databases are listed below:
 
 We can use the `commit_counts` to query the count of the commits given a time interval:
 ```python
->>> from oscar import Time_commit_info
+>>> from oscarch import Time_commit_info
 >>>
 >>> t = Time_commit_info()
 >>> t.commit_counts(1568656268)
-8 
+9
 ```
 The `commits` method can be used to iterate through commit objects given a time interval:
 ```python
