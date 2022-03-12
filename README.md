@@ -249,7 +249,7 @@ What is b2fa? The letters signify what keys (b - Blob) and values
 (fa - first author) mean. As in natural sentence some decontextualization is needed in rare cases as this because f generally stands for file. Literally, that would mean b2fa is blob to file and author. As the number of objects and maps will multiply, single letters will not do and full word parsing will be used). At present, these are the primary objects: 
 
 * a = Author
-* b = Blob  (b2c map is obsolete as one can get more info from b2ta)
+* b = Blob  (b2c map will become obsolete as of version U as one can get more info from b2tac)
 * c = Commit
 * f = File (occasionally its an adjective modifying the following object as in fa or First Author)
 * p = Project
@@ -545,7 +545,7 @@ List of relationships:
 ```
 * a2b 		* a2c (.s)	* a2f		* a2ft		
 * a2p (.s)	* a2trp0 (.s)
-* b2a		* b2c (.s)	* b2f (.s)	* b2ob		* ob2b
+* b2a		* b2tac (.s) 	* b2f (.s)	* b2ob		* ob2b
 * b2tk
 * c2b (.s)	* c2cc		* c2f (.s)	* c2h		* c2pc
 * c2p (.s)	* c2P		* c2ta (.s)	* c2td
@@ -556,7 +556,9 @@ List of relationships:
 
 Special relationships (names do not correspond to keys):
 ```
-Version T:
+Versions T or U:
+b2f[aA]  - blob to time, author, commit for the first commit creating that blob
+b2tac  - blob to time, author, commit for all commits creating that blob
 bb2cf  - result of diff on a commit: blob old blob, commit, file
 obb2cf - see bb2cf but blobs reversed
 c2fbb  - result of diff on a commit: commit file, blob, old blob
