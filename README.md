@@ -44,6 +44,8 @@ Host da0
 	User YourUsername
 	
 ```
+Please note that access to remaining servers is similarly available. da2 and da3 have ssh port 22 (both are running worldofcode.org web server on the https port 443)
+
 YourUsername is the login name you provided on the signup form. 
 Logging in then becomes as simple as typing `ssh da0` in your terminal.
 
@@ -247,7 +249,7 @@ What is b2fa? The letters signify what keys (b - Blob) and values
 (fa - first author) mean. As in natural sentence some decontextualization is needed in rare cases as this because f generally stands for file. Literally, that would mean b2fa is blob to file and author. As the number of objects and maps will multiply, single letters will not do and full word parsing will be used). At present, these are the primary objects: 
 
 * a = Author
-* b = Blob
+* b = Blob  (b2c map is obsolete as one can get more info from b2ta)
 * c = Commit
 * f = File (occasionally its an adjective modifying the following object as in fa or First Author)
 * p = Project
@@ -276,11 +278,11 @@ Going back to blob we may ask if this blob has been widely copied as would be ex
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2c
 a8fe822f075fa3d159a203adfa40c3f59d6dd999;00729b406d8d3cfeeeda61c4586dcfd9f9399f4a;00a8f599c25ded714d2a4da9e1bb30e2a335181c;...
 ```
-b2c (blob to commit) shows the numerous commits that introduced that blob in all repositories. We can further use commit to project map (c2p)
+b2ta (blob to time, author, commit) shows the numerous commits that introduced that blob in all repositories. We can further use commit to project map (c2p)
 to identify all associated projects:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  \
-~/lookup/getValues -f b2c | cut -d\; -f2 | \
+~/lookup/getValues -f b2ta | cut -d\; -f4 | \
 ~/lookup/getValues -f c2p  
 ajburton_freebsd
 bu7cher_freebsd
@@ -364,9 +366,10 @@ echo 'imp <imp@FreeBSD.org>' | ~/lookup/getValues A2f
 ### Summary 3
 For any key provided on standard input, a list of values is provided
 ```
-~/lookup/getValues [-f] a2c|c2ta|b2c|c2b|b2f|f2b|c2f|f2c|p2c|c2p|c2P|P2c
+~/lookup/getValues [-f] a2c|c2dat|b2ta|b2fa|c2b|b2f|c2f|p2c|c2p|c2P|P2c
 ```
 option -f replaces one output line per input line into the number of lines corresponding to the number of values. 
+(or single-value maps such as c2dat, b2fa) -f makes no sense as it prints distinct fields on separate lines)
 
 Also, only the first column of the input is considered as the key, other fields are passed through, e.g., 
 ```
@@ -428,7 +431,7 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 The non-Generator version of these functions will return a tuple of items which can then be iterated:
 ```
 for commit in Author(author_name).commit_shas:
-	print(commit)
+	print(Commit(commit))
 ```
 
 ### Exercise 4a:  Get a list of commits made by a specific author:  
