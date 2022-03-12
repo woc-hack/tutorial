@@ -408,10 +408,8 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 	* `.parent_shas/parents`
 	* `.project_names/projects`
 	* `.reporoot` - original repository for this commit
+	* `.attributes` - time, tz, author, tree, parent(s)
 	* `.tdiff`
-4. `Commit_info('...')` - initialized like Commit()
-	* `.head`
-	* `.time_author`
 5. `File('...')` - initialized with a path, starting from a commit root tree
 	* `.authors`
 	* `.blobs`
