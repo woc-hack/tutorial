@@ -278,11 +278,11 @@ Going back to blob we may ask if this blob has been widely copied as would be ex
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2c
 a8fe822f075fa3d159a203adfa40c3f59d6dd999;00729b406d8d3cfeeeda61c4586dcfd9f9399f4a;00a8f599c25ded714d2a4da9e1bb30e2a335181c;...
 ```
-b2ta (blob to time, author, commit) shows the numerous commits that introduced that blob in all repositories. We can further use commit to project map (c2p)
+b2tac (blob to time, author, commit) shows the numerous commits that introduced that blob in all repositories. We can further use commit to project map (c2p)
 to identify all associated projects:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  \
-~/lookup/getValues -f b2ta | cut -d\; -f4 | \
+~/lookup/getValues b2tac | cut -d\; -f4 | \
 ~/lookup/getValues -f c2p  
 ajburton_freebsd
 bu7cher_freebsd
@@ -450,7 +450,7 @@ If "import oscar" fails
 
 As we learned before, we can do that in shell
 ```
-[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP0.s | grep "Albert Krawczyk" <pro-logic@optusnet.com.au>
+[username@da0]~% zcat /da?_data/basemaps/gz/a2cFullU0.s | grep '"Albert Krawczyk" <pro-logic@optusnet.com.au>'
 "Albert Krawczyk" <pro-logic@optusnet.com.au>;17abdbdc90195016442a6a8dd8e38dea825292ae
 "Albert Krawczyk" <pro-logic@optusnet.com.au>;9cdc918bfba1010de15d0c968af8ee37c9c300ff
 "Albert Krawczyk" <pro-logic@optusnet.com.au>;d9fc680a69198300d34bc7e31bbafe36e7185c76
@@ -459,7 +459,7 @@ As we learned before, we can do that in shell
 Now the same thing can be done using oscar.py:  
 ```
 [username@da0]~% cd oscar.py
-[username@da0:oscar.py]~% python
+[username@da0:oscar.py]~% python3
 >>> from oscar import Author
 >>> Author('"Albert Krawczyk" <pro-logic@optusnet.com.au>').commit_shas
 ('17abdbdc90195016442a6a8dd8e38dea825292ae', '9cdc918bfba1010de15d0c968af8ee37c9c300ff', 'd9fc680a69198300d34bc7e31bbafe36e7185c76')
@@ -467,7 +467,7 @@ Now the same thing can be done using oscar.py:
 
 ### Exercise 4b: Get the URL of a projects repository using the oscar.py `Project(...).url` attribute:  
 ```
-[username@da0:oscar.py]~%  python
+[username@da0:oscar.py]~%  python3
 >>> from oscar import Project
 >>> Project('notcake_gcad').url
 'https://github.com/notcake/gcad'
