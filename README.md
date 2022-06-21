@@ -8,9 +8,11 @@ In order to provide you with the access to the systems, please fill
 
 3. [WoC website](https://worldofcode.org)
 
-### MOOC on using shell script
+### On using shell script
 
-Please consider auditing this course if you are not comfortable working with the terminal/shell script
+[A brief gude on use of bash and related tools](https://github.com/woc-hack/tutorial/blob/master/ShellGuide.md)
+
+Please consider auditing this MOOC if you are not comfortable working with the terminal/shell script
 
 [Unix Tools: Data, Software and Production Engineering](https://courses.edx.org/courses/course-v1:DelftX+UnixTx+1T2020/course/)
 
