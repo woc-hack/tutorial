@@ -436,11 +436,6 @@ for commit in Author(author_name).commit_shas:
 
 ### Exercise 4a:  Get a list of commits made by a specific author:  
 
-Python api needs logging in to da4, so start by
-```
-ssh da4
-```
-
 Install the latest oscar.py
 ```
 [username@da0]~% cd ~/oscar.py
@@ -462,9 +457,11 @@ Now the same thing can be done using oscar.py:
 ```
 [username@da0]~% cd oscar.py
 [username@da0:oscar.py]~% python3
->>> from oscar import Author
->>> Author('"Albert Krawczyk" <pro-logic@optusnet.com.au>').commit_shas
-('17abdbdc90195016442a6a8dd8e38dea825292ae', '9cdc918bfba1010de15d0c968af8ee37c9c300ff', 'd9fc680a69198300d34bc7e31bbafe36e7185c76')
+>>> from oscar import Author, Commit
+>>> for commit in Author('"Albert Krawczyk" <pro-logic@optusnet.com.au>').commit_shas: print(Commit(commit))
+17abdbdc90195016442a6a8dd8e38dea825292ae
+9cdc918bfba1010de15d0c968af8ee37c9c300ff
+d9fc680a69198300d34bc7e31bbafe36e7185c76
 ```
 
 ### Exercise 4b: Get the URL of a projects repository using the oscar.py `Project(...).url` attribute:  
@@ -482,7 +479,7 @@ Get list of files modified by commit 17abdbdc90195016442a6a8dd8e38dea825292ae
 Hint 1: What class to use?
 Commit
 ```
-[username@da0:oscar.py]~%  python
+[username@da0:oscar.py]~%  python3
 >>> from oscar import Commit
 >>> Commit('17abdbdc90195016442a6a8dd8e38dea825292ae').changed_file_names
 ```
@@ -501,14 +498,13 @@ subfolders to store/process large files.
 ### List of relevant directories
 
 Not all files are stored on all servers due to limited disk sizes
-and different speed of disks. For example, blobs are stored only on
-da4 and da5. 
-The description below goes over what is stored on each server. 
+and different speed of disks (fast refers to SSDs).
+The location of the file can be identified via a pathname as described below. 
 
-### da0/da5 Servers
-#### <relationship>.{0-31}.tch files in `/data/basemaps/` on da0 and /fast on da5:  
-(.s) signifies that there are either .s or .gz versions of these files in gz/ subfolder, which can be opened with Python gzip module or Unix zcat.  
-da0 is the only server with these .s/.gz files  
+### da0/../da5 Servers
+#### <relationship>.{0-31}.tch files can be found in `/da[0-5]_fast/` or `/da[0-5]_data/basemaps`  
+(.s) signifies that there are either .s or .gz versions of these files in /da[0-5]_data/basemaps/gz/ folder, which can be opened with Python gzip module or Unix zcat.  
+all five da[0-5] server may have these .s/.gz files  
 Keys for identifying letters:   
 
 * a = Author
@@ -587,7 +583,7 @@ Find all blobs associated with Julia language files (extension .jl)
 Hint 1: What is the name of the map?
 
 ```
-[username@da0] zcat /da0_data/basemaps/gz/f2bFullP*.s | grep '\.jl;'
+[username@da0] zcat /da?_data/basemaps/gz/f2bFullP*.s | grep '\.jl;'
 ```
 
 ## Activity 6: Investigating Technical dependencies
@@ -653,7 +649,7 @@ Hint 2: What field contains the repository name?
 
 Find all projects that have commits mentioning "sql injection"
 
-List of commits is on da4:/data/All.blobs/
+List of commits is on /da4_data/All.blobs/
 Lets login to da4, create a data folder to store temporary data on the same server
 "/data/play/username", and uce pcommit to project map to get the list of projects.
 
@@ -1022,7 +1018,7 @@ We can obtain a diff for any commit. It requires comparing trees of it and its p
 
 Lets find the diff for 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a: 
 ```
-[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da4 ~/lookup/cmputeDiff3T.perl 
+[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da5 ~/lookup/cmputeDiff3T.perl 
 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_isa.c;9d5818e25865797b96e4783b00b45f800423e527;594dc8cb2ce725658377bf09aa0f127183b89f77
 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_pci.c;b3c1363c90de7823ec87004fe084f41d0f224c9b;4155935a98ba3b5d3786fa1b6d3d5aa52c6de90a
 ```
