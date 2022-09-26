@@ -1018,7 +1018,7 @@ We can obtain a diff for any commit. It requires comparing trees of it and its p
 
 Lets find the diff for 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a: 
 ```
-[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ssh da5 ~/lookup/cmputeDiff3T.perl 
+[username@da0]~% echo 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a | ~/lookup/cmputeDiff 
 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_isa.c;9d5818e25865797b96e4783b00b45f800423e527;594dc8cb2ce725658377bf09aa0f127183b89f77
 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a;/sys/dev/pccbb/pccbb_pci.c;b3c1363c90de7823ec87004fe084f41d0f224c9b;4155935a98ba3b5d3786fa1b6d3d5aa52c6de90a
 ```
