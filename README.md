@@ -219,6 +219,22 @@ blob;40;2999;66321199427;66321199427;2999;a8fe822f075fa3d159a203adfa40c3f59d6dd9
 ...
 ```
 
+#### Important Note
+In case you want to get the content of many objects (or look up
+values for many keys), please use a single function invocation and
+provide multiple keys/sha1s as standard input because each call so showCnt
+and getValues may involve ssh to another server where the data
+resides.
+To separate content of separate blobs, you can ask showCnt to put
+output on a single line, for example,
+```
+echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob 1
+```
+produces a single line starting from sha1:
+```
+a8fe822f075fa3d159a203adfa40c3f59d6dd999;IyAkRnJlZUJTRCQKIwlAKCMpQ09Q....
+```
+The content of the blob is base64 encoded. (use python's base64.b64decode)
 ### Exercise 2
 
 Determine the author of the parent commit for commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a
