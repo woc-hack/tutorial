@@ -428,7 +428,7 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 	* `.reporoot` - original repository for this commit
 	* `.attributes` - time, tz, author, tree, parent(s)
 	* `.tdiff`
-5. `File('...')` - initialized with a path, starting from a commit root tree
+5. Deprecated, see [#50](https://github.com/ssc-oscar/oscar.py/issues/50): `File('...')` - initialized with a path, starting from a commit root tree
 	* `.authors`
 	* `.blobs`
 	* `.commit_shas/commits`
@@ -563,7 +563,6 @@ List of relationships:
 * b2tk
 * c2b (.s)	* c2cc		* c2f (.s)	* c2h		* c2pc
 * c2p (.s)	* c2P		* c2ta (.s)	* c2td
-* f2a		* f2b (.s)	* f2c (.s)		
 * p2a (.s)	* p2c (.s)	* P2c
 * td2c		* td2f
 ```
@@ -599,7 +598,7 @@ Find all blobs associated with Julia language files (extension .jl)
 Hint 1: What is the name of the map?
 
 ```
-[username@da0] zcat /da?_data/basemaps/gz/f2bFullP*.s | grep '\.jl;'
+[username@da0] zcat /da?_data/basemaps/gz/b2fFullU*.s | grep '\.jl;'
 ```
 
 ## Activity 6: Investigating Technical dependencies
