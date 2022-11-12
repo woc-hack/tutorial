@@ -1637,3 +1637,42 @@ Similarily, `author_timeline` queries for a specific author:
 (1180017188, 'teyjus_teyjus')
 ...
 ```
+
+# Considerations on performance
+
+1. getValues and showCnt are not supposed to be called every second,
+   the keys are passed through from standard input and one line is
+   generated for each key (get values also passes attributes,
+```
+echo "k;a" | getValues k2v
+```
+produces one line
+```
+k;a;v0;v1;..vn
+```
+For blobs, it is possible to export the entire content as a single
+bas64 encoded line
+
+2. Operations that require iteration over all keys or values (e.g., match a pattern) over all
+is faster via flat files
+```
+for i in {0..127}; do zcat /da?_data/basemaps/gz/k2vFullUi.s; done | grep PATTERN
+```
+If the iteration is over commit content, use 
+```
+cd /da5_data/All.blobs/
+for i in {0..127}; do perl ~/lookup/lstCmt.perl 9 $i; done
+```
+If iteration is over blob content 
+
+```
+cd /da5_data/All.blobs/
+for i in {0..127}; do perl ~/lookup/lstBlob.perl $i; done
+```
+
+3. For a very large number of exact keys (over 500K) it is faster to use unix join 
+(simply split (via splitSec.perl for hashes and splitSecCh.perl for strings), sort each piece
+and use unix join:
+```
+for i in {0..127}; do zcat /da?_data/basemaps/gz/k2vFullUi.s |join -t\; <(zcat piece$i) -; done
+```  
