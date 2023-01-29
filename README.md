@@ -6,9 +6,11 @@ In order to provide you with the access to the systems, please fill
 1. [WoC registration form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link)
 
 
-2. [Recording of the tutorial conducted on 2022-10-27](https://drive.google.com/file/d/1ytzOiOSgMpqOUm2XQJhhOUAxu0AAF_OH/view?usp=sharing) and [an older (possibly obsolete) on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
+2. [WoC Elements and Structure](https://drive.google.com/file/d/158yP2Tiue7YNi-HYbAa6oreTJ96twDT7/view?usp=sharing)
 
-3. [WoC website](https://worldofcode.org)
+3. [Recording of the tutorial conducted on 2022-10-27](https://drive.google.com/file/d/1ytzOiOSgMpqOUm2XQJhhOUAxu0AAF_OH/view?usp=sharing) and [an older (possibly obsolete) on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
+
+4. [WoC website](https://worldofcode.org)
 
 ### On using shell script
 
