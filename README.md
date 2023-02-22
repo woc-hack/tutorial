@@ -403,7 +403,9 @@ Warner Losh <imp@FreeBSD.org>;zz;000109ae96e7132d90440c8fa12cb7df95a806c6
 
 ## Activity 4: Using Python APIs from oscar.py
 
-Important Note: If you experience any difficulties in retrieving data from oscar.py's function calls (i.e., you receive an empty tuple on function return), please run `git pull` in your cloned repo to stay up-to-date with the latest version of oscar.py.   
+**oscar.py Tutorial:** oscar.py has their own tutorial for hackathon purposes. We suggest that you go [here](https://github.com/ssc-oscar/oscar.py/blob/master/docs/tutorial.md) and read through it. The tutorial contains information about the current available functions, how to implement applications (simple and complex), and useful imports for applications.
+
+**Important Note:** If you experience any difficulties in retrieving data from oscar.py's function calls (i.e., you receive an empty tuple on function return), please run `git pull` in your cloned repo to stay up-to-date with the latest version of oscar.py.   
 
 These are corresponding functions in oscar.py that open the .tch files listed below for a given entity. "/<function_name>" after a function name denotes the version of that function that returns a Generator object.
 
@@ -429,7 +431,6 @@ These are corresponding functions in oscar.py that open the .tch files listed be
 	* `.changed_file_names/files_changed`
 	* `.parent_shas/parents`
 	* `.project_names/projects`
-	* `.reporoot` - original repository for this commit
 	* `.attributes` - time, tz, author, tree, parent(s)
 	* `.tdiff`
 5. Deprecated, see [#50](https://github.com/ssc-oscar/oscar.py/issues/50): `File('...')` - initialized with a path, starting from a commit root tree
