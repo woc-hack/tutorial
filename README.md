@@ -640,7 +640,12 @@ Instead of the list of dependencies the last field identifies the
 package implemented within the blob, specifically, lucky_commit and
 addr2line in the above two blobs.
 
+The Def relationship in WoC tracks blobs that define a package based 
+on the content of the source code. There is no guarantee that only one project will have it due to copying and other reasons. Identifying the which repository is the true upstream one may not be that difficult, however. 
 
+Def relationship points only to blobs that define the package (e.g., blobs for file setup.py in Python, packages.json in JavaScript, etc.). This can be used to identify 
+repositories (or parts of the repositories) where these package metafiles reside.   	
+	
 *TODO*:put it into clickhouse to speed up access. 
 
 Lets get a list of commits and repositories that imported Tensorflow for .py files:  
