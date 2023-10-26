@@ -614,7 +614,7 @@ several different languages: and are located in
 to 127 based on the 7 bits in the first byte of the commit sha1. 
 
 
-The format of each file is endoded in its name: 
+The format of each file is encoded in its name: 
 ```
 commit;deforked repo;timestamp;Aliased author;blob;filename;language (as used in WoC);module1;module2;...`  
 
@@ -670,7 +670,28 @@ Hint 2: What field contains the repository name?
 [username@da0]~% zcat /da?_data/basemaps/gz/c2PtabllfPkgFullS*.s | grep ';jl;'| grep StaticArrays | cut -d\; -f2 | sort -u
 ```
 
-## Activity 7: Suggested by the audience
+## Activity 7: Investigating copy-based reuse
+
+WoC's operationalization of copy-based supply chains is based on mapping blobs 
+(versions of the source code) to all commits and projects where they have been created. 
+For each blob, all commits are sorted based on their timestamp and the project in which
+the first commit exists is identified as the originator and all other projects as the reuser 
+of that blob. These files are located in `/da?_data/basemaps/gz/Ptb2PtFullVX.s` with X ranging from 0
+to 127 based on the 7 bits in the first byte of the blob sha1. 
+
+The format of each file is encoded in its name: 
+```
+originating repo;timestamp;blob;destination repo;timestamp  
+
+```
+for example
+```
+zhunengfei_ExtJS6.2-samples;1466402956;00000056a59bde3926f65c334caef688ccad0a08;bitbucket.org_mastercad_sencha_demo;1551632725
+```
+This means that blob 00000056a59bde3926f65c334caef688ccad0a08 was first seen in zhunengfei_ExtJS6.2-samples at 1466402956
+and was reused by bitbucket.org_mastercad_sencha_demo at 1551632725.
+
+## Activity 8: Suggested by the audience
 
 Find all projects that have commits mentioning "sql injection"
 
@@ -686,7 +707,7 @@ Lets login to da4, create a data folder to store temporary data on the same serv
 [username@da4:/data/play/audris]~% cut -d\; -f1 sql_inject | ~/lookup/getValues.perl /da0_data/basemaps/c2pFullP > sql_inject.c2p
 ```
 
-## Activity 8: Summary of the activities undertaken
+## Activity 9: Summary of the activities undertaken
 
 * Shell API (faster) and Python API (also Perl API not illustrated) for random access
 
