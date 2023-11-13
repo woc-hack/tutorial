@@ -5,8 +5,7 @@ Get updates or ask questions related to World of Code: https://discord.gg/fKPFxz
 In order to provide you with the access to the systems, please fill
 1. [WoC registration form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link)
 
-
-2. [WoC Elements and Structure](https://youtu.be/c0uFPwT5SZI)
+2. Please view [WoC Elements and Structure](https://youtu.be/c0uFPwT5SZI)
 
 3. [Recording of the tutorial conducted on 2022-10-27](https://drive.google.com/file/d/1ytzOiOSgMpqOUm2XQJhhOUAxu0AAF_OH/view?usp=sharing) and [an older (possibly obsolete) on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
 
@@ -68,7 +67,7 @@ BitBucket: https://bitbucket.org/account/signup/
 Prepare for the hackathon, make sure connections work, 
 get familiar with the basic functionality, and potential of WoC, 
 start thinking on how to investigate global relationships
-in open source.  
+in open source.
 
 ### WoC Objectives
 
@@ -76,18 +75,19 @@ Do the hard work to enable research on global properties of FLOSS:
 
 * Census of all FLOSS
    - What is out there, of what kind, how much
-   - Ability to select projects/developers for natural experiments/other empirical studies 
+   - Ability to select projects/developers/APIs for natural experiments/other empirical studies 
 * Provide FLOSS-wide relationships
    - Technical dependencies (to run applications)
    - Tool dependencies (to build/test applications)
-   - Code migration
+   - Code copying
    - Knowledge (and people) migration
+   - API use and spread over time
 * Data Cleaned/Augmented/Contextualized
    - Correction: Authors/Forks/Outliers
    - Augmentation: Dependencies/Linking to other data sources
    - Context: project types/expertise
 * Big Data Analytics: Map entities to all related entities efficiently
-* Timely: Targeting < 1 week old analyzable snapshot of the entire FLOSS
+* Timely: Targeting < 1 Quarter old analyzable snapshot of the entire FLOSS
 * Community run
    - Hackathon will help determine community needs
    - [Hackathon Schedule](https://github.com/woc-hack/schedule)
@@ -95,7 +95,7 @@ Do the hard work to enable research on global properties of FLOSS:
    - Hackathon registration [form](http://bit.ly/WoCSignup)
    - If you can not attend the hackathon but just want to try out WoC, please fill the hackathon form but indicate in the topic section is that you do not plan to attend the hackathon.
 
-### What WoC Prototype contains
+### What WoC Contains
 
 ![Workflow](https://github.com/woc-hack/tutorial/blob/master/Database-workflow.png)
 ![Content: Commits., trees, blobs, projects, authors](https://github.com/woc-hack/tutorial/blob/master/Database.png)
@@ -107,7 +107,6 @@ Do the hard work to enable research on global properties of FLOSS:
 - [Overview of the Software Supply Chains](https://bitbucket.org/swsc/overview/src/master/README.md)
 - [Details on WoC storage/APIs](https://bitbucket.org/swsc/lookup/src/master/README.md)
 - [Fun Facts](https://bitbucket.org/swsc/overview/src/master/fun/README.md)
-
 
 ## Activity 1: Access to da server(s)
 
@@ -182,7 +181,6 @@ Log in to da4 from da0:
 
 
 ## Activity 2: Shell APIs - Basic Operations
-
 
 Shell APIs might be useful to accsess content of the commit, trees, blobs, 
 to calculate the diff produced by a commit, etc. 
@@ -270,12 +268,13 @@ It turns out that it was created by commit 00a8f599c25ded714d2a4da9e1bb30e2a3351
 What is b2fa? The letters signify what keys (b - Blob) and values
 (fa - first author) mean. As in natural sentence some decontextualization is needed in rare cases as this because f generally stands for file. Literally, that would mean b2fa is blob to file and author. As the number of objects and maps will multiply, single letters will not do and full word parsing will be used). At present, these are the primary objects: 
 
-* a = Author
+* a = Author (A - aliased author)
 * b = Blob  (b2c map will become obsolete as of version U as one can get more info from b2tac)
-* c = Commit
+* c = Commit, cc - child commit and pc - parent commit
 * f = File (occasionally its an adjective modifying the following object as in fa or First Author)
-* p = Project
+* p = Project (P - deforked project)
 * t = Time (unix unsigned long in UTC)
+* g = gender
 
 Captal version simply means that the data as corrected: in case of
 author A means aliased version (see
@@ -332,15 +331,17 @@ Warner Losh <imp@FreeBSD.org>;000109ae96e7132d90440c8fa12cb7df95a806c6
 ...
 ```
 
-
-
-In addition to the random lookup, the maps are also stored in flat sorted files and this format is preffered (faster) when investigating over one million items. 
-For example, find commits by any author named Warner: 
+In addition to the random lookup, the maps are also stored in flat
+sorted files and this format is preffered (faster) when
+investigating over two hundred thousand items or an entire WoC. 
+For example, find commits by any author named Warner (a similar
+task would be to find all blobs or commits involving a c-language
+file ".c" or a README file "README"): 
 ```
-[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullS0.s | grep 'Warner'
+[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullV0.s | grep 'Warner'
 ```
-As described below, the maps are split into 32 parts to enable parallel search.
-FullS means that we are looking ata  complete extract at version S. 
+As described below, the maps are split into 32 (or 128) parts to enable parallel search.
+FullV means that we are looking ata  complete extract at version V. 
 
 As versions keep being updated, and data no longer fits on a single server, 
 a more flexible way to run the same command would be
