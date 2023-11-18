@@ -306,13 +306,10 @@ a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@FreeBSD.org
 b2tac (blob to time, author, commit) shows the numerous commits that introduced that blob in all repositories. We can further use commit to project map (c2p)
 to identify all associated projects:
 ```
-[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  \
-~/lookup/getValues b2tac | cut -d\; -f4 | \
-~/lookup/getValues -f c2p  
-ajburton_freebsd
-bu7cher_freebsd
-denghuancong_freebsd
-...
+[lgonzal6@da0]~/tutorial% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/getValues b2tac | awk -F \; '{for(i=4;i<NF;i+=3){print $i}}' | ~/lookup/getValues -f c2p | cut -d ";" -f2 | sort -u |  head -3
+0cjs_unix-history-repo
+0mp_freebsd
+0xbda2d2f8_freebsd
 ```
 In fact there are 1072 distinct repositories where this blob appears.
 
