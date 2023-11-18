@@ -311,7 +311,7 @@ to identify all associated projects:
 0mp_freebsd
 0xbda2d2f8_freebsd
 ```
-In fact there are 1072 distinct repositories where this blob appears.
+In fact there are 1719 distinct repositories where this blob appears.
 
 Finally, we have the author 'Warner Losh <imp@FreeBSD.org>' for the commit we have investigated. 
 Can we find what other commits Warner has made?:
