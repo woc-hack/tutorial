@@ -179,6 +179,7 @@ Log in to da4 from da0:
 [username@da0]~%
 ```
 
+**NOTE:** Make sure to access these directories and execute a `git pull` frequently to ensure you are working with latest updates.
 
 ## Activity 2: Shell APIs - Basic Operations
 
@@ -294,11 +295,14 @@ imp <imp@bsdimp.com>;M. Warner Losh <imp@bsdimp.com>;M. Warner Losh <imp@freebsd
 p <imp@openbsd.org>;nodemcu-custom-build <imp@bsdimp.com>
 ```
 
-Going back to blob we may ask if this blob has been widely copied as would be expected for copyright files:
+Going back to blob we may ask if this blob has been widely copied as would be expected for copyright files. We can use b2tac to obtain sha1, blob to time, author, and commit. The following example pipes the output to only see the first entry:
+
 ```
-[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2c
-a8fe822f075fa3d159a203adfa40c3f59d6dd999;00729b406d8d3cfeeeda61c4586dcfd9f9399f4a;00a8f599c25ded714d2a4da9e1bb30e2a335181c;...
+[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2tac | cut -d ";" -f1-4          
+a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@FreeBSD.org>;121f970412fec7f9af0352a9b4ce8dca43bdb59e
+
 ```
+
 b2tac (blob to time, author, commit) shows the numerous commits that introduced that blob in all repositories. We can further use commit to project map (c2p)
 to identify all associated projects:
 ```
