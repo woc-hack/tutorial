@@ -166,8 +166,8 @@ Now you can login to da4:
 
 Log in to da0 and clone two repositories that contain APIs to access WoC data
 ```
-git clone https://bitbucket.org/swsc/lookup
-git clone https://github.com/ssc-oscar/oscar.py
+[username@da0]~% git clone https://bitbucket.org/swsc/lookup
+[username@da0]~% git clone https://github.com/ssc-oscar/oscar.py
 ```
 
 Log in to da4 from da0:
@@ -179,6 +179,7 @@ Log in to da4 from da0:
 [username@da0]~%
 ```
 
+**NOTE:** Make sure to access these directories and execute a `git pull` frequently to ensure you are working with latest updates.
 
 ## Activity 2: Shell APIs - Basic Operations
 
@@ -230,7 +231,7 @@ resides.
 To separate content of separate blobs, you can ask showCnt to put
 output on a single line, for example,
 ```
-echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob 1
+[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob 1
 ```
 produces a single line starting from sha1:
 ```
@@ -243,7 +244,7 @@ Determine the author of the parent commit for commit 009d7b6da9c4419fe96ffd1fffb
 
 Hint 1: parent commit is listed in the content of commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a above
 ```
-echo dddff9a89ddd7098a1625cafd3c9d1aa87474cc7 | ~/lookup/showCnt commit
+[username@da0]~% echo dddff9a89ddd7098a1625cafd3c9d1aa87474cc7 | ~/lookup/showCnt commit
 ```
 
 ### Summary 2
@@ -257,7 +258,7 @@ prints the content of these objects.
 
 ## Activity 3 - Investigate the maps
 
-We see the content of the copyright file above. Such files are often copied verbatim. Lets determine the first author who have created it (irrespective of a repository).
+We see the content of the copyright file above. Such files are often copied verbatim. Lets determine the first author who has created it (irrespective of a repository).
 WoC has created this relationship and stored in b2fa (Blob to First Author) map:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2a
@@ -266,7 +267,9 @@ a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@ccf9f872-aa
 It turns out that it was created by commit 00a8f599c25ded714d2a4da9e1bb30e2a335181c done by what appears to be the same author on unix second 1072910122.
 
 What is b2fa? The letters signify what keys (b - Blob) and values
-(fa - first author) mean. As in natural sentence some decontextualization is needed in rare cases as this because f generally stands for file. Literally, that would mean b2fa is blob to file and author. As the number of objects and maps will multiply, single letters will not do and full word parsing will be used). At present, these are the primary objects: 
+(fa - first author) mean. As in natural sentence some decontextualization is needed in rare cases as this because f generally stands for file. Literally, that would mean b2fa is blob to file and author. As the number of objects and maps will multiply, single letters will not do and full word parsing will be used. 
+
+**Primary Objects:**
 
 * a = Author (A - aliased author)
 * b = Blob  (b2c map will become obsolete as of version U as one can get more info from b2tac)
@@ -276,41 +279,41 @@ What is b2fa? The letters signify what keys (b - Blob) and values
 * t = Time (unix unsigned long in UTC)
 * g = gender
 
-Captal version simply means that the data as corrected: in case of
-author A means aliased version (see
-https://arxiv.org/abs/2003.08349) and it also means that
-organizational and group IDs, bot IDs as well as author IDs that do not
+**Capital Version** - simply means that the data has been corrected:   
+* A = aliased version (see https://arxiv.org/abs/2003.08349); any organizational and group IDs, bot IDs, as well as author IDs, that do not
 contain sufficient info to alias are excluded.
-Similarly, P represents a deforked project (via Leuwen community
+* P = deforked project (via Leuwen community
 detection on commit / repo bi-graph: https://arxiv.org/abs/2002.02707)
 
 We can inspect the relationships between a and A and also between p
 and P:
 ```
-echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2A
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2A
 Warner Losh <imp@FreeBSD.org>;imp <imp@bsdimp.com>
-echo 'imp <imp@bsdimp.com>' | ~/lookup/getValues A2a
-imp <imp@bsdimp.com>;M. Warner Losh <imp@bsdimp.com>;M. Warner Losh <imp@freebsd.org>;M. Warner Losh <imp@openbsd.org>;M. Warner Losh <wlosh@netflix.com>;Warner Losh <imp@FreeBSD.org>;Warner Losh <imp@bsdimp.com>;Warner Losh <imp@freebsd.org>;Warner Losh <wlosh@netflix.com>;Warner.Losh <imp@bsdimp.com>;imp <imp@FreeBSD.org>;imp <imp@bsdimp.com>;imp <imp@freebsd.org>;im
-p <imp@openbsd.org>;nodemcu-custom-build <imp@bsdimp.com>
+[username@da0]~% 
+[username@da0]~% echo 'imp <imp@bsdimp.com>' | ~/lookup/getValues A2a | tr ";" "\n" | head -n 3
+imp <imp@bsdimp.com>
+M. Warner Losh <imp@bsdimp.com>
+M. Warner Losh <imp@freebsd.org>
 ```
 
-Going back to blob we may ask if this blob has been widely copied as would be expected for copyright files:
+Going back to blob we may ask if this blob has been widely copied as would be expected for copyright files. We can use b2tac to obtain sha1, blob to time, author, and commit. The following example pipes the output to only see the first entry:
+
 ```
-[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2c
-a8fe822f075fa3d159a203adfa40c3f59d6dd999;00729b406d8d3cfeeeda61c4586dcfd9f9399f4a;00a8f599c25ded714d2a4da9e1bb30e2a335181c;...
+[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2tac | cut -d ";" -f1-4          
+a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@FreeBSD.org>;121f970412fec7f9af0352a9b4ce8dca43bdb59e
+
 ```
+
 b2tac (blob to time, author, commit) shows the numerous commits that introduced that blob in all repositories. We can further use commit to project map (c2p)
 to identify all associated projects:
 ```
-[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  \
-~/lookup/getValues b2tac | cut -d\; -f4 | \
-~/lookup/getValues -f c2p  
-ajburton_freebsd
-bu7cher_freebsd
-denghuancong_freebsd
-...
+[lgonzal6@da0]~/tutorial% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/getValues b2tac | awk -F \; '{for(i=4;i<NF;i+=3){print $i}}' | ~/lookup/getValues -f c2p | cut -d ";" -f2 | sort -u |  head -3
+0cjs_unix-history-repo
+0mp_freebsd
+0xbda2d2f8_freebsd
 ```
-In fact there are 1072 distinct repositories where this blob appears.
+In fact there are 1719 distinct repositories where this blob appears.
 
 Finally, we have the author 'Warner Losh <imp@FreeBSD.org>' for the commit we have investigated. 
 Can we find what other commits Warner has made?:
