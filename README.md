@@ -214,11 +214,9 @@ Lets inspect the tree (the root folder of the project) for the first and last fi
 
 We may also want inspect the first element in the tree: blob representing file COPYRIGHT
 ```
-[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob
-blob;40;2999;66321199427;66321199427;2999;a8fe822f075fa3d159a203adfa40c3f59d6dd999
+[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob | head -n 2
 # $FreeBSD$
 #  @(#)COPYRIGHT  8.2 (Berkeley) 3/21/94
-...
 ```
 
 #### Important Note
