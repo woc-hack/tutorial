@@ -220,13 +220,13 @@ We may also want inspect the first element in the tree (blob representing file C
 ```
 
 #### Important Note
-In case you want to get the content of many objects (or look up
+When wanting to get the content of many objects (or look up
 values for many keys), please use a single function invocation and
-provide multiple keys/sha1s as standard input because each call so showCnt
-and getValues may involve ssh to another server where the data
-resides.
+provide multiple keys/sha1s as standard input since each call to showCnt
+and getValues may involve ssh to another da server (where the data
+resides).  
 To separate content of separate blobs, you can ask showCnt to put
-output on a single line, for example,
+output on a single line, for example:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob 1
 ```
