@@ -230,7 +230,7 @@ output on a single line, for example:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob 1
 ```
-produces a single line starting from sha1:
+This command will produce a single line output, starting from sha1:
 ```
 a8fe822f075fa3d159a203adfa40c3f59d6dd999;IyAkRnJlZUJTRCQKIwlAKCMpQ09Q....
 ```
