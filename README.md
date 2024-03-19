@@ -212,7 +212,7 @@ Lets inspect the tree (the root folder of the project) for the first and last fi
 040000;6618176f9f37fa3e62f2efd953c07096f8ecf6db;usr.sbin
 ```
 
-We may also want inspect the first element in the tree: blob representing file COPYRIGHT
+We may also want inspect the first element in the tree (blob representing file COPYRIGHT). We limit the output to the first two lines only:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob | head -n 2
 # $FreeBSD$
