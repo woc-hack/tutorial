@@ -205,11 +205,10 @@ duplicate messages..
 This commit has a tree and a parent commit and is created by 'Warner Losh <imp@FreeBSD.org>'. 
 (parameter 3 defines that raw output needs to be produced)
 
-Lets inspect the tree (the root folder of the project):
+Lets inspect the tree (the root folder of the project) for the first and last file:
 ```
-[username@da0]~% echo 464ac950171f673d1e45e2134ac9a52eca422132 | ~/lookup/showCnt tree
+[username@da0]~% echo 464ac950171f673d1e45e2134ac9a52eca422132 | ~/lookup/showCnt tree | awk 'NR==1; END{print}'
 100644;a8fe822f075fa3d159a203adfa40c3f59d6dd999;COPYRIGHT
-...
 040000;6618176f9f37fa3e62f2efd953c07096f8ecf6db;usr.sbin
 ```
 
