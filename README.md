@@ -613,8 +613,8 @@ Hint 1: What is the name of the map?
 ## Activity 6: Investigating Technical dependencies
 
 The technical dependencies have been extracted by parsing the content of all blobs related to 
-several different languages: and are located in
-`/da?_data/basemaps/gz/c2PtAbflPkgFullUX.s` with X ranging from 0
+several different languages: and, for version V, are located in
+`/da7_data/basemaps/gz/c2PtAbflPkgFullVX.s` with X ranging from 0
 to 127 based on the 7 bits in the first byte of the commit sha1. 
 
 
