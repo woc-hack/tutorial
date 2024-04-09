@@ -405,6 +405,29 @@ Warner Losh <imp@FreeBSD.org>;zz;000109ae96e7132d90440c8fa12cb7df95a806c6
 ...
 ```
 
+## Actvity: How does a repo look at the last commit
+
+Lets suppose we only care for the last version of the files in a project, e.g last version of readme. 
+lb2f (last blob to file) provides this relationship
+```
+zcat /da?_data/basemaps/gz/lb2fFullV0.s | grep -i readme
+000602be627d586f3e0ccc65f5814b6c3291cf56;/README.md
+0006032ca2ccdafb183c1b49c1e4bb49272ecfbc;/apps/supc/supc_wakeup_rtt/readme.md
+0006035d175851e2616bedab2ee7cfc6e63511f8;/README.md
+0006036aabb3a6161b16bd34d074c65aea17e03a;/README.md
+0006037fdc4972bf5812c3c1ae6f020c8f6dcdb6;/README.md
+000604253ef08192e0dfcbe8cc8acb05f9336333;/README.md
+...
+```
+To get projects we just need to join it with b2P
+```
+zcat zcat /da?_data/basemaps/gz/lb2fFullV0.s | join -t\; -k1 - <(zcat zcat /da?_data/basemaps/gz/b2PFullV0.s) | head
+01000001a222fafa5ea641d2685186490afd7120;/README.md;jeffprestes_candies-client
+01000001a222fafa5ea641d2685186490afd7120;/README.md;jeffprestes_candies-client-native-java
+...
+```
+Notice that some of the 
+
 ## Activity 4: Using Python APIs from oscar.py
 
 **oscar.py Tutorial:** oscar.py has their own tutorial for hackathon purposes. We suggest that you go [here](https://github.com/ssc-oscar/oscar.py/blob/master/docs/tutorial.md) and read through it. The tutorial contains information about the current available functions, how to implement applications (simple and complex), and useful imports for applications.
@@ -509,6 +532,8 @@ Commit
 >>> Commit('17abdbdc90195016442a6a8dd8e38dea825292ae').changed_file_names
 ```
 
+## 
+
 ## Activity 5: Understanding Servers and folders
 
 All home folders are on da2, so it is preferred not to do very large
@@ -564,7 +589,16 @@ contain sufficient info to alias are excluded.
 Similarly, the capital version of project P represents a deforked project (via Leuwen community
 detection on commit / repo bi-graph: https://arxiv.org/abs/2002.02707)
 
-List of relationships:
+List of relationships can be obtained via
+```
+echo $(ls /da?_data/basemaps/gz/*FullV0.s| sed 's|.*/||;s|FullV0.s||')
+A2P A2c A2mnc P2A P2a P2c P2core P2g P2mnc P2tac a2P a2c a2p c2P c2acp c2cc c2dat c2p c2pc p2a
+p2c A2b A2f A2fb A2tPc A2tPlPkg A2tspan P2b P2binf P2f P2fb P2nfb P2tAlPkg P2tspan Pkg2tPA Pt2Ptb
+Ptb2Pt a2f a2fb b2P b2def b2fA b2f b2fa b2ob b2ptf b2tA b2tP b2ta b2tk b bb2cf c2PtAbflDef
+c2PtAbflPk g c2PtabflDef c2PtabflPkg c2b c2f c2fbb lb2f lc2Pdat ob2b obb2cf t2all t2ptf tk2b
+```
+
+
 ```
 * a2b 		* a2c (.s)	* a2f		* a2ft		
 * a2p (.s)	* a2trp0 (.s)
