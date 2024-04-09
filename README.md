@@ -421,12 +421,22 @@ zcat /da?_data/basemaps/gz/lb2fFullV0.s | grep -i readme
 ```
 To get projects we just need to join it with b2P
 ```
-zcat zcat /da?_data/basemaps/gz/lb2fFullV0.s | join -t\; -k1 - <(zcat zcat /da?_data/basemaps/gz/b2PFullV0.s) | head
+zcat zcat /da?_data/basemaps/gz/lb2fFullV0.s | grep -i readme | join -t\; -k1 - <(zcat zcat /da?_data/basemaps/gz/b2PFullV0.s) | head
 01000001a222fafa5ea641d2685186490afd7120;/README.md;jeffprestes_candies-client
 01000001a222fafa5ea641d2685186490afd7120;/README.md;jeffprestes_candies-client-native-java
 ...
 ```
-Notice that some of the 
+
+Each project also has the last commit in lc2Pdat
+```
+zcat /da?_data/basemaps/gz/lc2PdatFullV1.s | head                                                                                                                                                                                                                                                
+01000009d4c8d8f088e30519131e4e60cf61e969;Dushyant099_Tetris;1500262480;-0400;Dushyant Patel <dushyant@Dushyants-MacBook-Air.local>;214c30ce8162a624f1f2442ff7bed46d0fb7b4b1;9e46a5cd45ce0adf3afe24ce616f5be0315c72b2
+0100001ea4da8bf95026379ba964d2c9ea2627d9;rijarobinson_refact_assnment;1480291678;-0600;Marija Robinson <marija@springmail.com>;85eb00fb8f2409a4ab7828786d21b790381d80c5;18e8e329e9a6fd3146f7d2f86c1804997c9e6f4e
+0100004d9a75be26d2c0c0ea59e81b001d65fa25;mandyradomski_helloWorld.html;1596383537;+0200;mandyradomski <62217292+mandyradomski@users.noreply.github.com>;cbddeddabaea90f2e60d98fa641db6ca5d68d0cc;c50460b289b1aef1bffae68e390a76eb95454eaf
+010000514c8b05f858703cd8379431e3679fa4d4;mubarak117136_updatetech-frontend;1634126401;+0600;amir mubarak <amir@codesign.com.bd>;5f7bc0af24047ba71359d36d9af3748e9ecfe9b6;
+```
+In fact, lb2f is computed from lc2dat by taking the tree (column 6 of  lc2Pdat) and obtaining all blobds in that tree in, recusively, subtrees.
+
 
 ## Activity 4: Using Python APIs from oscar.py
 
