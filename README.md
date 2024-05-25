@@ -402,6 +402,39 @@ Warner Losh <imp@FreeBSD.org>;zz;000109ae96e7132d90440c8fa12cb7df95a806c6
 ...
 ```
 
+## Actvity: How does a repo look at the last commit
+
+Lets suppose we only care for the last version of the files in a project, e.g last version of readme. 
+lb2f (last blob to file) provides this relationship
+```
+zcat /da?_data/basemaps/gz/lb2fFullV0.s | grep -i readme
+000602be627d586f3e0ccc65f5814b6c3291cf56;/README.md
+0006032ca2ccdafb183c1b49c1e4bb49272ecfbc;/apps/supc/supc_wakeup_rtt/readme.md
+0006035d175851e2616bedab2ee7cfc6e63511f8;/README.md
+0006036aabb3a6161b16bd34d074c65aea17e03a;/README.md
+0006037fdc4972bf5812c3c1ae6f020c8f6dcdb6;/README.md
+000604253ef08192e0dfcbe8cc8acb05f9336333;/README.md
+...
+```
+To get projects we just need to join it with b2P
+```
+zcat zcat /da?_data/basemaps/gz/lb2fFullV0.s | grep -i readme | join -t\; -k1 - <(zcat zcat /da?_data/basemaps/gz/b2PFullV0.s) | head
+01000001a222fafa5ea641d2685186490afd7120;/README.md;jeffprestes_candies-client
+01000001a222fafa5ea641d2685186490afd7120;/README.md;jeffprestes_candies-client-native-java
+...
+```
+
+Each project also has the last commit in lc2Pdat
+```
+zcat /da?_data/basemaps/gz/lc2PdatFullV1.s | head                                                                                                                                                                                                                                                
+01000009d4c8d8f088e30519131e4e60cf61e969;Dushyant099_Tetris;1500262480;-0400;Dushyant Patel <dushyant@Dushyants-MacBook-Air.local>;214c30ce8162a624f1f2442ff7bed46d0fb7b4b1;9e46a5cd45ce0adf3afe24ce616f5be0315c72b2
+0100001ea4da8bf95026379ba964d2c9ea2627d9;rijarobinson_refact_assnment;1480291678;-0600;Marija Robinson <marija@springmail.com>;85eb00fb8f2409a4ab7828786d21b790381d80c5;18e8e329e9a6fd3146f7d2f86c1804997c9e6f4e
+0100004d9a75be26d2c0c0ea59e81b001d65fa25;mandyradomski_helloWorld.html;1596383537;+0200;mandyradomski <62217292+mandyradomski@users.noreply.github.com>;cbddeddabaea90f2e60d98fa641db6ca5d68d0cc;c50460b289b1aef1bffae68e390a76eb95454eaf
+010000514c8b05f858703cd8379431e3679fa4d4;mubarak117136_updatetech-frontend;1634126401;+0600;amir mubarak <amir@codesign.com.bd>;5f7bc0af24047ba71359d36d9af3748e9ecfe9b6;
+```
+In fact, lb2f is computed from lc2dat by taking the tree (column 6 of  lc2Pdat) and obtaining all blobds in that tree in, recusively, subtrees.
+
+
 ## Activity 4: Using Python APIs from oscar.py
 
 **oscar.py Tutorial:** oscar.py has their own tutorial for hackathon purposes. We suggest that you go [here](https://github.com/ssc-oscar/oscar.py/blob/master/docs/tutorial.md) and read through it. The tutorial contains information about the current available functions, how to implement applications (simple and complex), and useful imports for applications.
@@ -506,6 +539,8 @@ Commit
 >>> Commit('17abdbdc90195016442a6a8dd8e38dea825292ae').changed_file_names
 ```
 
+## 
+
 ## Activity 5: Understanding Servers and folders
 
 All home folders are on da2, so it is preferred not to do very large
@@ -561,7 +596,16 @@ contain sufficient info to alias are excluded.
 Similarly, the capital version of project P represents a deforked project (via Leuwen community
 detection on commit / repo bi-graph: https://arxiv.org/abs/2002.02707)
 
-List of relationships:
+List of relationships can be obtained via
+```
+echo $(ls /da?_data/basemaps/gz/*FullV0.s| sed 's|.*/||;s|FullV0.s||')
+A2P A2c A2mnc P2A P2a P2c P2core P2g P2mnc P2tac a2P a2c a2p c2P c2acp c2cc c2dat c2p c2pc p2a
+p2c A2b A2f A2fb A2tPc A2tPlPkg A2tspan P2b P2binf P2f P2fb P2nfb P2tAlPkg P2tspan Pkg2tPA Pt2Ptb
+Ptb2Pt a2f a2fb b2P b2def b2fA b2f b2fa b2ob b2ptf b2tA b2tP b2ta b2tk b bb2cf c2PtAbflDef
+c2PtAbflPk g c2PtabflDef c2PtabflPkg c2b c2f c2fbb lb2f lc2Pdat ob2b obb2cf t2all t2ptf tk2b
+```
+
+
 ```
 * a2b 		* a2c (.s)	* a2f		* a2ft		
 * a2p (.s)	* a2trp0 (.s)
@@ -610,8 +654,8 @@ Hint 1: What is the name of the map?
 ## Activity 6: Investigating Technical dependencies
 
 The technical dependencies have been extracted by parsing the content of all blobs related to 
-several different languages: and are located in
-`/da?_data/basemaps/gz/c2PtAbflPkgFullUX.s` with X ranging from 0
+several different languages: and, for version V, are located in
+`/da7_data/basemaps/gz/c2PtAbflPkgFullVX.s` with X ranging from 0
 to 127 based on the 7 bits in the first byte of the commit sha1. 
 
 
