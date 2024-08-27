@@ -1,6 +1,6 @@
 # Tutorial: basics of using WoC
 
-Get updates or ask questions related to World of Code: https://discord.gg/fKPFxzWqZX
+Get updates or ask questions related to World of Code: https://discord.gg/VbVcGZ6t
 
 In order to provide you with the access to the systems, please fill
 1. [WoC registration form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link)
