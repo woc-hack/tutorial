@@ -1,44 +1,49 @@
-# Tutorial: basics of using WoC
+# Tutorial: World of Code (WoC) Basics
 
-Get updates or ask questions related to World of Code: https://discord.gg/fKPFxzWqZX
+![WoC_logo](/Assets/WoC_Logo.png)
 
-In order to provide you with the access to the systems, please fill
-1. [WoC registration form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link)
+## Overview
 
-2. Please view [WoC Elements and Structure](https://youtu.be/c0uFPwT5SZI)
+World of Code (WoC) is a large-scale infrastructure designed to mine and analyze the entirety of open-source software ecosystems. It aggregates data from millions of repositories across various platforms (e.g., GitHub, GitLab) and provides cross-references between authors, projects, commits, and files. This enables researchers and developers to study software development trends, dependencies, and code sharing at a global level. WoC is essential for researchers looking to examine the evolution and structure of open-source ecosystems, supporting analyses in software supply chains, developer behavior, and code reuse.
 
-3. [Recording of the tutorial conducted on 2022-10-27](https://drive.google.com/file/d/1ytzOiOSgMpqOUm2XQJhhOUAxu0AAF_OH/view?usp=sharing) and [an older (possibly obsolete) on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
+## Important Links
 
-4. [WoC website](https://worldofcode.org)
+1. [WoC Registration Form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link): To request access to our servers
 
-### On using shell script
+2. [WoC Structure and Its Elements Video](https://youtu.be/c0uFPwT5SZI)
 
-[A brief gude on use of bash and related tools](https://github.com/woc-hack/tutorial/blob/master/ShellGuide.md)
+3. [Tutorial Recording from 2022-10-27](https://drive.google.com/file/d/1ytzOiOSgMpqOUm2XQJhhOUAxu0AAF_OH/view?usp=sharing) and [Older Tutorial Recoding (possibly obsolete) from 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
 
-Please consider auditing this MOOC if you are not comfortable working with the terminal/shell script
+4. [WoC Website](https://worldofcode.org)
 
-[Unix Tools: Data, Software and Production Engineering](https://courses.edx.org/courses/course-v1:DelftX+UnixTx+1T2020/course/)
+5. [WoC Discord](https://discord.gg/fKPFxzWqZX): Get updates or ask questions related to WoC
 
-### Before the Tutorial: Access to da server(s)
+## Additional Resources
+
+1. [WoC Shell Guide](https://github.com/woc-hack/tutorial/blob/master/ShellGuide.md): A brief guide on how to use bash and other related tools
+
+2. [Unix Tools: Data, Software and Production Engineering](https://courses.edx.org/courses/course-v1:DelftX+UnixTx+1T2020/course/): Consider auditing this Massive Open Online Course (MOOC) if you are not comfortable working in the terminal or working with shell scripting
+
+## Before You Start..
+### Step 1. Requirements to Access the da Server(s)
 
 To register for the hackathon/tutorial, please
-generate a public key.
-For Mac and unix users the instructions below would work, but for windows users 
-the best option is to enable [ubuntu shell]](https://winaero.com/blog/how-to-enable-ubuntu-bash-in-windows-10) [other instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10) first, then follow instructions for unix/mac. Alternatively, 
-[OpenSSH module for PowerShell](https://www.techrepublic.com/blog/10-things/how-to-generate-ssh-keys-in-openssh-for-windows-10/), or
-[Git-Bash](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-windows#Git-Bash) are other options.
+generate a ssh public key. See instructions below.
 
-To generated ssh key open a terminal window and run `ssh-keygen` command. Once
-it completes it produces the `id_rsa.pub` and `id_rsa` files inside your $HOME/.ssh/ folder. 
-Type
+For macOS and Unix users, the instructions below would work. Still, for Windows users, the best option is to enable [Ubuntu Shell](https://winaero.com/blog/how-to-enable-ubuntu-bash-in-windows-10) or [install Linux on Windows with WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) first, then follow instructions for Unix/macOS. 
+Alternatively, you may use the [OpenSSH Module for PowerShell](https://www.techrepublic.com/blog/10-things/how-to-generate-ssh-keys-in-openssh-for-windows-10/) or [Git-Bash](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-windows#Git-Bash) as an alternative option.
+
+To generate a ssh key, open a terminal window and run the `ssh-keygen` command. Once completed, it produces the `id_rsa.pub` and `id_rsa` files inside your $HOME/.ssh/ folder. 
+To view the newly generated *public key*, type:
+
 ```
 cat ~/.ssh/id_rsa.pub
 ```
-That is your public ssh key you include in the WoC registration [form http://bit.ly/WoCSignup](http://bit.ly/WoCSignup). The form will ask you for the contents of `id_rsa.pub` and the
-GitHub and BitBucket handles. You will receive a response to the
-email provided in the form once your account is set up.
 
-Set up your `~/.ssh/config` file so that you can login to one of the da servers without having to fully specify the server name each time:
+You will need to provide this ssh *public key* when you complete the **WoC Registration Form** (step 3), as the form will ask you for the contents of `id_rsa.pub` and your **GitHub** and **Bitbucket**  handles (step 2). You will receive a response to the email you provide in the form once your account is set up (more details below).
+
+Set up your `~/.ssh/config` file so that you can log in to one of the da servers without having to fully specify the server name each time:
+
 ```
 Host *
   ForwardAgent yes
@@ -47,31 +52,30 @@ Host da0
 	Hostname da0.eecs.utk.edu
 	Port 443
 	User YourUsername
-	
 ```
-Please note that access to remaining servers is similarly available. da2 and da3 have ssh port 22 (both are running worldofcode.org web server on the https port 443)
+Please note that access to the remaining servers is similarly available. da2 and da3 have ssh port 22 (both are running the worldofcode.org web server on the https port 443)
 
-YourUsername is the login name you provided on the signup form. 
-Logging in then becomes as simple as typing `ssh da0` in your terminal.
+*Your_UserName* is the login name you provided on the signup form. With the config setup, logging in becomes as simple as typing `ssh da0` in your terminal.
 
-### Set up accounts for GitHub and Bitbucket
+### Step 2. GitHub and Bitbucket Accounts Setup
 
-If you dont have these already, please setup an account on both
-GitHub and Bitbucket (they will be needed to invite you to the
-relevant repositories on GitHub&BitBucket).
-GitHub: https://github.com/pricing  
-BitBucket: https://bitbucket.org/account/signup/  
+If you dont have these already, please set up an account on both
+GitHub and Bitbucket (these will be needed to invite you to the
+relevant repositories on GitHub & Bitbucket).
+* [GitHub Sign-up](https://github.com/pricing)  
+* [Bitbucket Sign-up](https://bitbucket.org/account/signup/)  
+
+### Step 3. Request for Access
+
+Users may access our systems/servers by obtaining a WoC account. You may do so by registering for an account through the [WoC Registration Form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link). We strive to provide access to new users the same day you fill out the form, but in the worst-case scenario, please allow up to 1 day for the account creation.
 
 ## Tutorial Objectives
 
-Prepare for the hackathon, make sure connections work, 
-get familiar with the basic functionality, and potential of WoC, 
-start thinking on how to investigate global relationships
-in open source.
+Prepare for the hackathon or perform research, make sure connections work, get familiar with the basic functionality and potential of WoC, and start thinking about how to investigate global relationships in open source.
 
 ### WoC Objectives
 
-Do the hard work to enable research on global properties of FLOSS: 
+Do the hard work to enable research on global properties of (Free, Libre, and Open Source Software) FLOSS: 
 
 * Census of all FLOSS
    - What is out there, of what kind, how much
@@ -89,10 +93,10 @@ Do the hard work to enable research on global properties of FLOSS:
 * Big Data Analytics: Map entities to all related entities efficiently
 * Timely: Targeting < 1 Quarter old analyzable snapshot of the entire FLOSS
 * Community run
-   - Hackathon will help determine community needs
+   - Hackathons help determine the community needs
    - [Hackathon Schedule](https://github.com/woc-hack/schedule)
 * How to participate?
-   - Hackathon registration [form](http://bit.ly/WoCSignup)
+   - [Hackathon Registration Form](http://bit.ly/WoCSignup)
    - If you can not attend the hackathon but just want to try out WoC, please fill the hackathon form but indicate in the topic section is that you do not plan to attend the hackathon.
 
 ### What WoC Contains
@@ -102,7 +106,7 @@ Do the hard work to enable research on global properties of FLOSS:
 
 ### Related background reading
 
-- [Estimate the impact of your code](https://da2.eecs.utk.edu)
+- [Estimate the Impact of Your Code](https://da2.eecs.utk.edu)
 - [About WoC](https://bitbucket.org/swsc/overview/raw/master/pubs/WoC.pdf)
 - [Overview of the Software Supply Chains](https://bitbucket.org/swsc/overview/src/master/README.md)
 - [Details on WoC storage/APIs](https://bitbucket.org/swsc/lookup/src/master/README.md)
@@ -299,36 +303,42 @@ Going back to blob we may ask if this blob has been widely copied as would be ex
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2tac | cut -d ";" -f1-4          
 a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@FreeBSD.org>;121f970412fec7f9af0352a9b4ce8dca43bdb59e
-
 ```
 
 b2tac (blob to time, author, commit) shows the numerous commits that introduced that blob in all repositories. We can further use commit to project map (c2p)
 to identify all associated projects:
 ```
-[lgonzal6@da0]~/tutorial% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/getValues b2tac | awk -F \; '{for(i=4;i<NF;i+=3){print $i}}' | ~/lookup/getValues -f c2p | cut -d ";" -f2 | sort -u |  head -3
+[lgonzal6@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/getValues b2tac | awk -F \; '{for(i=4;i<NF;i+=3){print $i}}' | ~/lookup/getValues -f c2p | cut -d ";" -f2 | sort -u |  head -3
 0cjs_unix-history-repo
 0mp_freebsd
 0xbda2d2f8_freebsd
 ```
-In fact there are 1719 distinct repositories where this blob appears.
+In fact there are 1719 distinct repositories where this blob appears. If you would like to see them all, remove the last `head` portion in the previous command.
 
 Finally, we have the author 'Warner Losh <imp@FreeBSD.org>' for the commit we have investigated. 
-Can we find what other commits Warner has made?:
+Can we find what other commits Warner has made? (The following output is limited to two commits only):
 ```
-[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2c
-Warner Losh <imp@FreeBSD.org>;0000ce4417bd8d9a2d66a7a61393558d503f2805;000109ae96e7132d90440c8fa12cb7df95a806c6;00014b72bf10ad43ca437daf388d33c4fea73df9;000171c80d0d0ab6ff22b58b922e559e51485936;000282fc6c091e1c0abdadf1f58c088fc3ed9bc9;0002d1cab0d367c074a601e28183c60657254820;000373a8c48347c3e0e30486ccf4d9b043438826;...
-
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2c | tr ";" "\n" |  head -3
+Warner Losh <imp@FreeBSD.org>
+0000ce4417bd8d9a2d66a7a61393558d503f2805
+000109ae96e7132d90440c8fa12cb7df95a806c6
 ```
 
 In addition to variable-length records (key;val1,;val2;...;valn), 
 the output can be produced as a flat table (key;val1\nkey;val2\n...\nkey;valn)
 using -f option:
 ```
-[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues -f a2c
-Warner Losh echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues -f a2c| head
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues -f a2c | head
 Warner Losh <imp@FreeBSD.org>;0000ce4417bd8d9a2d66a7a61393558d503f2805
 Warner Losh <imp@FreeBSD.org>;000109ae96e7132d90440c8fa12cb7df95a806c6
-...
+Warner Losh <imp@FreeBSD.org>;0001246ed9e02765dfc9044a1804c3c614d25dde
+Warner Losh <imp@FreeBSD.org>;00014b72bf10ad43ca437daf388d33c4fea73df9
+Warner Losh <imp@FreeBSD.org>;000153916157b29a14b65fa3efeff4e3788e1b0e
+Warner Losh <imp@FreeBSD.org>;000171c80d0d0ab6ff22b58b922e559e51485936
+Warner Losh <imp@FreeBSD.org>;00027b7d7b9eec269d09417210348fea9ed35888
+Warner Losh <imp@FreeBSD.org>;000282fc6c091e1c0abdadf1f58c088fc3ed9bc9
+Warner Losh <imp@FreeBSD.org>;0002b0bb03471cdb08fe20d4c0571652b1601ba3
+Warner Losh <imp@FreeBSD.org>;0002c18eb085fda8b24f8f0234042d48b1a464fc
 ```
 
 In addition to the random lookup, the maps are also stored in flat
@@ -338,15 +348,15 @@ For example, find commits by any author named Warner (a similar
 task would be to find all blobs or commits involving a c-language
 file ".c" or a README file "README"): 
 ```
-[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullV0.s | grep 'Warner'
+[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullS0.s | grep 'Warner Losh'
 ```
 As described below, the maps are split into 32 (or 128) parts to enable parallel search.
-FullV means that we are looking ata  complete extract at version V. 
+FullS means that we are looking at a complete extract at version S. 
 
 As versions keep being updated, and data no longer fits on a single server, 
 a more flexible way to run the same command would be
 ```
-[username@da0]~% zcat /da?_data/basemaps/gz/a2cFull?0.s | grep 'Warner'
+[username@da0]~% zcat /da?_data/basemaps/gz/a2cFull?0.s | grep 'Warner Losh'
 ```
 In other words, we look for the file on any of the servers and selecting an arbitrary 
 version of the datbase.
@@ -359,12 +369,12 @@ Hint 1: What is the map name?
 
 Author ID to File or a2f
 ```
-echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2f 
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2f 
 ```
 
 Find all commits  developers who have your last and your first name:
 
-Hint 1: use wc (word count), e.g., 
+Hint 1: use wc (word count), e.g. (example takes a long time to compute), 
 
 ```
 [username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP*.s | grep -i 'audris' | grep -i 'mockus' | wc -l
@@ -381,10 +391,8 @@ Warner Losh <imp@FreeBSD.org>;imp <imp@bsdimp.com>
 
 and then use it to get all files via A2f
 ```
-echo 'imp <imp@FreeBSD.org>' | ~/lookup/getValues A2f 
+[username@da0]~% echo 'imp <imp@bsdimp.com>' | ~/lookup/getValues A2f 
 ```
-
-
 
 ### Summary 3
 For any key provided on standard input, a list of values is provided
@@ -396,10 +404,10 @@ option -f replaces one output line per input line into the number of lines corre
 
 Also, only the first column of the input is considered as the key, other fields are passed through, e.g., 
 ```
-echo 'Warner Losh <imp@FreeBSD.org>;zz' | ~/lookup/getValues -f a2c| head
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>;zz' | ~/lookup/getValues -f a2c| head -n 3
 Warner Losh <imp@FreeBSD.org>;zz;0000ce4417bd8d9a2d66a7a61393558d503f2805
 Warner Losh <imp@FreeBSD.org>;zz;000109ae96e7132d90440c8fa12cb7df95a806c6
-...
+Warner Losh <imp@FreeBSD.org>;zz;0001246ed9e02765dfc9044a1804c3c614d25dde
 ```
 
 ## Actvity: How does a repo look at the last commit
