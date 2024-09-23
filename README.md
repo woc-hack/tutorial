@@ -775,7 +775,26 @@ zhunengfei_ExtJS6.2-samples;1466402956;00000056a59bde3926f65c334caef688ccad0a08;
 This means that blob 00000056a59bde3926f65c334caef688ccad0a08 was first seen in zhunengfei_ExtJS6.2-samples at 1466402956
 and was reused by bitbucket.org_mastercad_sencha_demo at 1551632725.
 
-## Activity 9: Suggested by the audience
+## Activity 9: OSS License Identification
+
+The proliferation of OSS has created a complex landscape of licensing practices, making accurate license identification essential for legal and compliance purposes. 
+WoC uses a comprehensive approach, scanning all blobs with "license" in their filepath and applying the winnowing algorithm for reliable text matching against known licenses.
+
+This method successfully identifies and matches over 5.5 million unique license blobs across projects, generating a detailed project to license map.
+
+This map is stored at `/da?_data/basemaps/gz/P2LtFullV.s`.
+
+The file format is encoded as follows:
+```
+deforkedProject;License;time
+```
+The "time" field is in the "YYYY-MM" format and represents the commit timestamp when the license blob was committed to the project. This field may also have an "invalid" value, indicating that the commit timestamp was not valid (e.g., a future time due to discrepancies in the user's system time).
+
+Additionally, since these timestamps only represent when the license was committed to the project and do not indicate whether the license is still present, the latest commit tree (before the WoC version V data collection date, 2023-05) of each project was examined. If the license blob was found in the latest commit, a record was added with the time set as "latest."
+
+When interpreting the data, it's important to note that the scope of license detection does not include code files or references to licenses within project documentation.
+
+## Activity 10: Suggested by the audience
 
 Find all projects that have commits mentioning "sql injection"
 
@@ -791,7 +810,7 @@ Lets login to da4, create a data folder to store temporary data on the same serv
 [username@da4:/data/play/audris]~% cut -d\; -f1 sql_inject | ~/lookup/getValues.perl /da0_data/basemaps/c2pFullP > sql_inject.c2p
 ```
 
-## Activity 10: Summary of the activities undertaken
+## Activity 11: Summary of the activities undertaken
 
 * Shell API (faster) and Python API (also Perl API not illustrated) for random access
 
@@ -803,7 +822,7 @@ Lets login to da4, create a data folder to store temporary data on the same serv
 
 * Mongodb tables with the summary information about authors and projects to enable selection of subsets for later analysis: (e.g, I want authors with at least 100 commits who worked no less than three years and participated in at least five java projects.)
 
-### Summary for Activity 10
+### Summary Activity 11
 
 * What type of usability improvements are needed?
 
