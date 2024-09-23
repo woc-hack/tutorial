@@ -379,7 +379,7 @@ Find all commits  developers who have your last and your first name:
 Hint 1: use wc (word count), e.g. (example takes a long time to compute), 
 
 ```
-[username@da0]~% zcat /da0_data/basemaps/gz/a2cFull*.s | grep -i 'audris' | grep -i 'mockus' | wc -l
+[username@da0]~% zcat /da7_data/basemaps/gz/a2cFull.V3.*.s | grep -i 'audris' | grep -i 'mockus' | wc -l
 ```
 
 b) Find all files modified by all author IDs used by a developer 'Warner Losh <imp@FreeBSD.org>'
@@ -441,17 +441,17 @@ To get projects we just need to join it with b2P
 Each project also has the last commit in lc2Pdat
 
 ```
-[username@da0]~% zcat /da?_data/basemaps/gz/lc2PdatFullV1.s | head -n 1 | tr ";" "\n"
-01000009d4c8d8f088e30519131e4e60cf61e969
-Dushyant099_Tetris
-1500262480
--0400
-Dushyant Patel <dushyant@Dushyants-MacBook-Air.local>
-214c30ce8162a624f1f2442ff7bed46d0fb7b4b1
-9e46a5cd45ce0adf3afe24ce616f5be0315c72b2
+[username@da0]~% zcat /da?_data/basemaps/gz/lc2PdatFull.V3.0.s | head -n 1| tr ";" "\n"
+0000000003c2e9fd2508665653ac2919045089a0
+kasthack-labs_kasthack.wv2v
+1634470362
++0300
+Konstantin Safonov <kasthack@epicm.org>
+faca4398f204a020d6f99663e3f70fd302d48e3e
+1f7cc2614f4c7322a4b7a5a32e104b926fa16ee0
 ```
 
-In fact, lb2f is computed from lc2dat by taking the tree (column 6 of  lc2Pdat) and obtaining all blobds in that tree in, recusively, subtrees.
+In fact, lb2f is computed from lc2dat by taking the tree (column 6 of  lc2Pdat) and obtaining all blobs in that tree in, recusively, subtrees.
 
 ## Activity 5: Using Python APIs from oscar.py
 
@@ -534,7 +534,7 @@ Now the same thing can be done using oscar.py:
 
 ```
 [username@da0]~% cd oscar.py
-[username@da0:oscar.py]~% python3
+[username@da0]~/oscar.py% python3
 >>> from oscar import Author, Commit
 >>> for i, commit in enumerate(Author('"Albert Krawczyk" <pro-logic@optusnet.com.au>').commit_shas):
 ...     if i >= 3:
@@ -549,10 +549,10 @@ Now the same thing can be done using oscar.py:
 
 ### Exercise 5b: Get the URL of a projects repository using the oscar.py `Project(...).url` attribute:  
 ```
-[username@da0:oscar.py]~%  python3
+[username@da0]~/oscar.py% python3
 >>> from oscar import Project
 >>> Project('notcake_gcad').url
-'https://github.com/notcake/gcad'
+b'https://github.com/notcake/gcad'
 ```
 
 ### Exercise 5c
@@ -562,9 +562,10 @@ Get list of files modified by commit 17abdbdc90195016442a6a8dd8e38dea825292ae
 Hint 1: What class to use?
 Commit
 ```
-[username@da0:oscar.py]~%  python3
+[username@da0]~/oscar.py% python3
 >>> from oscar import Commit
 >>> Commit('17abdbdc90195016442a6a8dd8e38dea825292ae').changed_file_names
+(b'29/1876a86e7c4f2feffd7fc643391b5ce1b0b81c',)
 ```
 
 ## Activity 6: Understanding Servers and folders
@@ -584,10 +585,10 @@ Not all files are stored on all servers due to limited disk sizes
 and different speed of disks (fast refers to SSDs).
 The location of the file can be identified via a pathname as described below. 
 
-### da0/../da5 Servers
-#### <relationship>.{0-31}.tch files can be found in `/da[0-5]_fast/` or `/da[0-5]_data/basemaps`  
-(.s) signifies that there are either .s or .gz versions of these files in /da[0-5]_data/basemaps/gz/ folder, which can be opened with Python gzip module or Unix zcat.  
-all five da[0-5] server may have these .s/.gz files  
+### da0/../da8 Servers
+#### <relationship>.{0-31}.tch files can be found in `/da[0-8]_data/basemaps` or `/da[3-5]_fast/`
+(.s) signifies that there are either .s or .gz versions of these files in /da[0-8]_data/basemaps/gz/ folder, which can be opened with Python gzip module or Unix zcat.  
+All eight da[0-8] servers (with the exception of da6, which does not exist) may have these .s/.gz files.  
 Keys for identifying letters:   
 
 * a = Author
@@ -622,13 +623,18 @@ contain sufficient info to alias are excluded.
 Similarly, the capital version of project P represents a deforked project (via Leuwen community
 detection on commit / repo bi-graph: https://arxiv.org/abs/2002.02707)
 
-List of relationships can be obtained via
+List of new relationships (as of September 2024) can be obtained via
+
 ```
-echo $(ls /da?_data/basemaps/gz/*FullV0.s| sed 's|.*/||;s|FullV0.s||')
-A2P A2c A2mnc P2A P2a P2c P2core P2g P2mnc P2tac a2P a2c a2p c2P c2acp c2cc c2dat c2p c2pc p2a
-p2c A2b A2f A2fb A2tPc A2tPlPkg A2tspan P2b P2binf P2f P2fb P2nfb P2tAlPkg P2tspan Pkg2tPA Pt2Ptb
-Ptb2Pt a2f a2fb b2P b2def b2fA b2f b2fa b2ob b2ptf b2tA b2tP b2ta b2tk b bb2cf c2PtAbflDef
-c2PtAbflPk g c2PtabflDef c2PtabflPkg c2b c2f c2fbb lb2f lc2Pdat ob2b obb2cf t2all t2ptf tk2b
+[username@da0]~% echo $(ls /da?_data/basemaps/gz/*Full.V3.0.s| sed 's|.*/||;s|Full.V3.0.s||')
+a2c A2c A2mnc a2P A2P a b2fa b2fA b2f b2P b2ta b2tA b2tP bb2cf c2acp c2b c2cc c2dat c2fbb c2f c2pc c2p c2P lc2Pdat obb2cf p2a P2a P2A P2b p2c P2c P2core P2mnc P2tac P2tspan p T2p lc2Pdat
+```
+
+Older versions of the basemaps provide additional relationships, as previously described in the tutorial. These can be obtained via 
+
+```
+[username@da0]~% echo $(ls /da?_data/basemaps/gz/*FullV0.s| sed 's|.*/||;s|FullV0.s||')
+a2c A2c A2mnc a2p a2P A2P c2acp c2cc c2dat c2pc c2p c2P p2a P2a P2A p2c P2c P2core P2g P2mnc P2tac A2b a2fb A2fb a2f A2f A2tPc A2tPlPkg A2tspan b2def b2fa b2fA b2f b2ob b2P b2ptf b2ta b2tA b2tk b2tP bb2cf b c2b c2fbb c2f c2PtabflDef c2PtAbflDef c2PtabflPkg c2PtAbflPkg lb2f lc2Pdat ob2b obb2cf P2b P2binf P2fb P2f P2nfb P2tAlPkg P2tspan Pkg2tPA Pt2Ptb Ptb2Pt t2all t2ptf tk2b
 ```
 
 
@@ -677,10 +683,10 @@ Hint 1: What is the name of the map?
 [username@da0] zcat /da?_data/basemaps/gz/b2fFullU*.s | grep '\.jl;'
 ```
 
-## Activity 7: Investigating Technical dependencies
-
+## Activity 7: Investigating Technical Dependencies
+.
 The technical dependencies have been extracted by parsing the content of all blobs related to 
-several different languages: and, for version V, are located in
+several different languages: and, for version V3, are located in
 `/da7_data/basemaps/gz/c2PtAbflPkgFullVX.s` with X ranging from 0
 to 127 based on the 7 bits in the first byte of the commit sha1. 
 
@@ -702,11 +708,14 @@ To identify the implementation of various packages one can use
 `/da?_data/basemaps/gz/c2PtAbflDefFullUX.s` with X ranging from 0
 to 127 based on the 7 bits in the first byte of the commit sha1. 
 for example
+
 ```
-zcat /da?_data/basemaps/gz/c2PtAbflDefFullU0.s|head
+[username@da0]~% zcat /da?_data/basemaps/gz/c2PtAbflDefFullU0.s | head -n 3
 0000000000abc668c5388237320e97d0dadae7b1;not-an-aardvark_lucky-commit;1613716402;Teddy Katz <teddykatz@fb.com>;050e87971a0a069043821c8d5f0c55d1f4761edc;Cargo.toml;Rust;lucky_commit
 0000000000abc668c5388237320e97d0dadae7b1;not-an-aardvark_lucky-commit;1613716402;Teddy Katz <teddykatz@fb.com>;61aebdecc47b2b7521a353b1cc180b2af1080977;Cargo.lock;Rust;addr2line
+00000000079a2df4aa067c6e3f05d4074e917a8c;cultpony_scraper;1625760102;cultpony <67918945+cultpony@users.noreply.github.com>;911000eaed7797b13ca4ff33f7763b9b5f96884f;Cargo.lock;Rust;addr2line
 ```
+
 Instead of the list of dependencies the last field identifies the
 package implemented within the blob, specifically, lucky_commit and
 addr2line in the above two blobs.
@@ -720,10 +729,11 @@ repositories (or parts of the repositories) where these package metafiles reside
 *TODO*:put it into clickhouse to speed up access. 
 
 Lets get a list of commits and repositories that imported Tensorflow for .py files:  
+
 ```
-[username@da0]~%zcat c2PtAbflPkgFullU76.s |grep tensorflow|head -2
-000005efe300482514d70d44c5fa922b34ff79a5;Rayhane-mamah_Tacotron-2;1557284915;qq443452099 <47710489+qq443452099@users.noreply.github.com>;05604b3f0632e98cc0eee3afef589dc5031f3a43;tacotron/synthesizer.py;PY;tacotron.utils.text.text_to_sequence;tacotron.utils.plot;tacotron.models.create_model;wave;datasets.audio;os;librosa.effects;tensorflow;infolog.log;datetime.datetime;io;numpy
-000005efe300482514d70d44c5fa922b34ff79a5;Rayhane-mamah_Tacotron-2;1557284915;qq443452099 <47710489+qq443452099@users.noreply.github.com>;49bc3b8b6533b93941223ccbeb401e47e5a573d7;hparams.py;PY;tensorflow;numpy
+[username@da0]~% zcat /da?_data/basemaps/gz/c2PtAbflPkgFullU76.s |grep tensorflow|head -2
+4c0005ce2c6b1d235e812c16d4299220e8f36aba;udacity_machine-learning;1495458904;vadim <vadim@Vadzims-MacBook-Pro.local>;71813087e2d49a93978a1ead815e3586ce03241a;projects/image-classification/image_classification.ipynb;ipy;helper;pickle;random;numpy;tqdm.tqdm;urllib.request.urlretrieve;problem_unittests;os.path.isfile;tensorflow;tarfile
+4c00079c571f860923a056e9678655f295a89cfc;dilawarm_federated;1614854007;Pernille Kopperud <pernilko@stud.ntnu.no>;e3271413e4e8f37c7a07f263d74c1f102c2312c3;federated/optimization/mitbih_federated.py;PY;federated.utils.data_utils.get_validation_fn;federated.data.mitbih_data_preprocessing.get_datasets;federated.utils.training_loops.federated_training_loop;inspect;federated.utils.compression_utils;federated.data.mitbih_data_preprocessing;os;functools;federated.utils.differential_privacy;federated.models.mitbih_model;federated.utils.rfa.create_rfa_averaging;tensorflow_federated;tensorflow
 ```
 
 ### Exercise 7
@@ -741,7 +751,7 @@ Hint 2: What field contains the repository name?
 [username@da0]~% zcat /da?_data/basemaps/gz/c2PtabllfPkgFullS*.s | grep ';jl;'| grep StaticArrays | cut -d\; -f2 | sort -u
 ```
 
-## Activity 8: Investigating copy-based reuse
+## Activity 8: Investigating Copy-Based Reuse
 
 WoC's operationalization of copy-based supply chains is based on mapping blobs 
 (versions of the source code) to all commits and projects where they have been created. 
@@ -751,14 +761,17 @@ of that blob. These files are located in `/da?_data/basemaps/gz/Ptb2PtFullVX.s` 
 to 127 based on the 7 bits in the first byte of the blob sha1. 
 
 The format of each file is encoded in its name: 
-```
-originating repo;timestamp;blob;destination repo;timestamp  
 
 ```
+originating repo;timestamp;blob;destination repo;timestamp  
+```
+
 for example
+
 ```
 zhunengfei_ExtJS6.2-samples;1466402956;00000056a59bde3926f65c334caef688ccad0a08;bitbucket.org_mastercad_sencha_demo;1551632725
 ```
+
 This means that blob 00000056a59bde3926f65c334caef688ccad0a08 was first seen in zhunengfei_ExtJS6.2-samples at 1466402956
 and was reused by bitbucket.org_mastercad_sencha_demo at 1551632725.
 
@@ -768,13 +781,13 @@ Find all projects that have commits mentioning "sql injection"
 
 List of commits is on /da4_data/All.blobs/
 Lets login to da4, create a data folder to store temporary data on the same server
-"/data/play/username", and uce pcommit to project map to get the list of projects.
+"/data/play/username", and use the commit to project map to get the list of projects.
 
 ```
 [username@da0]~% ssh da4
 [username@da4]~% mkdir /data/play/audris
 [username@da4]~% cd /data/play/audris
-[username@da4:/data/play/audris]~% cut -d\; -f4 commit_*.idx | ~/lookup/showCmt.perl 2 | grep -i 'sql injection' > 
+[username@da4]/data/play/audris% cut -d\; -f4 commit_*.idx | ~/lookup/showCmt.perl 2 | grep -i 'sql injection' > 
 [username@da4:/data/play/audris]~% cut -d\; -f1 sql_inject | ~/lookup/getValues.perl /da0_data/basemaps/c2pFullP > sql_inject.c2p
 ```
 
@@ -790,7 +803,7 @@ Lets login to da4, create a data folder to store temporary data on the same serv
 
 * Mongodb tables with the summary information about authors and projects to enable selection of subsets for later analysis: (e.g, I want authors with at least 100 commits who worked no less than three years and participated in at least five java projects.)
 
-### Summary Activity 10
+### Summary for Activity 10
 
 * What type of usability improvements are needed?
 
@@ -799,12 +812,12 @@ Lets login to da4, create a data folder to store temporary data on the same serv
 * What would make you a long-time user of WoC?
 
 
-## Self paced part of the tutorial
+## Self-paced Part of the Tutorial
 
 The remainig activities are provided to illustrate various realistic 
 tasks. 
 
-## Activity S0: Finding 1st-time imports for AI modules (Simple)
+## Activity S0: Finding 1st-time Imports for AI Modules (Simple)
 
 Given the data available, this is a fairly simple task. Making an application to detect the first time that a repo adopted an AI module would give you a better idea as to when it was first used, and also when it started to gain popularity.  
 
@@ -814,7 +827,7 @@ this application, we can read all 128 c2PtabllfPkgFullS*.s
 files and look for a given module with the earliest import times. The program then creates a <module_name>.first file, with each line formatted as `repo_name;UNIX_timestamp`.  
 
 TODO: update popmods.py to work with c2PtabllfPkgFullS*.s
-Usage: `[username@da0]~%  python popmods.py language_file_extension module_name`  
+Usage: `[username@da0]~% python popmods.py language_file_extension module_name`  
 
 Before anything else (and this can be applied to many other
 programs), you want to know what your input looks like ahead of time
