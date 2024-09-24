@@ -1,44 +1,49 @@
-# Tutorial: basics of using WoC
+# Tutorial: World of Code (WoC) Basics
 
-Get updates or ask questions related to World of Code: https://discord.gg/VbVcGZ6t
+![WoC_logo](/Assets/WoC_Logo.png)
 
-In order to provide you with the access to the systems, please fill
-1. [WoC registration form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link)
+## Overview
 
-2. Please view [WoC Elements and Structure](https://youtu.be/c0uFPwT5SZI)
+World of Code (WoC) is a large-scale infrastructure designed to mine and analyze the entirety of open-source software ecosystems. It aggregates data from millions of repositories across various platforms (e.g., GitHub, GitLab) and provides cross-references between authors, projects, commits, and files. This enables researchers and developers to study software development trends, dependencies, and code sharing at a global level. WoC is essential for researchers looking to examine the evolution and structure of open-source ecosystems, supporting analyses in software supply chains, developer behavior, and code reuse.
 
-3. [Recording of the tutorial conducted on 2022-10-27](https://drive.google.com/file/d/1ytzOiOSgMpqOUm2XQJhhOUAxu0AAF_OH/view?usp=sharing) and [an older (possibly obsolete) on 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
+## Important Links
 
-4. [WoC website](https://worldofcode.org)
+1. [WoC Registration Form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link): To request access to our servers
 
-### On using shell script
+2. [WoC Structure and Its Elements Video](https://youtu.be/c0uFPwT5SZI)
 
-[A brief gude on use of bash and related tools](https://github.com/woc-hack/tutorial/blob/master/ShellGuide.md)
+3. [Tutorial Recording from 2022-10-27](https://drive.google.com/file/d/1ytzOiOSgMpqOUm2XQJhhOUAxu0AAF_OH/view?usp=sharing) and [Older Tutorial Recoding (possibly obsolete) from 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
 
-Please consider auditing this MOOC if you are not comfortable working with the terminal/shell script
+4. [WoC Website](https://worldofcode.org)
 
-[Unix Tools: Data, Software and Production Engineering](https://courses.edx.org/courses/course-v1:DelftX+UnixTx+1T2020/course/)
+5. [WoC Discord](https://discord.gg/fKPFxzWqZX): Get updates or ask questions related to WoC
 
-### Before the Tutorial: Access to da server(s)
+## Additional Resources
+
+1. [WoC Shell Guide](https://github.com/woc-hack/tutorial/blob/master/ShellGuide.md): A brief guide on how to use bash and other related tools
+
+2. [Unix Tools: Data, Software and Production Engineering](https://courses.edx.org/courses/course-v1:DelftX+UnixTx+1T2020/course/): Consider auditing this Massive Open Online Course (MOOC) if you are not comfortable working in the terminal or working with shell scripting
+
+## Before You Start..
+### Step 1. Requirements to Access the da Server(s)
 
 To register for the hackathon/tutorial, please
-generate a public key.
-For Mac and unix users the instructions below would work, but for windows users 
-the best option is to enable [ubuntu shell]](https://winaero.com/blog/how-to-enable-ubuntu-bash-in-windows-10) [other instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10) first, then follow instructions for unix/mac. Alternatively, 
-[OpenSSH module for PowerShell](https://www.techrepublic.com/blog/10-things/how-to-generate-ssh-keys-in-openssh-for-windows-10/), or
-[Git-Bash](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-windows#Git-Bash) are other options.
+generate a ssh public key. See instructions below.
 
-To generated ssh key open a terminal window and run `ssh-keygen` command. Once
-it completes it produces the `id_rsa.pub` and `id_rsa` files inside your $HOME/.ssh/ folder. 
-Type
+For macOS and Unix users, the instructions below would work. Still, for Windows users, the best option is to enable [Ubuntu Shell](https://winaero.com/blog/how-to-enable-ubuntu-bash-in-windows-10) or [install Linux on Windows with WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) first, then follow instructions for Unix/macOS. 
+Alternatively, you may use the [OpenSSH Module for PowerShell](https://www.techrepublic.com/blog/10-things/how-to-generate-ssh-keys-in-openssh-for-windows-10/) or [Git-Bash](https://docs.joyent.com/public-cloud/getting-started/ssh-keys/generating-an-ssh-key-manually/manually-generating-your-ssh-key-in-windows#Git-Bash) as an alternative option.
+
+To generate a ssh key, open a terminal window and run the `ssh-keygen` command. Once completed, it produces the `id_rsa.pub` and `id_rsa` files inside your $HOME/.ssh/ folder. 
+To view the newly generated *public key*, type:
+
 ```
 cat ~/.ssh/id_rsa.pub
 ```
-That is your public ssh key you include in the WoC registration [form http://bit.ly/WoCSignup](http://bit.ly/WoCSignup). The form will ask you for the contents of `id_rsa.pub` and the
-GitHub and BitBucket handles. You will receive a response to the
-email provided in the form once your account is set up.
 
-Set up your `~/.ssh/config` file so that you can login to one of the da servers without having to fully specify the server name each time:
+You will need to provide this ssh *public key* when you complete the **WoC Registration Form** (step 3), as the form will ask you for the contents of `id_rsa.pub` and your **GitHub** and **Bitbucket**  handles (step 2). You will receive a response to the email you provide in the form once your account is set up (more details below).
+
+Set up your `~/.ssh/config` file so that you can log in to one of the da servers without having to fully specify the server name each time:
+
 ```
 Host *
   ForwardAgent yes
@@ -47,31 +52,30 @@ Host da0
 	Hostname da0.eecs.utk.edu
 	Port 443
 	User YourUsername
-	
 ```
-Please note that access to remaining servers is similarly available. da2 and da3 have ssh port 22 (both are running worldofcode.org web server on the https port 443)
+Please note that access to the remaining servers is similarly available. da2 and da3 have ssh port 22 (both are running the worldofcode.org web server on the https port 443)
 
-YourUsername is the login name you provided on the signup form. 
-Logging in then becomes as simple as typing `ssh da0` in your terminal.
+*Your_UserName* is the login name you provided on the signup form. With the config setup, logging in becomes as simple as typing `ssh da0` in your terminal.
 
-### Set up accounts for GitHub and Bitbucket
+### Step 2. GitHub and Bitbucket Accounts Setup
 
-If you dont have these already, please setup an account on both
-GitHub and Bitbucket (they will be needed to invite you to the
-relevant repositories on GitHub&BitBucket).
-GitHub: https://github.com/pricing  
-BitBucket: https://bitbucket.org/account/signup/  
+If you dont have these already, please set up an account on both
+GitHub and Bitbucket (these will be needed to invite you to the
+relevant repositories on GitHub & Bitbucket).
+* [GitHub Sign-up](https://github.com/pricing)  
+* [Bitbucket Sign-up](https://bitbucket.org/account/signup/)  
+
+### Step 3. Request for Access
+
+Users may access our systems/servers by obtaining a WoC account. You may do so by registering for an account through the [WoC Registration Form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link). We strive to provide access to new users the same day you fill out the form, but in the worst-case scenario, please allow up to 1 day for the account creation.
 
 ## Tutorial Objectives
 
-Prepare for the hackathon, make sure connections work, 
-get familiar with the basic functionality, and potential of WoC, 
-start thinking on how to investigate global relationships
-in open source.
+Prepare for the hackathon or perform research, make sure connections work, get familiar with the basic functionality and potential of WoC, and start thinking about how to investigate global relationships in open source.
 
 ### WoC Objectives
 
-Do the hard work to enable research on global properties of FLOSS: 
+Do the hard work to enable research on global properties of (Free, Libre, and Open Source Software) FLOSS: 
 
 * Census of all FLOSS
    - What is out there, of what kind, how much
@@ -89,26 +93,25 @@ Do the hard work to enable research on global properties of FLOSS:
 * Big Data Analytics: Map entities to all related entities efficiently
 * Timely: Targeting < 1 Quarter old analyzable snapshot of the entire FLOSS
 * Community run
-   - Hackathon will help determine community needs
+   - Hackathons help determine the community needs
    - [Hackathon Schedule](https://github.com/woc-hack/schedule)
 * How to participate?
-   - Hackathon registration [form](http://bit.ly/WoCSignup)
+   - [Hackathon Registration Form](http://bit.ly/WoCSignup)
    - If you can not attend the hackathon but just want to try out WoC, please fill the hackathon form but indicate in the topic section is that you do not plan to attend the hackathon.
 
 ### What WoC Contains
 
-![Workflow](https://github.com/woc-hack/tutorial/blob/master/Database-workflow.png)
-![Content: Commits., trees, blobs, projects, authors](https://github.com/woc-hack/tutorial/blob/master/Database.png)
+![Workflow](https://github.com/woc-hack/tutorial/blob/master/Assets/Database-workflow.png)
+![Content: Commits., trees, blobs, projects, authors](https://github.com/woc-hack/tutorial/blob/master/Assets/Database.png)
 
 ### Related background reading
 
-- [Estimate the impact of your code](https://da2.eecs.utk.edu)
 - [About WoC](https://bitbucket.org/swsc/overview/raw/master/pubs/WoC.pdf)
 - [Overview of the Software Supply Chains](https://bitbucket.org/swsc/overview/src/master/README.md)
 - [Details on WoC storage/APIs](https://bitbucket.org/swsc/lookup/src/master/README.md)
 - [Fun Facts](https://bitbucket.org/swsc/overview/src/master/fun/README.md)
 
-## Activity 1: Access to da server(s)
+## Activity 1: Access to da Server(s)
 
 Log in: `ssh da0`.
 
@@ -162,7 +165,7 @@ Now you can login to da4:
 [username@da4]~% 
 ```
 
-#### Exercise 1
+### Exercise 1
 
 Log in to da0 and clone two repositories that contain APIs to access WoC data
 ```
@@ -179,7 +182,9 @@ Log in to da4 from da0:
 [username@da0]~%
 ```
 
-**NOTE:** Make sure to access these directories and execute a `git pull` frequently to ensure you are working with latest updates.
+### Important Note
+
+Make sure to access these directories and execute a `git pull` frequently to ensure you are working with latest updates.
 
 ## Activity 2: Shell APIs - Basic Operations
 
@@ -201,43 +206,41 @@ Don't need to declare cbb module.  don't know why I never saw
 duplicate messages..
 ```
 
-
 This commit has a tree and a parent commit and is created by 'Warner Losh <imp@FreeBSD.org>'. 
 (parameter 3 defines that raw output needs to be produced)
 
-Lets inspect the tree (the root folder of the project):
+Lets inspect the tree (the root folder of the project) for the first and last file:
 ```
-[username@da0]~% echo 464ac950171f673d1e45e2134ac9a52eca422132 | ~/lookup/showCnt tree
+[username@da0]~% echo 464ac950171f673d1e45e2134ac9a52eca422132 | ~/lookup/showCnt tree | awk 'NR==1; END{print}'
 100644;a8fe822f075fa3d159a203adfa40c3f59d6dd999;COPYRIGHT
-...
 040000;6618176f9f37fa3e62f2efd953c07096f8ecf6db;usr.sbin
 ```
 
-We may also want inspect the first element in the tree: blob representing file COPYRIGHT
+We may also want inspect the first element in the tree (blob representing file COPYRIGHT). We limit the output to the first two lines only:
 ```
-[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob
-blob;40;2999;66321199427;66321199427;2999;a8fe822f075fa3d159a203adfa40c3f59d6dd999
+[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob | head -n 2
 # $FreeBSD$
 #  @(#)COPYRIGHT  8.2 (Berkeley) 3/21/94
-...
 ```
 
-#### Important Note
-In case you want to get the content of many objects (or look up
+### Important Note
+
+When wanting to get the content of many objects (or look up
 values for many keys), please use a single function invocation and
-provide multiple keys/sha1s as standard input because each call so showCnt
-and getValues may involve ssh to another server where the data
-resides.
+provide multiple keys/sha1s as standard input since each call to showCnt
+and getValues may involve ssh to another da server (where the data
+resides).  
 To separate content of separate blobs, you can ask showCnt to put
-output on a single line, for example,
+output on a single line, for example:
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/showCnt blob 1
 ```
-produces a single line starting from sha1:
+This command will produce a single line output, starting from sha1:
 ```
 a8fe822f075fa3d159a203adfa40c3f59d6dd999;IyAkRnJlZUJTRCQKIwlAKCMpQ09Q....
 ```
-The content of the blob is base64 encoded. (use python's base64.b64decode)
+The content of the blob is base64 encoded (use python's base64.b64decode).
+
 ### Exercise 2
 
 Determine the author of the parent commit for commit 009d7b6da9c4419fe96ffd1fffb2ee61fa61532a
@@ -247,7 +250,7 @@ Hint 1: parent commit is listed in the content of commit 009d7b6da9c4419fe96ffd1
 [username@da0]~% echo dddff9a89ddd7098a1625cafd3c9d1aa87474cc7 | ~/lookup/showCnt commit
 ```
 
-### Summary 2
+### Summary for Activity 2
 
 Synopsis:
 ```
@@ -256,15 +259,17 @@ Synopsis:
 reads from the standard input sha1 of the corresponding objects and 
 prints the content of these objects. 
 
-## Activity 3 - Investigate the maps
+## Activity 3: Investigate the Maps
 
 We see the content of the copyright file above. Such files are often copied verbatim. Lets determine the first author who has created it (irrespective of a repository).
 WoC has created this relationship and stored in b2fa (Blob to First Author) map:
+
 ```
-[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2a
-a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@ccf9f872-aa2e-dd11-9fc8-001c23d0bc1f>;00a8f599c25ded714d2a4da9e1bb30e2a335181c
+[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2fa
+a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@FreeBSD.org>;121f970412fec7f9af0352a9b4ce8dca43bdb59e
 ```
-It turns out that it was created by commit 00a8f599c25ded714d2a4da9e1bb30e2a335181c done by what appears to be the same author on unix second 1072910122.
+
+It turns out that it was created by commit 121f970412fec7f9af0352a9b4ce8dca43bdb59e done by what appears to be the same author on unix second 1072910122.
 
 What is b2fa? The letters signify what keys (b - Blob) and values
 (fa - first author) mean. As in natural sentence some decontextualization is needed in rare cases as this because f generally stands for file. Literally, that would mean b2fa is blob to file and author. As the number of objects and maps will multiply, single letters will not do and full word parsing will be used. 
@@ -297,41 +302,45 @@ M. Warner Losh <imp@bsdimp.com>
 M. Warner Losh <imp@freebsd.org>
 ```
 
-Going back to blob we may ask if this blob has been widely copied as would be expected for copyright files. We can use b2tac to obtain sha1, blob to time, author, and commit. The following example pipes the output to only see the first entry:
+Going back to blob we may ask if this blob has been widely copied as would be expected for copyright files. We can use b2tac to obtain a sha1's blob to time, author, and commit. The following example pipes the output to only see the first entry:
 
 ```
 [username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 |  ~/lookup/getValues b2tac | cut -d ";" -f1-4          
 a8fe822f075fa3d159a203adfa40c3f59d6dd999;1072910122;Warner Losh <imp@FreeBSD.org>;121f970412fec7f9af0352a9b4ce8dca43bdb59e
-
 ```
 
 b2tac (blob to time, author, commit) shows the numerous commits that introduced that blob in all repositories. We can further use commit to project map (c2p)
 to identify all associated projects:
+
 ```
-[lgonzal6@da0]~/tutorial% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/getValues b2tac | awk -F \; '{for(i=4;i<NF;i+=3){print $i}}' | ~/lookup/getValues -f c2p | cut -d ";" -f2 | sort -u |  head -3
+[username@da0]~% echo a8fe822f075fa3d159a203adfa40c3f59d6dd999 | ~/lookup/getValues b2tac | awk -F \; '{for(i=4;i<NF;i+=3){print $i}}' | ~/lookup/getValues -f c2p | cut -d ";" -f2 | sort -u |  head -3
 0cjs_unix-history-repo
 0mp_freebsd
 0xbda2d2f8_freebsd
 ```
-In fact there are 1719 distinct repositories where this blob appears.
+
+In fact, there are 1719 distinct repositories where this blob appears. If you would like to see them all, remove the last `head` portion in the previous command.
 
 Finally, we have the author 'Warner Losh <imp@FreeBSD.org>' for the commit we have investigated. 
-Can we find what other commits Warner has made?:
+Can we find what other commits Warner has made? (The following output is limited to three commits only):
 ```
-[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2c
-Warner Losh <imp@FreeBSD.org>;0000ce4417bd8d9a2d66a7a61393558d503f2805;000109ae96e7132d90440c8fa12cb7df95a806c6;00014b72bf10ad43ca437daf388d33c4fea73df9;000171c80d0d0ab6ff22b58b922e559e51485936;000282fc6c091e1c0abdadf1f58c088fc3ed9bc9;0002d1cab0d367c074a601e28183c60657254820;000373a8c48347c3e0e30486ccf4d9b043438826;...
-
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2c | tr ";" "\n" |  head -n 4
+Warner Losh <imp@FreeBSD.org>
+0000ce4417bd8d9a2d66a7a61393558d503f2805
+000109ae96e7132d90440c8fa12cb7df95a806c6
+0001246ed9e02765dfc9044a1804c3c614d25dde
 ```
 
 In addition to variable-length records (key;val1,;val2;...;valn), 
 the output can be produced as a flat table (key;val1\nkey;val2\n...\nkey;valn)
 using -f option:
 ```
-[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues -f a2c
-Warner Losh echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues -f a2c| head
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues -f a2c | head -n 5
 Warner Losh <imp@FreeBSD.org>;0000ce4417bd8d9a2d66a7a61393558d503f2805
 Warner Losh <imp@FreeBSD.org>;000109ae96e7132d90440c8fa12cb7df95a806c6
-...
+Warner Losh <imp@FreeBSD.org>;0001246ed9e02765dfc9044a1804c3c614d25dde
+Warner Losh <imp@FreeBSD.org>;00014b72bf10ad43ca437daf388d33c4fea73df9
+Warner Losh <imp@FreeBSD.org>;000153916157b29a14b65fa3efeff4e3788e1b0e
 ```
 
 In addition to the random lookup, the maps are also stored in flat
@@ -341,15 +350,15 @@ For example, find commits by any author named Warner (a similar
 task would be to find all blobs or commits involving a c-language
 file ".c" or a README file "README"): 
 ```
-[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullV0.s | grep 'Warner'
+[username@da0]~% zcat /da7_data/basemaps/gz/a2cFull.V3.0.s | grep 'Warner Losh'
 ```
 As described below, the maps are split into 32 (or 128) parts to enable parallel search.
-FullV means that we are looking ata  complete extract at version V. 
+Full.V3.0 means that we are looking at a complete extract at version V3.0. 
 
 As versions keep being updated, and data no longer fits on a single server, 
 a more flexible way to run the same command would be
 ```
-[username@da0]~% zcat /da?_data/basemaps/gz/a2cFull?0.s | grep 'Warner'
+[username@da0]~% zcat /da?_data/basemaps/gz/a2cFull.V3.?.s | grep 'Warner Losh'
 ```
 In other words, we look for the file on any of the servers and selecting an arbitrary 
 version of the datbase.
@@ -362,15 +371,15 @@ Hint 1: What is the map name?
 
 Author ID to File or a2f
 ```
-echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2f 
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>' | ~/lookup/getValues a2f 
 ```
 
 Find all commits  developers who have your last and your first name:
 
-Hint 1: use wc (word count), e.g., 
+Hint 1: use wc (word count), e.g. (example takes a long time to compute), 
 
 ```
-[username@da0]~% zcat /da0_data/basemaps/gz/a2cFullP*.s | grep -i 'audris' | grep -i 'mockus' | wc -l
+[username@da0]~% zcat /da0_data/basemaps/gz/a2cFull*.s | grep -i 'audris' | grep -i 'mockus' | wc -l
 ```
 
 b) Find all files modified by all author IDs used by a developer 'Warner Losh <imp@FreeBSD.org>'
@@ -384,12 +393,11 @@ Warner Losh <imp@FreeBSD.org>;imp <imp@bsdimp.com>
 
 and then use it to get all files via A2f
 ```
-echo 'imp <imp@FreeBSD.org>' | ~/lookup/getValues A2f 
+[username@da0]~% echo 'imp <imp@bsdimp.com>' | ~/lookup/getValues A2f 
 ```
 
+### Summary for Activity 3
 
-
-### Summary 3
 For any key provided on standard input, a list of values is provided
 ```
 ~/lookup/getValues [-f] a2c|c2dat|b2ta|b2fa|c2b|b2f|c2f|p2c|c2p|c2P|P2c
@@ -399,46 +407,53 @@ option -f replaces one output line per input line into the number of lines corre
 
 Also, only the first column of the input is considered as the key, other fields are passed through, e.g., 
 ```
-echo 'Warner Losh <imp@FreeBSD.org>;zz' | ~/lookup/getValues -f a2c| head
+[username@da0]~% echo 'Warner Losh <imp@FreeBSD.org>;zz' | ~/lookup/getValues -f a2c| head -n 3
 Warner Losh <imp@FreeBSD.org>;zz;0000ce4417bd8d9a2d66a7a61393558d503f2805
 Warner Losh <imp@FreeBSD.org>;zz;000109ae96e7132d90440c8fa12cb7df95a806c6
-...
+Warner Losh <imp@FreeBSD.org>;zz;0001246ed9e02765dfc9044a1804c3c614d25dde
 ```
 
-## Actvity: How does a repo look at the last commit
+## Actvity 4: Exploring the State of a Repo at the Last Commit
 
 Lets suppose we only care for the last version of the files in a project, e.g last version of readme. 
 lb2f (last blob to file) provides this relationship
+
 ```
-zcat /da?_data/basemaps/gz/lb2fFullV0.s | grep -i readme
-000602be627d586f3e0ccc65f5814b6c3291cf56;/README.md
-0006032ca2ccdafb183c1b49c1e4bb49272ecfbc;/apps/supc/supc_wakeup_rtt/readme.md
-0006035d175851e2616bedab2ee7cfc6e63511f8;/README.md
-0006036aabb3a6161b16bd34d074c65aea17e03a;/README.md
-0006037fdc4972bf5812c3c1ae6f020c8f6dcdb6;/README.md
-000604253ef08192e0dfcbe8cc8acb05f9336333;/README.md
-...
+[username@da0]~% zcat /da?_data/basemaps/gz/lb2fFullV0.s | grep -i readme | head -n 5
+00000057bfb6f79bdfd129f113533f9ada77cbba;/README.md
+000000ad43fb50661d0f8ba20035f8f8a62b28b1;/README.md
+000000c4ca807de513cd601810522141ed8347bf;/Day-92 Collection/readMe
+000001222e62cd97679e0ed087c74037bab8f848;/README.md
+0000013e32eb5f7497750cf652cfd540f23abb3e;/README.md
 ```
+
 To get projects we just need to join it with b2P
+
 ```
-zcat zcat /da?_data/basemaps/gz/lb2fFullV0.s | grep -i readme | join -t\; -k1 - <(zcat zcat /da?_data/basemaps/gz/b2PFullV0.s) | head
-01000001a222fafa5ea641d2685186490afd7120;/README.md;jeffprestes_candies-client
-01000001a222fafa5ea641d2685186490afd7120;/README.md;jeffprestes_candies-client-native-java
-...
+[username@da0]~% zcat /da?_data/basemaps/gz/lb2fFullV0.s | grep -i readme | join -t\; -1 1 -2 1 - <( zcat /da?_data/basemaps/gz/b2PFullV0.s) | head -n 5
+00000057bfb6f79bdfd129f113533f9ada77cbba;/README.md;yoooov_certinel
+000000ad43fb50661d0f8ba20035f8f8a62b28b1;/README.md;LeeYoonSam_SampleNodeEjsBoard
+000000c4ca807de513cd601810522141ed8347bf;/Day-92 Collection/readMe;22MCA10027_-100daysofcodeChallenge
+000001222e62cd97679e0ed087c74037bab8f848;/README.md;magnusrygh_cluster
+0000013e32eb5f7497750cf652cfd540f23abb3e;/README.md;sneakyGrit_hello-world
 ```
 
 Each project also has the last commit in lc2Pdat
+
 ```
-zcat /da?_data/basemaps/gz/lc2PdatFullV1.s | head                                                                                                                                                                                                                                                
-01000009d4c8d8f088e30519131e4e60cf61e969;Dushyant099_Tetris;1500262480;-0400;Dushyant Patel <dushyant@Dushyants-MacBook-Air.local>;214c30ce8162a624f1f2442ff7bed46d0fb7b4b1;9e46a5cd45ce0adf3afe24ce616f5be0315c72b2
-0100001ea4da8bf95026379ba964d2c9ea2627d9;rijarobinson_refact_assnment;1480291678;-0600;Marija Robinson <marija@springmail.com>;85eb00fb8f2409a4ab7828786d21b790381d80c5;18e8e329e9a6fd3146f7d2f86c1804997c9e6f4e
-0100004d9a75be26d2c0c0ea59e81b001d65fa25;mandyradomski_helloWorld.html;1596383537;+0200;mandyradomski <62217292+mandyradomski@users.noreply.github.com>;cbddeddabaea90f2e60d98fa641db6ca5d68d0cc;c50460b289b1aef1bffae68e390a76eb95454eaf
-010000514c8b05f858703cd8379431e3679fa4d4;mubarak117136_updatetech-frontend;1634126401;+0600;amir mubarak <amir@codesign.com.bd>;5f7bc0af24047ba71359d36d9af3748e9ecfe9b6;
+[username@da0]~% zcat /da?_data/basemaps/gz/lc2PdatFullV1.s | head -n 1 | tr ";" "\n"
+01000009d4c8d8f088e30519131e4e60cf61e969
+Dushyant099_Tetris
+1500262480
+-0400
+Dushyant Patel <dushyant@Dushyants-MacBook-Air.local>
+214c30ce8162a624f1f2442ff7bed46d0fb7b4b1
+9e46a5cd45ce0adf3afe24ce616f5be0315c72b2
 ```
+
 In fact, lb2f is computed from lc2dat by taking the tree (column 6 of  lc2Pdat) and obtaining all blobds in that tree in, recusively, subtrees.
 
-
-## Activity 4: Using Python APIs from oscar.py
+## Activity 5: Using Python APIs from oscar.py
 
 **oscar.py Tutorial:** oscar.py has their own tutorial for hackathon purposes. We suggest that you go [here](https://github.com/ssc-oscar/oscar.py/blob/master/docs/tutorial.md) and read through it. The tutorial contains information about the current available functions, how to implement applications (simple and complex), and useful imports for applications.
 
@@ -492,37 +507,47 @@ for commit in Author(author_name).commit_shas:
 	print(Commit(commit))
 ```
 
-### Exercise 4a:  Get a list of commits made by a specific author:  
+### Exercise 5a: Get a list of commits made by a specific author
 
 Install the latest oscar.py
+
 ```
 [username@da0]~% cd ~/oscar.py
 ```
+
 If "import oscar" fails
+
 ```
 [username@da0]~% easy_install --user clickhouse-driver
 ```
 
 As we learned before, we can do that in shell
+
 ```
-[username@da0]~% zcat /da?_data/basemaps/gz/a2cFullU0.s | grep '"Albert Krawczyk" <pro-logic@optusnet.com.au>'
+[username@da0]~% zcat /da?_data/basemaps/gz/a2cFull.V3.0.s | grep '"Albert Krawczyk" <pro-logic@optusnet.com.au>' | head -n 3
 "Albert Krawczyk" <pro-logic@optusnet.com.au>;17abdbdc90195016442a6a8dd8e38dea825292ae
-"Albert Krawczyk" <pro-logic@optusnet.com.au>;9cdc918bfba1010de15d0c968af8ee37c9c300ff
-"Albert Krawczyk" <pro-logic@optusnet.com.au>;d9fc680a69198300d34bc7e31bbafe36e7185c76
+"Albert Krawczyk" <pro-logic@optusnet.com.au>;2a98c68d153f1fd78cc356727263a2046abf887d
+"Albert Krawczyk" <pro-logic@optusnet.com.au>;3cdd0e1cefbec43a9c3d3138dd6734191529763a
 ```
 
 Now the same thing can be done using oscar.py:  
+
 ```
 [username@da0]~% cd oscar.py
 [username@da0:oscar.py]~% python3
 >>> from oscar import Author, Commit
->>> for commit in Author('"Albert Krawczyk" <pro-logic@optusnet.com.au>').commit_shas: print(Commit(commit))
+>>> for i, commit in enumerate(Author('"Albert Krawczyk" <pro-logic@optusnet.com.au>').commit_shas):
+...     if i >= 3:
+...         break
+...     print(Commit(commit))
+...
 17abdbdc90195016442a6a8dd8e38dea825292ae
-9cdc918bfba1010de15d0c968af8ee37c9c300ff
-d9fc680a69198300d34bc7e31bbafe36e7185c76
+2a98c68d153f1fd78cc356727263a2046abf887d
+3cdd0e1cefbec43a9c3d3138dd6734191529763a
+>>>
 ```
 
-### Exercise 4b: Get the URL of a projects repository using the oscar.py `Project(...).url` attribute:  
+### Exercise 5b: Get the URL of a projects repository using the oscar.py `Project(...).url` attribute:  
 ```
 [username@da0:oscar.py]~%  python3
 >>> from oscar import Project
@@ -530,7 +555,7 @@ d9fc680a69198300d34bc7e31bbafe36e7185c76
 'https://github.com/notcake/gcad'
 ```
 
-### Exercise 4c
+### Exercise 5c
 
 Get list of files modified by commit 17abdbdc90195016442a6a8dd8e38dea825292ae
 
@@ -542,9 +567,7 @@ Commit
 >>> Commit('17abdbdc90195016442a6a8dd8e38dea825292ae').changed_file_names
 ```
 
-## 
-
-## Activity 5: Understanding Servers and folders
+## Activity 6: Understanding Servers and folders
 
 All home folders are on da2, so it is preferred not to do very large
 file operations to/from these folders  when running tasks on servers
@@ -644,7 +667,7 @@ Note: c2P returns the most central repository for this commit, and does not incl
       P2c returns ALL commits associated with this repo, including commits made to forks of this particular repo. 
 	  The list of relationships is not exhaustive and more information can be found at https://github.com/woc-hack/tutorial/issues/17#issuecomment-850823408
 
-### Exercise 5
+### Exercise 6
 
 Find all blobs associated with Julia language files (extension .jl) 
 
@@ -654,7 +677,7 @@ Hint 1: What is the name of the map?
 [username@da0] zcat /da?_data/basemaps/gz/b2fFullU*.s | grep '\.jl;'
 ```
 
-## Activity 6: Investigating Technical dependencies
+## Activity 7: Investigating Technical dependencies
 
 The technical dependencies have been extracted by parsing the content of all blobs related to 
 several different languages: and, for version V, are located in
@@ -703,7 +726,7 @@ Lets get a list of commits and repositories that imported Tensorflow for .py fil
 000005efe300482514d70d44c5fa922b34ff79a5;Rayhane-mamah_Tacotron-2;1557284915;qq443452099 <47710489+qq443452099@users.noreply.github.com>;49bc3b8b6533b93941223ccbeb401e47e5a573d7;hparams.py;PY;tensorflow;numpy
 ```
 
-### Exercise 6
+### Exercise 7
 
 Find all repositories using Julia language that import package 'StaticArrays'
 
@@ -718,7 +741,7 @@ Hint 2: What field contains the repository name?
 [username@da0]~% zcat /da?_data/basemaps/gz/c2PtabllfPkgFullS*.s | grep ';jl;'| grep StaticArrays | cut -d\; -f2 | sort -u
 ```
 
-## Activity 7: Investigating copy-based reuse
+## Activity 8: Investigating Copy-Based Reuse
 
 WoC's operationalization of copy-based supply chains is based on mapping blobs 
 (versions of the source code) to all commits and projects where they have been created. 
@@ -739,7 +762,7 @@ zhunengfei_ExtJS6.2-samples;1466402956;00000056a59bde3926f65c334caef688ccad0a08;
 This means that blob 00000056a59bde3926f65c334caef688ccad0a08 was first seen in zhunengfei_ExtJS6.2-samples at 1466402956
 and was reused by bitbucket.org_mastercad_sencha_demo at 1551632725.
 
-## Activity 8: OSS License Identification
+## Activity 9: OSS License Identification
 
 The proliferation of OSS has created a complex landscape of licensing practices, making accurate license identification essential for legal and compliance purposes. 
 WoC uses a comprehensive approach, scanning all blobs with "license" in their filepath and applying the winnowing algorithm for reliable text matching against known licenses.
@@ -758,7 +781,7 @@ Additionally, since these timestamps only represent when the license was committ
 
 When interpreting the data, it's important to note that the scope of license detection does not include code files or references to licenses within project documentation.
 
-## Activity 9: Suggested by the audience
+## Activity 10: Suggested by the audience
 
 Find all projects that have commits mentioning "sql injection"
 
@@ -774,7 +797,7 @@ Lets login to da4, create a data folder to store temporary data on the same serv
 [username@da4:/data/play/audris]~% cut -d\; -f1 sql_inject | ~/lookup/getValues.perl /da0_data/basemaps/c2pFullP > sql_inject.c2p
 ```
 
-## Activity 10: Summary of the activities undertaken
+## Activity 11: Summary of the activities undertaken
 
 * Shell API (faster) and Python API (also Perl API not illustrated) for random access
 
@@ -786,7 +809,7 @@ Lets login to da4, create a data folder to store temporary data on the same serv
 
 * Mongodb tables with the summary information about authors and projects to enable selection of subsets for later analysis: (e.g, I want authors with at least 100 commits who worked no less than three years and participated in at least five java projects.)
 
-### Summary exercise
+### Summary Activity 11
 
 * What type of usability improvements are needed?
 
