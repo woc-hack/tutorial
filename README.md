@@ -750,6 +750,11 @@ the first commit exists is identified as the originator and all other projects a
 of that blob. These files are located in `/da?_data/basemaps/gz/Ptb2PtFullVX.s` with X ranging from 0
 to 127 based on the 7 bits in the first byte of the blob sha1. 
 
+<div align="center">
+    <img src="/Assets/reuse_DFD.png" alt="reuse_DFD">
+    <p>Reuse Identification Data Flow Diagram</p>
+</div>
+
 The format of each file is encoded in its name: 
 ```
 originating repo;timestamp;blob;destination repo;timestamp  
