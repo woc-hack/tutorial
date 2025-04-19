@@ -50,8 +50,9 @@ Host *
 
 Host da0
 	Hostname da0.eecs.utk.edu
-	Port 22
+	Port 443
 	User YourUsername
+	IdentityFile ~/.ssh/name_of_priv_key
 ```
 Please note that access to the remaining servers is similarly available. da2 and da3 have ssh port 22 (both are running the worldofcode.org web server on the https port 443)
 
