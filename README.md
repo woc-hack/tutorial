@@ -1,6 +1,8 @@
-# Tutorial: World of Code (WoC) Basics
+# Tutorial: World of Code (WoC) Basics [DEPRICATED]
 
 ![WoC_logo](/Assets/WoC_Logo.png)
+
+# Please see new tutorial docs [here..](https://worldofcode.org/docs/#/)
 
 ## Overview
 
@@ -8,15 +10,17 @@ World of Code (WoC) is a large-scale infrastructure designed to mine and analyze
 
 ## Important Links
 
-1. [WoC Registration Form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link): To request access to our servers
+1. [New Tutorial Documentation](https://worldofcode.org/docs/#/)
 
-2. [WoC Structure and Its Elements Video](https://youtu.be/c0uFPwT5SZI)
+2. [WoC Registration Form](https://docs.google.com/forms/d/e/1FAIpQLSd4vA5Exr-pgySRHX_NWqLz9VTV2DB6XMlR-gue_CQm51qLOQ/viewform?vc=0&c=0&w=1&flr=0&usp=mail_form_link): To request access to our servers
 
-3. [Tutorial Recording from 2022-10-27](https://drive.google.com/file/d/1ytzOiOSgMpqOUm2XQJhhOUAxu0AAF_OH/view?usp=sharing) and [Older Tutorial Recoding (possibly obsolete) from 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
+3. [WoC Structure and Its Elements Video](https://youtu.be/c0uFPwT5SZI)
 
-4. [WoC Website](https://worldofcode.org)
+4. [Tutorial Recording from 2022-10-27](https://drive.google.com/file/d/1ytzOiOSgMpqOUm2XQJhhOUAxu0AAF_OH/view?usp=sharing) and [Older Tutorial Recoding (possibly obsolete) from 2019-10-15](https://drive.google.com/file/d/14tAx2GQamR4GIxOc3EzUXl7eyPKRx2oU/view?usp=sharing) 
 
-5. [WoC Discord](https://discord.gg/fKPFxzWqZX): Get updates or ask questions related to WoC
+5. [WoC Website](https://worldofcode.org)
+
+6. [WoC Discord](https://discord.gg/fKPFxzWqZX): Get updates or ask questions related to WoC
 
 ## Additional Resources
 
